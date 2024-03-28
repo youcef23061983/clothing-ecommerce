@@ -183,11 +183,11 @@ const Homepage = () => {
         </div>
       </motion.form>
 
-      <div className="productsDiv">
+      <motion.div layout className="productsDiv">
         {productsFilter?.map((product) => {
           return <Product key={product.id} product={product} />;
         })}
-      </div>
+      </motion.div>
     </div>
   );
 };
