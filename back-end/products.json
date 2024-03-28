@@ -1,0 +1,425 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "productName": "jacket1",
+      "slug": "Latest 2023 Custom Latest Design Spring Winter Wool Men Overcoat Casual Slim Fit Long Woolen Coat High Quality Men's wool coat",
+      "type": "jacket",
+      "price": 79.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": "",
+      "images": [
+        "src/images/men/jacket1/image1.jpg",
+        "src/images/men/jacket1/image2.jpg",
+        "src/images/men/jacket1/image3.jpg",
+        "src/images/men/jacket1/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": true,
+      "rating": 4,
+      "preview": 11,
+      "amount": 1
+    },
+    {
+      "id": 2,
+      "productName": "jacket2",
+      "slug": "Long Lasting Quality Popular Brown In Color Leather Jacket jackets For Men Fashionable Trending Cloths Accessories",
+      "type": "jacket",
+      "price": 59.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 39.99,
+      "images": [
+        "src/images/men/jacket2/image1.jpg",
+        "src/images/men/jacket2/image2.jpg",
+        "src/images/men/jacket2/image3.jpg",
+        "src/images/men/jacket2/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": false,
+      "rating": 3.8,
+      "amount": 1,
+      "preview": 12
+    },
+    {
+      "id": 3,
+      "productName": "jacket3",
+      "slug": "Ultra Light Outdoor Hiking Unisex Men Warm Insulated Duck Down Coat Waterproof Padded Quilted Puffer Jacket",
+      "type": "jacket",
+      "price": 59.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 49.99,
+      "images": [
+        "src/images/men/jacket3/image1.jpg",
+        "src/images/men/jacket3/image2.jpg",
+        "src/images/men/jacket3/image3.jpg",
+        "src/images/men/jacket3/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "amount": 1,
+      "rating": 3,
+      "preview": 11
+    },
+    {
+      "id": 4,
+      "productName": "jacket4",
+      "slug": "Hot Selling Men's Winter Fleece Jaket Coat Long Sleeve Solid Color Cotton-padded Shirt Jacket Mens Sports Jacket",
+      "type": "jacket",
+      "price": 79.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 59.99,
+      "images": [
+        "src/images/men/jacket4/image1.jpg",
+        "src/images/men/jacket4/image2.jpg",
+        "src/images/men/jacket4/image3.jpg",
+        "src/images/men/jacket4/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": false,
+      "amount": 1,
+      "rating": 2.8,
+      "preview": 10
+    },
+    {
+      "id": 5,
+      "productName": "jacket5",
+      "slug": "Army Green puffer jacket zip up inside and out side buttons with removable hood customize cheap price",
+      "type": "jacket",
+      "price": 29.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 19.99,
+      "images": [
+        "src/images/men/jacket5/image1.jpg",
+        "src/images/men/jacket5/image2.jpg",
+        "src/images/men/jacket5/image3.jpg",
+        "src/images/men/jacket5/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "rating": 2,
+      "amount": 1,
+      "preview": 13
+    },
+    {
+      "id": 6,
+      "productName": "jeans",
+      "slug": "Fashion New Design Hot-sell ripped vintage Elastic Breathable Long Pants Men's Denim jean's loose jeans for men",
+      "type": "jeans",
+      "price": 39.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": "",
+      "images": [
+        "src/images/men/jeans/image1.jpg",
+        "src/images/men/jeans/image2.jpg",
+        "src/images/men/jeans/image3.jpg",
+        "src/images/men/jeans/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": true,
+      "amount": 1,
+      "rating": 4.2,
+      "preview": 11
+    },
+    {
+      "id": 7,
+      "productName": "shirt",
+      "slug": "Custom Fashion Men's Long Sleeve Shirt Double Breasted Long Sleeve Menufecture Shirt for men",
+      "type": "shirt",
+      "price": 29.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 19.99,
+      "images": [
+        "src/images/men/shirt/image1.jpg",
+        "src/images/men/shirt/image2.jpg",
+        "src/images/men/shirt/image3.jpg",
+        "src/images/men/shirt/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "rating": 3.7,
+      "amount": 1,
+      "preview": 8
+    },
+    {
+      "id": 8,
+      "productName": "shirt2",
+      "slug": "Cheap office shirt men short sleeve Casual men's office plain shirt wear shirts for men office",
+      "type": "shirt",
+      "price": 17.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": "",
+      "images": [
+        "src/images/men/shirt2/image1.jpg",
+        "src/images/men/shirt2/image2.jpg",
+        "src/images/men/shirt2/image3.jpg",
+        "src/images/men/shirt2/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "amount": 1,
+      "bestSeller": false,
+      "rating": 2,
+      "preview": 9
+    },
+    {
+      "id": 9,
+      "productName": "shoes",
+      "slug": "LANCI Cow Skin Real Leather Men Casual Footwear Shoes Men'S Loafer Shoes Good Quality",
+      "type": "shoes",
+      "price": 29.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": 19.99,
+      "images": [
+        "src/images/men/shoes/image1.jpg",
+        "src/images/men/shoes/image2.jpg",
+        "src/images/men/shoes/image3.jpg",
+        "src/images/men/shoes/image4.jpg"
+      ],
+      "newArrival": false,
+      "amount": 1,
+      "onSale": true,
+      "bestSeller": true,
+      "rating": 2.8,
+      "preview": 13
+    },
+    {
+      "id": 10,
+      "productName": "shoes2",
+      "slug": "High Quality Leather Shoes Lace Up Stylish Formal Casual Business Boots Men Dress Shoes New Design Men Leather Shoes",
+      "type": "shoes",
+      "price": 89.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": "",
+      "images": [
+        "src/images/men/shoes2/image1.jpg",
+        "src/images/men/shoes2/image2.jpg",
+        "src/images/men/shoes2/image3.jpg",
+        "src/images/men/shoes2/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "amount": 1,
+      "bestSeller": false,
+      "rating": 4.4,
+      "preview": 10
+    },
+    {
+      "id": 11,
+      "productName": "sneakers1",
+      "slug": "Top quality Man Leather Shoe sports Running Sneakers, White fashion men's skateboard Casual Shoes",
+      "type": "sneaker",
+      "price": 49.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": 39.99,
+      "images": [
+        "src/images/men/sneakers1/image1.jpg",
+        "src/images/men/sneakers1/image2.jpg",
+        "src/images/men/sneakers1/image3.jpg",
+        "src/images/men/sneakers1/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "amount": 1,
+      "rating": 3.8,
+      "preview": 8
+    },
+    {
+      "id": 12,
+      "productName": "sneakers2",
+      "slug": "Genuine GT-2000-11 Stable Support Racing Shoe Lightweight Cushioning Elastic Durable Casual Men's Running Shoe",
+      "type": "sneaker",
+      "price": 29.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": "",
+      "images": [
+        "src/images/men/sneakers2/image1.jpg",
+        "src/images/men/sneakers2/image2.jpg",
+        "src/images/men/sneakers2/image3.jpg",
+        "src/images/men/sneakers2/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": false,
+      "rating": 4.4,
+      "amount": 1,
+      "preview": 9
+    },
+    {
+      "id": 13,
+      "productName": "sneakers3",
+      "slug": "Factory Wholesale Breathable Walking Style Shies High Quality Lace-up Casual Women Sneakers",
+      "type": "sneaker",
+      "price": 29.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": 19.99,
+      "images": [
+        "src/images/men/sneakers3/image1.jpg",
+        "src/images/men/sneakers3/image2.jpg",
+        "src/images/men/sneakers3/image3.jpg",
+        "src/images/men/sneakers3/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "amount": 1,
+      "rating": 4.7,
+      "preview": 10
+    },
+    {
+      "id": 14,
+      "productName": "sneakers4",
+      "slug": "Wholesale Popular New Design High Quality Fashion Mesh Breathable Shoes Men Casual Running Sneakers",
+      "type": "sneaker",
+      "price": 39.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": "",
+      "images": [
+        "src/images/men/sneakers4/image1.jpg",
+        "src/images/men/sneakers4/image2.jpg",
+        "src/images/men/sneakers4/image3.jpg",
+        "src/images/men/sneakers4/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": false,
+      "amount": 1,
+      "rating": 4.1,
+      "preview": 11
+    },
+    {
+      "id": 15,
+      "productName": "sneakers5",
+      "slug": "Popular fashion athletic anti slip men sport shoes breathable Casual sport shoes",
+      "type": "sneaker",
+      "price": 49.99,
+      "size": [39, 40, 41, 42],
+      "newPrice": 39.99,
+      "images": [
+        "src/images/men/sneakers5/image1.jpg",
+        "src/images/men/sneakers5/image2.jpg",
+        "src/images/men/sneakers5/image3.jpg",
+        "src/images/men/sneakers5/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "rating": 4.8,
+      "amount": 1,
+      "preview": 12
+    },
+    {
+      "id": 16,
+      "productName": "sweatshirt1",
+      "slug": "wholesale winter hoodies & sweatshirts unisex manufacturers Custom blank cropped oversized men high quality cut and sew hoodie",
+      "type": "sweatshirt",
+      "price": 29.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": "",
+      "images": [
+        "src/images/men/sweatshirt1/image1.jpg",
+        "src/images/men/sweatshirt1/image2.jpg",
+        "src/images/men/sweatshirt1/image3.jpg",
+        "src/images/men/sweatshirt1/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": false,
+      "rating": 4.3,
+      "amount": 1,
+      "preview": 9
+    },
+    {
+      "id": 17,
+      "productName": "sweatshirt2",
+      "slug": "Casual Street Wear Pullover Plain Full Sleeve Winter Style Men Sweatshirts Best Quality Men Wear Stylish Sweatshirts",
+      "type": "sweatshirt",
+      "price": 29.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 19.99,
+      "images": [
+        "src/images/men/sweatshirt2/image1.jpg",
+        "src/images/men/sweatshirt2/image2.jpg",
+        "src/images/men/sweatshirt2/image3.jpg",
+        "src/images/men/sweatshirt2/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "amount": 1,
+      "rating": 4.7,
+      "preview": 10
+    },
+    {
+      "id": 18,
+      "productName": "trousers1",
+      "slug": "Wholesale blank office khaki men's business pants black cotton spandex elastic casual men's pants",
+      "type": "trousers",
+      "price": 29.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": "",
+      "images": [
+        "src/images/men/trousers1/image1.jpg",
+        "src/images/men/trousers1/image2.jpg",
+        "src/images/men/trousers1/image3.jpg",
+        "src/images/men/trousers1/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": false,
+      "amount": 1,
+      "rating": 4.2,
+      "preview": 11
+    },
+    {
+      "id": 19,
+      "productName": "trousers2",
+      "slug": "Custom Sale Men Latest Fashion Khaki Color Good Quality Jogger Pants",
+      "type": "trousers",
+      "price": 39.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": 29.99,
+      "images": [
+        "src/images/men/trousers2/image1.jpg",
+        "src/mages/men/trousers2/image2.jpg",
+        "src/images/men/trousers2/image3.jpg",
+        "src/images/men/trousers2/image4.jpg"
+      ],
+      "newArrival": false,
+      "onSale": true,
+      "bestSeller": true,
+      "amount": 1,
+      "rating": 2.7,
+      "preview": 14
+    },
+    {
+      "id": 20,
+      "productName": "tshirt",
+      "slug": "Wholesale Oversized Drop Shoulder T-shirt Mens Blank Heavyweight Cotton Tshirt Custom Printing Men T Shirts",
+      "type": "tshirt",
+      "price": 19.99,
+      "size": ["s", "m", "l", "xl"],
+      "newPrice": "",
+      "images": [
+        "src/images/men/tshirt/image1.jpg",
+        "src/images/men/tshirt/image2.jpg",
+        "src/images/men/tshirt/image3.jpg",
+        "src/images/men/tshirt/image4.jpg"
+      ],
+      "newArrival": true,
+      "onSale": false,
+      "bestSeller": false,
+      "amount": 1,
+      "rating": 2.2,
+      "preview": 10
+    }
+  ],
+  "stripe": [{ "name": "you" }]
+}
