@@ -106,9 +106,6 @@ const Detail = () => {
           <NavLink className="addCart" to="/cart" onClick={() => addToCart(id)}>
             add to cart
           </NavLink>
-          {onSale && <p className="saleTag">on sale</p>}
-          {bestSeller && <p className="newTag">best seller</p>}
-          {newArrival && <p className="newTag">new arrival</p>}
         </div>
       </div>
     </div>
