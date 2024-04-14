@@ -40,8 +40,7 @@ const Payment = () => {
   };
 
   const initialOptions = {
-    "client-id":
-      "AUb-n26A5OcoMpeefuNb2A5K31yAakOYRsMSAtHMilFIXKPPlUvVw-kBFH9G4mrmGgOZSKzNTcd4qNhj",
+    "client-id": "",
     currency: "USD",
     intent: "capture",
   };
