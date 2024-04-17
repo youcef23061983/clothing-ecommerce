@@ -33,7 +33,7 @@ function App() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.key}>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Homepage />} />
+            <Route index element={<Homepage key1="products" />} />
             <Route path="/:id" element={<Detail />} />
             <Route path="contact" element={<Contact />} />
             <Route path="shipping" element={<Shipping />} />
