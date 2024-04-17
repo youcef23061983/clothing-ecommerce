@@ -1,34 +1,19 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import img from "../images/men/banner/bestSeller.jpg";
 import { NavLink } from "react-router-dom";
 import { AppContext } from "./AppProvider";
 import Rating from "./Rating";
+import UseFetch from "./UseFetch";
 
 const Detail = () => {
+  const url = "http://localhost:3000/products";
+
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState("");
-  const queryClient = useQueryClient();
   const { addToCart } = useContext(AppContext);
 
-  const productFun = async () => {
-    const res = await fetch(`http://localhost:3000/products/${id}`);
-    if (!res.ok) {
-      throw Error("There is no product data");
-    }
-    return res.json();
-  };
-
-  const { data, error, isPending } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => productFun(id),
-    initialData: () => {
-      return queryClient
-        .getQueryData(["products"])
-        ?.find((x) => x.id === parseInt(id));
-    },
-  });
+  const { data, isPending, error } = UseFetch(url, id);
 
   useEffect(() => {
     if (data) {

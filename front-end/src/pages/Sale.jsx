@@ -1,21 +1,15 @@
 import React from "react";
 import img from "../images/men/banner/sale.jpg";
 import Product from "./Product";
-import { useQuery } from "@tanstack/react-query";
+import UseFetch from "./UseFetch";
 
 const Sale = () => {
-  const productsFun = async () => {
-    const res = await fetch("http://localhost:3000/products");
-    if (!res.ok) {
-      throw Error("there is no products data");
-    }
-    return res.json();
-  };
-  const { data } = useQuery({
-    queryKey: ["products"],
-    queryFn: productsFun,
-  });
+  const url = "http://localhost:3000/products";
+  const { data, isPending, error } = UseFetch(url);
+
   const productsFilter = data?.filter((product) => product.onSale === true);
+  if (isPending) return <h2>...is loading</h2>;
+  if (error) return <h2>{error.message}</h2>;
   return (
     <div>
       <div className="headerimages">

@@ -37,7 +37,7 @@ const Product = ({ product }) => {
         opacity: scrollOpacity,
       }}
     >
-      <div className="imgDiv" onClick={() => navigate(`${id}`)}>
+      <div className="imgDiv" onClick={() => navigate(`/${id}`)}>
         <img src={images[0]} alt="" className="img" />
       </div>
       <div className="productInfo">

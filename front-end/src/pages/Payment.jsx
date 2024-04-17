@@ -38,17 +38,17 @@ const Payment = () => {
   const handleSuccess = () => {
     setPaymentSucceeded(true);
   };
-
+  const paypalClienId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
   const initialOptions = {
-    "client-id": "",
+    "client-id": paypalClienId,
     currency: "USD",
     intent: "capture",
   };
   //////---- ----stripe)))
-  const PUBLIC_KEY = "";
-  const stripePromise = loadStripe(PUBLIC_KEY);
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  const CLIENT_SECRET = import.meta.env.VITE_CLIENT_SECRET_KEY;
   const stripeOptions = {
-    clientSecret: "{{CLIENT_SECRET}}",
+    clientSecret: CLIENT_SECRET,
   };
   const containerVariants = {
     hidden: { x: "100vw", opacity: 0 },

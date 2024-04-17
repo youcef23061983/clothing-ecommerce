@@ -10,7 +10,7 @@ const Contact = () => {
 
     emailjs
       .sendForm("service_vgkozvc", "template_sv5btsr", form.current, {
-        publicKey: "_ISOAOSTfbmyXLWd5",
+        publicKey: import.meta.env.VITE_CONTACT_PUBLIC_KEY,
       })
       .then(
         () => {
@@ -21,7 +21,6 @@ const Contact = () => {
         }
       );
   };
-
   return (
     <div>
       <div className="headerimages">

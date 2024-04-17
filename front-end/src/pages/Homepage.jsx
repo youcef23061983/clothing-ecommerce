@@ -1,21 +1,13 @@
 import React, { useState, useRef } from "react";
 import img from "../images/men/banner/Homepage3.jpg";
 import Product from "./Product";
-import { useQuery } from "@tanstack/react-query";
+import UseFetch from "./UseFetch";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const Homepage = () => {
-  const productsFun = async () => {
-    const res = await fetch("http://localhost:3000/products");
-    if (!res.ok) {
-      throw Error("there is no products data");
-    }
-    return res.json();
-  };
-  const { data } = useQuery({
-    queryKey: ["products"],
-    queryFn: productsFun,
-  });
+  const url = "http://localhost:3000/products";
+  const { data, isPending, error } = UseFetch(url);
+
   const [user, setUser] = useState({
     type: "all",
     price: 0,
@@ -83,6 +75,8 @@ const Homepage = () => {
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
   const scrollX = useTransform(scrollYProgress, [0, 1], ["100vw", "0vw"]);
 
+  if (isPending) return <h2>...is loading</h2>;
+  if (error) return <h2>{error.message}</h2>;
   return (
     <div>
       <div className="headerimages">
