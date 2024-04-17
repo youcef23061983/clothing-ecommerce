@@ -34,10 +34,7 @@ function App() {
         <Routes location={location} key={location.key}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Homepage />} />
-            <Route
-              path="/:id"
-              element={<Detail key1="product" key2="products" />}
-            />
+            <Route path="/:id" element={<Detail />} />
             <Route path="contact" element={<Contact />} />
             <Route path="shipping" element={<Shipping />} />
             <Route path="payment" element={<Payment />} />
@@ -46,7 +43,7 @@ function App() {
             <Route path="story" element={<Story />} />
             <Route path="cookies" element={<Cookies />} />
             <Route path="rating" element={<Toprated />} />
-            <Route path="best" element={<Best key1="products" />} />
+            <Route path="best" element={<Best />} />
             <Route path="sale" element={<Sale />} />
             <Route path="terms" element={<Terms />} />
             <Route path="policy" element={<Policy />} />

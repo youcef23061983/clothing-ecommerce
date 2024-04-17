@@ -1,24 +1,15 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-const UseFetch = (url, id, key1, key2) => {
-  const queryClient = useQueryClient();
-
+import { useQuery } from "@tanstack/react-query";
+const UseFetch = (url, key1) => {
   const productFun = async () => {
-    const detailUrl = id ? `${url}/${id}` : url;
-    const res = await fetch(detailUrl);
+    const res = await fetch(url);
     if (!res.ok) {
       throw Error("There is no product data");
     }
     return res.json();
   };
   const { data, error, isPending } = useQuery({
-    queryKey: id ? [key1, id] : [key1],
-    queryFn: () => productFun(id),
-    initialData: () => {
-      return queryClient
-        .getQueryData([key2])
-        ?.find((x) => x.id === parseInt(id));
-    },
+    queryKey: [key1],
+    queryFn: () => productFun(),
   });
   return { data, error, isPending };
 };
