@@ -7,7 +7,7 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.VITE.VITE_FIREBASE_KEY,
+  apiKey: import.meta.env.VITE_FIREBASE_KEY,
   authDomain: "ecommerce-deb8f.firebaseapp.com",
   projectId: "ecommerce-deb8f",
   storageBucket: "ecommerce-deb8f.appspot.com",
