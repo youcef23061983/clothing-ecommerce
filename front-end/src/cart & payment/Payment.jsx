@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import img from "../images/men/banner/payment.jpg";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "./AppProvider";
+import { AppContext } from "../data managment/AppProvider";
 import Checkout from "./Checkout";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { loadStripe } from "@stripe/stripe-js";

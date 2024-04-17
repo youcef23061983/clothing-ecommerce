@@ -1,7 +1,7 @@
 import React from "react";
 import img from "../images/men/banner/new.jpg";
 import Product from "./Product";
-import UseFetch from "./UseFetch";
+import UseFetch from "../data managment/UseFetch";
 const NewArrival = () => {
   const url = "http://localhost:3000/products";
   const { data, isPending, error } = UseFetch(url);

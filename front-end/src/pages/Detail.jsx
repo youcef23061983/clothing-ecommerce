@@ -2,9 +2,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import img from "../images/men/banner/bestSeller.jpg";
 import { NavLink } from "react-router-dom";
-import { AppContext } from "./AppProvider";
+import { AppContext } from "../data managment/AppProvider";
 import Rating from "./Rating";
-import UseFetch from "./UseFetch";
+import UseFetch from "../data managment/UseFetch";
 
 const Detail = () => {
   const url = "http://localhost:3000/products";

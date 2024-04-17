@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import img from "../images/men/banner/Homepage3.jpg";
-import Product from "./Product";
-import UseFetch from "./UseFetch";
+import Product from "../pages/Product";
+import UseFetch from "../data managment/UseFetch";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const Homepage = () => {

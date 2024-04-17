@@ -2,7 +2,7 @@ import React, { useContext, useRef } from "react";
 import Rating from "./Rating";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { AppContext } from "./AppProvider";
+import { AppContext } from "../data managment/AppProvider";
 
 const Product = ({ product }) => {
   const { addToCart } = useContext(AppContext);

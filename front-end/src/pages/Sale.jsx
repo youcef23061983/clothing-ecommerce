@@ -1,7 +1,7 @@
 import React from "react";
 import img from "../images/men/banner/sale.jpg";
 import Product from "./Product";
-import UseFetch from "./UseFetch";
+import UseFetch from "../data managment/UseFetch";
 
 const Sale = () => {
   const url = "http://localhost:3000/products";

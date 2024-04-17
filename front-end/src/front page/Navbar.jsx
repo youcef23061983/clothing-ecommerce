@@ -1,6 +1,6 @@
 import { FaAlignJustify } from "react-icons/fa";
 import { LuShoppingCart, LuUserCircle2, LuSearch } from "react-icons/lu";
-import { AppContext } from "./AppProvider";
+import { AppContext } from "../data managment/AppProvider";
 import { Link } from "react-router-dom";
 import React, { useEffect, useRef, useState, useContext } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";

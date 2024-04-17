@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AppContext } from "./AppProvider";
+import { AppContext } from "../data managment/AppProvider";
 import { CiTrash } from "react-icons/ci";
 
 const CartItem = ({ item }) => {

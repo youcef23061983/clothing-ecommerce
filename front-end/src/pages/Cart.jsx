@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AppContext } from "./AppProvider";
+import { AppContext } from "../data managment/AppProvider";
 import img from "../images/men/banner/cart.jpg";
 import CartItem from "./CartItem";
 import { Link } from "react-router-dom";
