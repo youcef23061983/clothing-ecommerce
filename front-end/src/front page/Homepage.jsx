@@ -4,9 +4,9 @@ import Product from "../pages/Product";
 import UseFetch from "../data managment/UseFetch";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-const Homepage = ({ key1 }) => {
+const Homepage = () => {
   const url = "http://localhost:3000/products";
-  const { data, isPending, error } = UseFetch(url, key1);
+  const { data, isPending, error } = UseFetch(url);
 
   const [user, setUser] = useState({
     type: "all",
