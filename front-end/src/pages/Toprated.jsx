@@ -4,7 +4,8 @@ import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 const Toprated = () => {
   const url = "http://localhost:3000/products";
-  const { data, isPending, error } = UseFetch(url);
+  const key1 = "products";
+  const { data, isPending, error } = UseFetch(url, key1);
 
   const productsFilter = data?.sort((a, b) => {
     return b.rating - a.rating;

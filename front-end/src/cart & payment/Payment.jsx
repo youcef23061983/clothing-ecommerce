@@ -46,7 +46,7 @@ const Payment = () => {
   };
   //////---- ----stripe)))
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-  const CLIENT_SECRET = import.meta.env.VITE_CLIENT_SECRET_KEY;
+  const CLIENT_SECRET = import.meta.env.VITE_STRIPE_SECRET_KEY;
   const stripeOptions = {
     clientSecret: CLIENT_SECRET,
   };

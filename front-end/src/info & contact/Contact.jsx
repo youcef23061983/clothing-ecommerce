@@ -52,21 +52,14 @@ const Contact = () => {
               <label htmlFor="name">First Name:</label>
               <input type="text" name="ame" />
             </div>
-            <div className="info">
-              <label htmlFor="lasttName">Last Name:</label>
-              <input type="text" name="lastName" />
-            </div>{" "}
-            <div className="info">
-              <label htmlFor="phone">Phone:</label>
-              <input type="number" name="phone" />
-            </div>{" "}
+
             <div className="info">
               <label htmlFor="email">Email:</label>
               <input type="email" name="email" />
-            </div>{" "}
+            </div>
             <div className="info">
               <label htmlFor="comment">Comment:</label>
-              <textarea name="comment" />
+              <textarea name="comment" style={{ height: "20rem" }} />
             </div>
             <button onClick="submit" className="addCart">
               Submit:

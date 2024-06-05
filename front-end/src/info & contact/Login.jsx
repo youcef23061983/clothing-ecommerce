@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import img from "../images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
@@ -9,56 +8,86 @@ import {
   GoogleAuthProvider,
   signOut,
 } from "firebase/auth";
+
 const Login = ({ setLogin }) => {
   const navigate = useNavigate();
   const [status, setStatus] = useState("idle");
 
   const [loginFormData, setLoginFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const savedLoginFormData = localStorage.getItem("loginFormData");
+    if (savedLoginFormData) {
+      setLoginFormData(JSON.parse(savedLoginFormData));
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("loginFormData", JSON.stringify(loginFormData));
+  }, [loginFormData]);
+
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!loginFormData.email || !loginFormData.password) {
-      return alert("enter your information please");
+      return alert("Enter your information please");
     }
 
-    setLoginFormData({ ...loginFormData });
-    setLoginFormData("");
     setLogin(true);
-
     navigate("/cart");
   };
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-  }
+  };
+
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
+
   const googleLogin = (e) => {
     e.preventDefault();
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
         console.log(user);
+        setUser(user);
         setLogin(true);
-
         navigate("/cart");
       })
       .catch((error) => {
         console.log(error);
       });
-    console.log(auth);
   };
+
   const googleLogout = (e) => {
     e.preventDefault();
     signOut(auth)
       .then(() => {
-        console.log("logout has been ssucceded");
+        // localStorage.removeItem("user");
+
+        console.log("Logout has been succeeded");
+        setUser(null);
+        setLogin(false);
         navigate("/");
       })
       .catch((error) => {
@@ -66,6 +95,17 @@ const Login = ({ setLogin }) => {
       });
   };
 
+  const formLogout = () => {
+    // localStorage.removeItem("loginFormData");
+    setLoginFormData({
+      email: "",
+      password: "",
+    });
+    setUser(null);
+    setLogin(false);
+    navigate("/");
+  };
+  console.log("login name:", loginFormData.name);
   return (
     <div>
       <div className="headerimages">
@@ -74,6 +114,14 @@ const Login = ({ setLogin }) => {
       <div className="loginContainer">
         <h1>Sign in to your account</h1>
         <form onSubmit={handleSubmit} className="login-form">
+          <input
+            name="name"
+            onChange={handleChange}
+            type="name"
+            placeholder="name"
+            value={loginFormData.name}
+            className="googleInput"
+          />
           <input
             name="email"
             onChange={handleChange}
@@ -92,20 +140,20 @@ const Login = ({ setLogin }) => {
           />
 
           <button disabled={status === "submitting"} className="addCart">
-            {status === "submitting" ? "logging in ..." : "Sign in"}
+            {status === "submitting" ? "Logging in ..." : "Sign in"}
           </button>
-          <Link className="addCart" to="/">
+          <Link className="addCart" to="/" onClick={formLogout}>
             Sign out
           </Link>
         </form>
 
         <div className="googleContainer">
           <div className="googleLogin" onClick={googleLogin}>
-            <p>Sign in with google</p>
+            <p>Sign in with Google</p>
             <FaGoogle />
           </div>
-          <Link className="addCart" onClick={googleLogout}>
-            sign out
+          <Link className="addCart" to="/" onClick={googleLogout}>
+            Google Sign out
           </Link>
         </div>
         <Link className="addCart" to="/signup">

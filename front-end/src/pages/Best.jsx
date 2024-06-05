@@ -5,8 +5,9 @@ import UseFetch from "../data managment/UseFetch";
 
 const Best = () => {
   const url = "http://localhost:3000/products";
+  const key1 = "products";
 
-  const { data, isPending, error } = UseFetch(url);
+  const { data, isPending, error } = UseFetch(url, key1);
   const productsFilter = data?.filter((product) => product.bestSeller === true);
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;

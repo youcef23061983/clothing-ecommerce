@@ -28,13 +28,11 @@ const CheckoutForm = () => {
       method: "POST",
     });
 
-    const { client_secret: clientSecret } = await res.json();
+    const { client_secret: client_secret } = await res.json();
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      clientSecret,
-      confirmParams: {
-        return_url: "http://localhost:3000/stripe",
+    const { error } = await stripe.confirmPayment(client_secret, {
+      payment_method: {
+        card: elements.getElement(PaymentElement),
       },
     });
 

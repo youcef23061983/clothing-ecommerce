@@ -22,8 +22,8 @@ const Detail = () => {
     return res.json();
   };
   const { data, error, isPending } = useQuery({
-    queryKey: ["product"],
-    queryFn: () => productFun(id),
+    queryKey: ["product", id],
+    queryFn: productFun,
     initialData: () => {
       return queryClient
         .getQueryData(["products"])
@@ -74,7 +74,7 @@ const Detail = () => {
               </div>
             ))}
           </div>
-          <div className="imgDiv">
+          <div className="imgDiv" style={{ width: "30rem", margin: "0 auto" }}>
             <img src={selectedImage} alt="Selected" className="img" />
           </div>
         </div>
@@ -87,11 +87,9 @@ const Detail = () => {
           </p>
           <div className="sizeContainer">
             <span className="productSpan">size:</span>
-            <div>
-              {size.map((x) => {
-                return <button className="sizeBtn">{x}</button>;
-              })}
-            </div>
+            {size.map((x) => {
+              return <button className="sizeBtn">{x}</button>;
+            })}
           </div>
           <div className="rating">
             <Rating rating={rating} />

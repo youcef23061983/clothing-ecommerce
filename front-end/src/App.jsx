@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Homepage from "./front page/Homepage";
 import Layout from "./front page/Layout";
@@ -27,7 +27,6 @@ function App() {
   const location = useLocation();
 
   const [login, setLogin] = useState(false);
-
   return (
     <AppProvider>
       <AnimatePresence mode="wait">
@@ -56,7 +55,10 @@ function App() {
                 </RequireAuth>
               }
             />
-            <Route path="login" element={<Login setLogin={setLogin} />} />
+            <Route
+              path="login"
+              element={<Login login={login} setLogin={setLogin} />}
+            />
             <Route path="signup" element={<SignUp />} />
           </Route>
         </Routes>

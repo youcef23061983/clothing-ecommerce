@@ -2,7 +2,13 @@ import { FaAlignJustify } from "react-icons/fa";
 import { LuShoppingCart, LuUserCircle2, LuSearch } from "react-icons/lu";
 import { AppContext } from "../data managment/AppProvider";
 import { Link } from "react-router-dom";
-import React, { useEffect, useRef, useState, useContext } from "react";
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  useContext,
+  useEffect,
+} from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { getAuth } from "firebase/auth";
 import { motion } from "framer-motion";
@@ -17,10 +23,34 @@ const Navbar = () => {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
+  const [loginFormData, setLoginFormData] = useState(() => {
+    const savedLoginFormData = localStorage.getItem("loginFormData");
+    return savedLoginFormData
+      ? JSON.parse(savedLoginFormData)
+      : { name: "", email: "", password: "" };
+  });
+
   useEffect(() => {
+    // Retrieve login form data from localStorage when component mounts
+    const savedLoginFormData = localStorage.getItem("loginFormData");
+    if (savedLoginFormData) {
+      setLoginFormData(JSON.parse(savedLoginFormData));
+    }
+  }, []);
+
+  // Define a variable to hold the display name
+  // let displayName;
+
+  // if (user) {
+  //   displayName = user.displayName;
+  // } else {
+  //   displayName = loginFormData.name;
+  // }
+
+  useLayoutEffect(() => {
     let isMounted = true;
 
-    const handScroll = () => {
+    const handleScroll = () => {
       if (!isMounted) {
         return;
       }
@@ -30,23 +60,29 @@ const Navbar = () => {
       const links = document.querySelectorAll(".navlink");
       const linkIcon = document.querySelectorAll(".linkIcon");
       const sale = document.querySelector(".sale");
+      const displayNameElement = document.querySelector(".displayName");
 
       if (scrollHeight > navCenterHeight) {
         navCenter.current.style.position = "fixed";
         navCenter.current.style.background = "white";
         navCenter.current.style.width = "100%";
         navCenter.current.style.transition = "all 0.8s linear";
+        if (displayNameElement)
+          displayNameElement.style.color = "rgb(249, 175, 35)";
+
         links.forEach((link) => {
-          link.style.color = " rgb(249, 175, 35)";
+          link.style.color = "rgb(249, 175, 35)";
         });
         if (sale) {
           sale.style.color = "red";
         }
         linkIcon.forEach((icon) => {
-          icon.style.color = " rgb(249, 175, 35)";
+          icon.style.color = "rgb(249, 175, 35)";
         });
       } else {
         navCenter.current.style.background = "transparent";
+        if (displayNameElement) displayNameElement.style.color = "white";
+
         linkIcon.forEach((icon) => {
           icon.style.color = "white";
         });
@@ -60,17 +96,17 @@ const Navbar = () => {
       }
     };
 
-    window.addEventListener("scroll", handScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
       isMounted = false;
-      window.removeEventListener("scroll", handScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
-      opacity: 1,
       opacity: 1,
       transition: {
         duration: 1.5,
@@ -81,6 +117,7 @@ const Navbar = () => {
       },
     },
   };
+
   return (
     <motion.nav
       className="nav-center"
@@ -111,12 +148,15 @@ const Navbar = () => {
             <LuSearch className="linkIcon" />
           </div>
           <div className="cart">
-            <p className="displayName">{user && user.displayName}</p>
+            <p className="displayName">
+              {(user && user.displayName) ||
+                (loginFormData && loginFormData.name)}
+            </p>
             {!user && (
               <Link className="linkIcon" to="/login">
                 <LuUserCircle2 />
               </Link>
-            )}{" "}
+            )}
             {user && (
               <Link className="linkIcon" to="/login">
                 <img
@@ -143,7 +183,7 @@ const Navbar = () => {
           >
             <li>
               <Link to="" className="sale navlink">
-                Shop{" "}
+                Shop
               </Link>
             </li>
             <li>
@@ -163,7 +203,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link className="navlink" to="signup">
-                Sign Up{" "}
+                Sign Up
               </Link>
             </li>
           </ul>

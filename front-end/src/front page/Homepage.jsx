@@ -6,7 +6,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 const Homepage = () => {
   const url = "http://localhost:3000/products";
-  const { data, isPending, error } = UseFetch(url);
+  const key1 = "products";
+  const { data, isPending, error } = UseFetch(url, key1);
 
   const [user, setUser] = useState({
     type: "all",
