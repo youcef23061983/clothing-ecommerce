@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import img from "../images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
@@ -8,9 +8,12 @@ import {
   GoogleAuthProvider,
   signOut,
 } from "firebase/auth";
+import { AppContext } from "../data managment/AppProvider";
 
-const Login = ({ setLogin }) => {
+const Login = () => {
   const navigate = useNavigate();
+  const { setGoogleUser, setFormUser, logout, updateLoginStatus } =
+    useContext(AppContext);
   const [status, setStatus] = useState("idle");
 
   const [loginFormData, setLoginFormData] = useState({
@@ -19,37 +22,14 @@ const Login = ({ setLogin }) => {
     password: "",
   });
 
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const savedLoginFormData = localStorage.getItem("loginFormData");
-    if (savedLoginFormData) {
-      setLoginFormData(JSON.parse(savedLoginFormData));
-    }
-  }, []);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("loginFormData", JSON.stringify(loginFormData));
-  }, [loginFormData]);
-
-  useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!loginFormData.email || !loginFormData.password) {
       return alert("Enter your information please");
     }
 
-    setLogin(true);
+    setFormUser(loginFormData);
+    updateLoginStatus(true);
     navigate("/cart");
   };
 
@@ -70,8 +50,12 @@ const Login = ({ setLogin }) => {
       .then((result) => {
         const user = result.user;
         console.log(user);
-        setUser(user);
-        setLogin(true);
+        setGoogleUser({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        });
+        updateLoginStatus(true);
         navigate("/cart");
       })
       .catch((error) => {
@@ -83,11 +67,10 @@ const Login = ({ setLogin }) => {
     e.preventDefault();
     signOut(auth)
       .then(() => {
-        // localStorage.removeItem("user");
-
         console.log("Logout has been succeeded");
-        setLoginFormData(null);
-        setLogin(false);
+        setGoogleUser(null);
+        updateLoginStatus(false);
+        logout();
         navigate("/");
       })
       .catch((error) => {
@@ -95,17 +78,6 @@ const Login = ({ setLogin }) => {
       });
   };
 
-  const formLogout = () => {
-    // localStorage.removeItem("loginFormData");
-    setLoginFormData({
-      email: "",
-      password: "",
-    });
-    setUser(null);
-    setLogin(false);
-    navigate("/");
-  };
-  console.log("login name:", loginFormData.name);
   return (
     <div>
       <div className="headerimages">
@@ -118,7 +90,7 @@ const Login = ({ setLogin }) => {
             name="name"
             onChange={handleChange}
             type="name"
-            placeholder="name"
+            placeholder="Name"
             value={loginFormData.name}
             className="googleInput"
           />
@@ -139,10 +111,14 @@ const Login = ({ setLogin }) => {
             className="googleInput"
           />
 
-          <button disabled={status === "submitting"} className="addCart">
+          <button
+            type="submit"
+            disabled={status === "submitting"}
+            className="addCart"
+          >
             {status === "submitting" ? "Logging in ..." : "Sign in"}
           </button>
-          <Link className="addCart" to="/" onClick={formLogout}>
+          <Link className="addCart" to="/" onClick={logout}>
             Sign out
           </Link>
         </form>

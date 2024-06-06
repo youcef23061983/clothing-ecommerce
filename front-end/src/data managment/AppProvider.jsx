@@ -8,6 +8,9 @@ const initialState = {
   amount: 0,
   shipping: {},
   payment: {},
+  googleUser: null,
+  formUser: null,
+  Login: false,
 };
 
 const AppProvider = ({ children }) => {
@@ -93,7 +96,30 @@ const AppProvider = ({ children }) => {
           payment: action.payload,
         };
       }
-
+      case "SET_GOOGLE_USER": {
+        return {
+          ...state,
+          googleUser: action.payload,
+          login: !!action.payload, // Update login state based on user presence
+        };
+      }
+      case "SET_FORM_USER": {
+        return {
+          ...state,
+          formUser: action.payload,
+          login: !!action.payload, // Update login state based on user presence
+        };
+      }
+      case "SET_LOGIN":
+        return { ...state, login: action.payload };
+      case "LOGOUT": {
+        return {
+          ...state,
+          googleUser: null,
+          formUser: null,
+          login: false,
+        };
+      }
       default:
         return state;
     }
@@ -125,9 +151,50 @@ const AppProvider = ({ children }) => {
   const cartPayment = (payment) => {
     dispatch({ type: "PAYMENT", payload: payment });
   };
+  const setGoogleUser = (user) => {
+    localStorage.setItem("googleUser", JSON.stringify(user));
+
+    dispatch({ type: "SET_GOOGLE_USER", payload: user });
+  };
+  const setFormUser = (user) => {
+    localStorage.setItem("formUser", JSON.stringify(user));
+    dispatch({ type: "SET_FORM_USER", payload: user });
+  };
+  const logout = () => {
+    localStorage.removeItem("googleUser");
+    localStorage.removeItem("formUser");
+    localStorage.setItem("login", JSON.stringify(false)); // Update localStorage
+
+    dispatch({ type: "LOGOUT" });
+  };
+  const updateLoginStatus = (isLoggedIn) => {
+    localStorage.setItem("login", JSON.stringify(isLoggedIn));
+    dispatch({ type: "SET_LOGIN", payload: isLoggedIn });
+  };
   useEffect(() => {
     dispatch({ type: "GET_TOTAL" });
   }, [state.cart]);
+
+  useEffect(() => {
+    const savedGoogleUser = localStorage.getItem("googleUser");
+    if (savedGoogleUser) {
+      dispatch({
+        type: "SET_GOOGLE_USER",
+        payload: JSON.parse(savedGoogleUser),
+      });
+    }
+
+    const savedFormUser = localStorage.getItem("formUser");
+    if (savedFormUser) {
+      dispatch({ type: "SET_FORM_USER", payload: JSON.parse(savedFormUser) });
+    }
+  }, []);
+  useEffect(() => {
+    const storedLogin = localStorage.getItem("login");
+    if (storedLogin) {
+      dispatch({ type: "SET_LOGIN", payload: JSON.parse(storedLogin) });
+    }
+  }, []);
 
   return (
     <AppContext.Provider
@@ -140,6 +207,10 @@ const AppProvider = ({ children }) => {
         addToCart,
         cartPayment,
         cartShipping,
+        setGoogleUser,
+        setFormUser,
+        logout,
+        updateLoginStatus,
       }}
     >
       {children}

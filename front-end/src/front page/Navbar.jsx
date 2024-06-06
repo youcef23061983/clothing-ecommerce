@@ -19,15 +19,9 @@ const Navbar = () => {
   const linksRef = useRef(null);
   const navCenter = useRef(null);
 
-  const { amount } = useContext(AppContext);
+  const { googleUser, formUser, logout, amount } = useContext(AppContext);
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
-
-  const [loginFormData, setLoginFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
 
   useEffect(() => {
     // Retrieve login form data from localStorage when component mounts
@@ -36,16 +30,6 @@ const Navbar = () => {
       setLoginFormData(JSON.parse(savedLoginFormData));
     }
   }, []);
-
-  // Define a variable to hold the display name
-  // let displayName;
-
-  // if (user) {
-  //   displayName = user.displayName;
-  // } else {
-  //   displayName = loginFormData.name;
-  // }
-
   useLayoutEffect(() => {
     let isMounted = true;
 
@@ -59,15 +43,16 @@ const Navbar = () => {
       const links = document.querySelectorAll(".navlink");
       const linkIcon = document.querySelectorAll(".linkIcon");
       const sale = document.querySelector(".sale");
-      const displayNameElement = document.querySelector(".displayName");
+      const displayNameElements = document.querySelectorAll(".displayName");
 
       if (scrollHeight > navCenterHeight) {
         navCenter.current.style.position = "fixed";
         navCenter.current.style.background = "white";
         navCenter.current.style.width = "100%";
         navCenter.current.style.transition = "all 0.8s linear";
-        if (displayNameElement)
+        displayNameElements.forEach((displayNameElement) => {
           displayNameElement.style.color = "rgb(249, 175, 35)";
+        });
 
         links.forEach((link) => {
           link.style.color = "rgb(249, 175, 35)";
@@ -80,7 +65,6 @@ const Navbar = () => {
         });
       } else {
         navCenter.current.style.background = "transparent";
-        if (displayNameElement) displayNameElement.style.color = "white";
 
         linkIcon.forEach((icon) => {
           icon.style.color = "white";
@@ -92,6 +76,9 @@ const Navbar = () => {
         if (sale) {
           sale.style.color = "red";
         }
+        displayNameElements.forEach((displayNameElement) => {
+          displayNameElement.style.color = "white";
+        });
       }
     };
 
@@ -102,6 +89,15 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Define a variable to hold the display name
+  // let displayName;
+
+  // if (user) {
+  //   displayName = user.displayName;
+  // } else {
+  //   displayName = loginFormData.name;
+  // }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -147,24 +143,38 @@ const Navbar = () => {
             <LuSearch className="linkIcon" />
           </div>
           <div className="cart">
-            <p className="displayName">
-              {(user && user.displayName) ||
-                (loginFormData && loginFormData.name)}
-            </p>
-            {!user && (
-              <Link className="linkIcon" to="/login">
-                <LuUserCircle2 />
+            {googleUser ? (
+              <div div className="cart">
+                <p className="displayName">
+                  Welcome, {user && user.displayName}
+                </p>
+                <Link className="linkIcon" to="/login">
+                  <img
+                    src={user && user.photoURL}
+                    className="img"
+                    style={{ borderRadius: "50%" }}
+                  />
+                </Link>
+                <Link className="displayName" onClick={logout}>
+                  Logout
+                </Link>
+              </div>
+            ) : formUser ? (
+              <div className="cart">
+                <p className="displayName">Welcome, {formUser.name}</p>
+                <Link className="linkIcon">
+                  <LuUserCircle2 />
+                </Link>
+                <Link className="displayName" to="/" onClick={logout}>
+                  Logout
+                </Link>
+              </div>
+            ) : (
+              <Link className="displayName" to="/login">
+                Login
               </Link>
             )}
-            {user && (
-              <Link className="linkIcon" to="/login">
-                <img
-                  src={user && user.photoURL}
-                  className="img"
-                  style={{ borderRadius: "50%" }}
-                />
-              </Link>
-            )}
+
             <div className="shoppingContainer">
               <Link className="linkIcon" to="/cart">
                 <LuShoppingCart className="img" />
