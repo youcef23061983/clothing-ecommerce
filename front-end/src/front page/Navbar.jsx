@@ -23,13 +23,13 @@ const Navbar = () => {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
-  useEffect(() => {
-    // Retrieve login form data from localStorage when component mounts
-    const savedLoginFormData = localStorage.getItem("loginFormData");
-    if (savedLoginFormData) {
-      setLoginFormData(JSON.parse(savedLoginFormData));
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Retrieve login form data from localStorage when component mounts
+  //   const savedLoginFormData = localStorage.getItem("loginFormData");
+  //   if (savedLoginFormData) {
+  //     setLoginFormData(JSON.parse(savedLoginFormData));
+  //   }
+  // }, []);
   useLayoutEffect(() => {
     let isMounted = true;
 
