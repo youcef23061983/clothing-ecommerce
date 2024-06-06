@@ -86,7 +86,7 @@ const Login = ({ setLogin }) => {
         // localStorage.removeItem("user");
 
         console.log("Logout has been succeeded");
-        setUser(null);
+        setLoginFormData(null);
         setLogin(false);
         navigate("/");
       })

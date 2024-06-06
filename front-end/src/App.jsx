@@ -26,7 +26,17 @@ import Contact from "./info & contact/Contact";
 function App() {
   const location = useLocation();
 
-  const [login, setLogin] = useState(false);
+  // const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(() => {
+    const storedLogin = localStorage.getItem("login");
+    return storedLogin ? JSON.parse(storedLogin) : false;
+  });
+
+  // Update local storage and login state when login status changes
+  const updateLoginStatus = (isLoggedIn) => {
+    localStorage.setItem("login", JSON.stringify(isLoggedIn));
+    setLogin(isLoggedIn);
+  };
   return (
     <AppProvider>
       <AnimatePresence mode="wait">
@@ -57,7 +67,7 @@ function App() {
             />
             <Route
               path="login"
-              element={<Login login={login} setLogin={setLogin} />}
+              element={<Login login={login} setLogin={updateLoginStatus} />}
             />
             <Route path="signup" element={<SignUp />} />
           </Route>

@@ -23,11 +23,10 @@ const Navbar = () => {
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
-  const [loginFormData, setLoginFormData] = useState(() => {
-    const savedLoginFormData = localStorage.getItem("loginFormData");
-    return savedLoginFormData
-      ? JSON.parse(savedLoginFormData)
-      : { name: "", email: "", password: "" };
+  const [loginFormData, setLoginFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
   });
 
   useEffect(() => {
