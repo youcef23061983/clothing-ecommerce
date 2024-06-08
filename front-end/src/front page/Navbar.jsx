@@ -155,7 +155,7 @@ const Navbar = () => {
                     style={{ borderRadius: "50%" }}
                   />
                 </Link>
-                <Link className="displayName" onClick={logout}>
+                <Link className="displayName" to="/" onClick={logout}>
                   Logout
                 </Link>
               </div>

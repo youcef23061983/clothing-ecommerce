@@ -1,5 +1,6 @@
-import React, { useReducer, useEffect, createContext } from "react";
+import React, { useReducer, useEffect, createContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export const AppContext = createContext();
 const initialState = {
@@ -14,6 +15,8 @@ const initialState = {
 };
 
 const AppProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const productsFun = async () => {
     const res = await fetch("http://localhost:3000/products");
     if (!res.ok) {
@@ -160,12 +163,24 @@ const AppProvider = ({ children }) => {
     localStorage.setItem("formUser", JSON.stringify(user));
     dispatch({ type: "SET_FORM_USER", payload: user });
   };
+  // const logout = () => {
+  //   localStorage.removeItem("googleUser");
+  //   localStorage.removeItem("formUser");
+  //   localStorage.setItem("login", JSON.stringify(false)); // Update localStorage
+
+  //   dispatch({ type: "LOGOUT" });
+  // };
   const logout = () => {
+    setIsLoggingOut(true);
     localStorage.removeItem("googleUser");
     localStorage.removeItem("formUser");
-    localStorage.setItem("login", JSON.stringify(false)); // Update localStorage
-
+    localStorage.setItem("login", JSON.stringify(false));
     dispatch({ type: "LOGOUT" });
+
+    setTimeout(() => {
+      setIsLoggingOut(false);
+      // navigate("/");
+    }, 2000);
   };
   const updateLoginStatus = (isLoggedIn) => {
     localStorage.setItem("login", JSON.stringify(isLoggedIn));
@@ -211,6 +226,7 @@ const AppProvider = ({ children }) => {
         setFormUser,
         logout,
         updateLoginStatus,
+        isLoggingOut,
       }}
     >
       {children}
