@@ -3,6 +3,7 @@ import img from "../images/men/banner/shipping.jpg";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AppContext } from "../data managment/AppProvider";
+
 const Shipping = () => {
   const { cartShipping } = useContext(AppContext);
   const [shipping, setShipping] = useState({
@@ -12,9 +13,16 @@ const Shipping = () => {
     postalCode: "",
     country: "",
   });
+
   useEffect(() => {
-    document.title = "Shipping Adress";
+    document.title = "Shipping Address";
+
+    const savedShipping = JSON.parse(localStorage.getItem("shipping"));
+    if (savedShipping) {
+      setShipping(savedShipping);
+    }
   }, []);
+
   const navigate = useNavigate();
 
   const shippingSubmit = (e) => {
@@ -26,18 +34,21 @@ const Shipping = () => {
       !shipping.postalCode ||
       !shipping.country
     ) {
-      alert("please enter your information");
+      alert("Please enter your information");
       return;
     }
     setShipping({ ...shipping });
+
     cartShipping(shipping);
-    setShipping("");
+    // localStorage.setItem("shipping", JSON.stringify(shipping));
     navigate("/payment");
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setShipping((prev) => ({ ...prev, [name]: value }));
   };
+
   const containerVariants = {
     hidden: { x: "100vw", opacity: 0 },
     visible: {
@@ -56,10 +67,12 @@ const Shipping = () => {
       transition: { ease: "easeInOut" },
     },
   };
+
   const childVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
   };
+
   return (
     <motion.div
       variants={containerVariants}
@@ -71,10 +84,10 @@ const Shipping = () => {
         <img src={img} alt="" className="detailImg" />
       </motion.div>
       <motion.div className="loginContainer" variants={containerVariants}>
-        <h3>shipping adress</h3>
+        <h3>Shipping Address</h3>
         <form onSubmit={shippingSubmit}>
           <label>
-            FullName:
+            Full Name:
             <input
               type="text"
               name="fullName"
@@ -94,7 +107,7 @@ const Shipping = () => {
               className="input"
             />
           </label>{" "}
-          <br />{" "}
+          <br />
           <label>
             City:
             <input
@@ -107,7 +120,7 @@ const Shipping = () => {
           </label>{" "}
           <br />
           <label>
-            PostalCode:
+            Postal Code:
             <input
               type="text"
               name="postalCode"
@@ -129,7 +142,7 @@ const Shipping = () => {
           </label>
           <br />
           <button type="submit" className="addCart">
-            continue{" "}
+            Continue
           </button>
         </form>
       </motion.div>

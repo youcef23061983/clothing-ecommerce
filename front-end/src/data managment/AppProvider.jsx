@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 export const AppContext = createContext();
+
 const initialState = {
   cart: [],
   total: 0,
@@ -11,12 +12,13 @@ const initialState = {
   payment: {},
   googleUser: null,
   formUser: null,
-  Login: false,
+  login: false,
 };
 
 const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const productsFun = async () => {
     const res = await fetch("http://localhost:3000/products");
     if (!res.ok) {
@@ -33,7 +35,7 @@ const AppProvider = ({ children }) => {
   const Reducer = (state, action) => {
     switch (action.type) {
       case "CLEAR_CART":
-        return { ...state, cart: [] };
+        return { ...state, cart: [], total: 0, amount: 0 };
       case "REMOVE":
         return {
           ...state,
@@ -75,7 +77,6 @@ const AppProvider = ({ children }) => {
         total = parseFloat(total.toFixed(2));
         return { ...state, amount, total };
       }
-
       case "ADD_TO_CART": {
         const newProduct = data?.find(
           (product) => product.id === action.payload
@@ -123,6 +124,9 @@ const AppProvider = ({ children }) => {
           login: false,
         };
       }
+      case "LOAD_CART": {
+        return { ...state, cart: action.payload };
+      }
       default:
         return state;
     }
@@ -145,31 +149,27 @@ const AppProvider = ({ children }) => {
   const decrease = (id) => {
     dispatch({ type: "DECREASE", payload: id });
   };
+
   const cartShipping = (shipping) => {
+    localStorage.setItem("shipping", JSON.stringify(shipping));
     dispatch({
       type: "SHIPPING",
       payload: shipping,
     });
   };
   const cartPayment = (payment) => {
+    localStorage.setItem("payment", JSON.stringify(payment));
     dispatch({ type: "PAYMENT", payload: payment });
   };
   const setGoogleUser = (user) => {
     localStorage.setItem("googleUser", JSON.stringify(user));
-
     dispatch({ type: "SET_GOOGLE_USER", payload: user });
   };
   const setFormUser = (user) => {
     localStorage.setItem("formUser", JSON.stringify(user));
     dispatch({ type: "SET_FORM_USER", payload: user });
   };
-  // const logout = () => {
-  //   localStorage.removeItem("googleUser");
-  //   localStorage.removeItem("formUser");
-  //   localStorage.setItem("login", JSON.stringify(false)); // Update localStorage
 
-  //   dispatch({ type: "LOGOUT" });
-  // };
   const logout = () => {
     setIsLoggingOut(true);
     localStorage.removeItem("googleUser");
@@ -179,16 +179,19 @@ const AppProvider = ({ children }) => {
 
     setTimeout(() => {
       setIsLoggingOut(false);
-      // navigate("/");
     }, 2000);
   };
   const updateLoginStatus = (isLoggedIn) => {
     localStorage.setItem("login", JSON.stringify(isLoggedIn));
     dispatch({ type: "SET_LOGIN", payload: isLoggedIn });
   };
+
   useEffect(() => {
-    dispatch({ type: "GET_TOTAL" });
-  }, [state.cart]);
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      dispatch({ type: "LOAD_CART", payload: JSON.parse(storedCart) });
+    }
+  }, []);
 
   useEffect(() => {
     const savedGoogleUser = localStorage.getItem("googleUser");
@@ -204,12 +207,30 @@ const AppProvider = ({ children }) => {
       dispatch({ type: "SET_FORM_USER", payload: JSON.parse(savedFormUser) });
     }
   }, []);
+
   useEffect(() => {
     const storedLogin = localStorage.getItem("login");
     if (storedLogin) {
       dispatch({ type: "SET_LOGIN", payload: JSON.parse(storedLogin) });
     }
   }, []);
+
+  useEffect(() => {
+    const storedPayment = localStorage.getItem("payment");
+    if (storedPayment) {
+      dispatch({ type: "PAYMENT", payload: JSON.parse(storedPayment) });
+    }
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  // useEffect(() => {
+  //   localStorage.setItem("cart", JSON.stringify(state.cart));
+  // }, [state.cart]);
+
+  // Update totals whenever cart changes
+  useEffect(() => {
+    dispatch({ type: "GET_TOTAL" });
+  }, [state.cart]);
 
   return (
     <AppContext.Provider

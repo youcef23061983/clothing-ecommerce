@@ -19,17 +19,18 @@ const Navbar = () => {
   const linksRef = useRef(null);
   const navCenter = useRef(null);
 
-  const { googleUser, formUser, logout, amount } = useContext(AppContext);
+  const { googleUser, formUser, logout, amount, setLoginFormData } =
+    useContext(AppContext);
   const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
-  // useEffect(() => {
-  //   // Retrieve login form data from localStorage when component mounts
-  //   const savedLoginFormData = localStorage.getItem("loginFormData");
-  //   if (savedLoginFormData) {
-  //     setLoginFormData(JSON.parse(savedLoginFormData));
-  //   }
-  // }, []);
+  useEffect(() => {
+    // Retrieve login form data from localStorage when component mounts
+    const savedLoginFormData = localStorage.getItem("loginFormData");
+    if (savedLoginFormData) {
+      setLoginFormData(JSON.parse(savedLoginFormData));
+    }
+  }, []);
   useLayoutEffect(() => {
     let isMounted = true;
 

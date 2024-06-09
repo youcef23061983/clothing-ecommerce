@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Rating from "./Rating";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -19,6 +19,7 @@ const Product = ({ product }) => {
     rating,
     preview,
   } = product;
+
   const navigate = useNavigate();
   const ref = useRef();
   const { scrollYProgress } = useScroll({

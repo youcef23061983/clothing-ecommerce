@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AppContext } from "../data managment/AppProvider";
 import img from "../images/men/banner/cart.jpg";
 import CartItem from "./CartItem";
@@ -8,6 +8,11 @@ const Cart = () => {
   const { cart, clearCart, total, amount } = useContext(AppContext);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    document.title = "Cart";
+  }, [cart]);
 
   return (
     <div>
