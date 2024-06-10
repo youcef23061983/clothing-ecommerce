@@ -5,12 +5,12 @@ import CartItem from "./CartItem";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, clearCart, total, amount } = useContext(AppContext);
+  const { cart, clearCart, total, amount, updatedCart } =
+    useContext(AppContext);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
     document.title = "Cart";
   }, [cart]);
 
@@ -39,7 +39,7 @@ const Cart = () => {
           <Link onClick={clearCart} className="addCart">
             clear all
           </Link>
-          <Link className="addCart" to="/shipping">
+          <Link className="addCart" to="/shipping" onClick={updatedCart}>
             proceed to checkout{" "}
           </Link>
         </div>

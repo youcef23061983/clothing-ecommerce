@@ -185,7 +185,10 @@ const AppProvider = ({ children }) => {
     localStorage.setItem("login", JSON.stringify(isLoggedIn));
     dispatch({ type: "SET_LOGIN", payload: isLoggedIn });
   };
-
+  const updatedCart = () => {
+    localStorage.setItem("cart", JSON.stringify(state.cart));
+    dispatch({ type: "LOAD_CART", payload: state.cart });
+  };
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -222,7 +225,7 @@ const AppProvider = ({ children }) => {
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
+  // i change that useEffect by updatedCart i left it below in case of issues
   // useEffect(() => {
   //   localStorage.setItem("cart", JSON.stringify(state.cart));
   // }, [state.cart]);
@@ -247,6 +250,7 @@ const AppProvider = ({ children }) => {
         setFormUser,
         logout,
         updateLoginStatus,
+        updatedCart,
         isLoggingOut,
       }}
     >
