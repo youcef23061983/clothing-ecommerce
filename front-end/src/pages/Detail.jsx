@@ -60,6 +60,10 @@ const Detail = () => {
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
+      <h2 className="orderTitle" data-testid="detailId">
+        Product Detail
+      </h2>
+
       <div className="productContainer">
         <div className="imagesContainer">
           <div className="imagesDiv" key={id}>

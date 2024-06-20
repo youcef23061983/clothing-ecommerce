@@ -9,6 +9,7 @@ const NewArrival = () => {
   const productsFilter = data?.filter((product) => product.newArrival === true);
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
+  console.log(data);
   return (
     <div>
       <div className="headerimages">

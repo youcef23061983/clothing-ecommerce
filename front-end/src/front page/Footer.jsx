@@ -42,7 +42,7 @@ const Footer = () => {
           <Link className="footerLink" to="login">
             Sign In
           </Link>
-        </div>{" "}
+        </div>
         <div className="footerCompany">
           <h3>Shop</h3>
           <Link className="footerLink" to="best">

@@ -50,16 +50,20 @@ const Contact = () => {
           <form ref={form} onSubmit={sendEmail}>
             <div className="info">
               <label htmlFor="name">First Name:</label>
-              <input type="text" name="ame" />
+              <input type="text" name="ame" id="name" />
             </div>
 
             <div className="info">
               <label htmlFor="email">Email:</label>
-              <input type="email" name="email" />
+              <input type="email" name="email" id="email" />
             </div>
             <div className="info">
               <label htmlFor="comment">Comment:</label>
-              <textarea name="comment" style={{ height: "20rem" }} />
+              <textarea
+                name="comment"
+                id="comment"
+                style={{ height: "20rem" }}
+              />
             </div>
             <button onClick="submit" className="addCart">
               Submit:

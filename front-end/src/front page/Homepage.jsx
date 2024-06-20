@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import img from "../images/men/banner/Homepage3.jpg";
 import Product from "../pages/Product";
 import UseFetch from "../data managment/UseFetch";
@@ -67,14 +67,45 @@ const Homepage = () => {
         return 0;
       }
     });
+  const useMediaQuery = (query) => {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+      const media = window.matchMedia(query);
+      if (media.matches !== matches) {
+        setMatches(media.matches);
+      }
+
+      const listener = () => {
+        setMatches(media.matches);
+      };
+
+      if (typeof media.addEventListener === "function") {
+        media.addEventListener("change", listener);
+      } else {
+        media.addListener(listener);
+      }
+
+      return () => {
+        if (typeof media.removeEventListener === "function") {
+          media.removeEventListener("change", listener);
+        } else {
+          media.removeListener(listenerList);
+        }
+      };
+    }, [matches, query]);
+
+    return matches;
+  };
+  const isMediumScreen = useMediaQuery("(min-width: 768px)");
   const ref = useRef();
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["0 1", "1 1"],
+    offset: ["0 1", isMediumScreen ? "0.15 1" : "0.06 1"],
   });
   const scrollScall = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
-  const scrollX = useTransform(scrollYProgress, [0, 1], ["100vw", "0vw"]);
+  const scrollX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
@@ -119,7 +150,7 @@ const Homepage = () => {
           />
         </div>
         <div className="searchElement">
-          <label htmlFor="type">Products Rating</label>
+          <label htmlFor="rating">Products Rating</label>
           <select
             name="rating"
             id="rating"

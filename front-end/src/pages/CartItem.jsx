@@ -8,7 +8,7 @@ const CartItem = ({ item }) => {
   itemsPrice = parseFloat(itemsPrice.toFixed(2));
 
   return (
-    <div className="cartDiv">
+    <div className="cartDiv" data-testid="cart-item">
       <div className="cartImg">
         <img src={item?.images[0]} alt="" className="img" />
       </div>

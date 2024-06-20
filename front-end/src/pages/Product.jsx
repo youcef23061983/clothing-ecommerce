@@ -24,13 +24,14 @@ const Product = ({ product }) => {
   const ref = useRef();
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["0 1", "1 1"],
+    offset: ["0 1", "0.7 1"],
   });
   const scrollScall = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
 
   return (
     <motion.div
+      layout
       className="productDiv"
       ref={ref}
       style={{
@@ -43,7 +44,7 @@ const Product = ({ product }) => {
       </div>
       <div className="productInfo">
         <NavLink
-          to={id} // style={({ isActive }) => {
+          to={`/${id}`} // style={({ isActive }) => {
           //   return { color: isActive ? "rgb(249, 175, 35)" : "black" };
           // }}
           className="linkTitle"

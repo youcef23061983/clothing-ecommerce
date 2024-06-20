@@ -52,44 +52,48 @@ const SignUp = () => {
       <div className="loginContainer">
         <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
-          <label className="inputLabel">
+          <label htmlFor="username" className="inputLabel">
             Username:
             <input
               type="text"
               name="username"
+              id="username"
               value={formData.username}
               onChange={handleChange}
               className="input"
             />
           </label>
           <br />
-          <label className="inputLabel">
+          <label htmlFor="email" className="inputLabel">
             Email:
             <input
               type="email"
               name="email"
+              id="email"
               value={formData.email}
               onChange={handleChange}
               className="input"
             />
           </label>
           <br />
-          <label className="inputLabel">
+          <label htmlFor="password" className="inputLabel">
             Password:
             <input
               type="password"
               name="password"
+              id="password"
               value={formData.password}
               onChange={handleChange}
               className="input"
             />
           </label>
           <br />
-          <label className="inputLabel">
+          <label htmlFor="confirmPassword" className="inputLabel">
             Confirm Password:
             <input
               type="password"
               name="confirmPassword"
+              id="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               className="input"

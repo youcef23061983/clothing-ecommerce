@@ -10,8 +10,9 @@ import {
   useEffect,
 } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { getAuth } from "firebase/auth";
+// import { getAuth } from "firebase/auth";
 import { motion } from "framer-motion";
+import { auth } from "../info & contact/Firebase";
 
 const Navbar = () => {
   const [showLinks, setShowLinks] = useState(false);
@@ -21,7 +22,7 @@ const Navbar = () => {
 
   const { googleUser, formUser, logout, amount, setLoginFormData } =
     useContext(AppContext);
-  const auth = getAuth();
+  // const auth = getAuth();
   const [user, loading] = useAuthState(auth);
 
   useEffect(() => {

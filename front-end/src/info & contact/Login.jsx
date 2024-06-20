@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import img from "../images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
+import { auth } from "../info & contact/Firebase";
 import {
   getAuth,
   signInWithPopup,
@@ -42,7 +43,6 @@ const Login = () => {
   };
 
   const provider = new GoogleAuthProvider();
-  const auth = getAuth();
 
   const googleLogin = (e) => {
     e.preventDefault();
