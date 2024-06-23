@@ -49,8 +49,8 @@ describe("group of testing Login component", () => {
     });
     const cartHeader = screen.getByRole("heading", { name: "your bag" });
     expect(cartHeader).toBeInTheDocument();
-    screen.debug(cartHeader);
+    // screen.debug(cartHeader);
 
-    screen.debug();
+    // screen.debug();
   });
 });

@@ -122,6 +122,7 @@ const Navbar = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
+      data-testid="navbar"
     >
       <motion.div className="nav-header" variants={containerVariants}>
         <div className="logo">
@@ -198,7 +199,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link className="navlink" to="new">
+              <Link className="navlink" to="new" data-testid="display-name">
                 New Arrivals
               </Link>
             </li>

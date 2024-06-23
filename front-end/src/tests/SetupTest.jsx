@@ -1,7 +1,7 @@
 import * as matchers from "@testing-library/jest-dom/matchers";
 import { expect, afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 // Extend expect with vi-dom matchers
 expect.extend(matchers);
@@ -59,7 +59,7 @@ export const mockData = [
     onSale: true,
     bestSeller: false,
     rating: 4,
-    preview: 11,
+    preview: 10,
     amount: 1,
   },
   {
@@ -78,7 +78,7 @@ export const mockData = [
     onSale: false,
     bestSeller: true,
     rating: 4,
-    preview: 11,
+    preview: 9,
     amount: 1,
   },
   {
@@ -97,7 +97,7 @@ export const mockData = [
     onSale: true,
     bestSeller: false,
     rating: 4,
-    preview: 11,
+    preview: 8,
     amount: 1,
   },
   {
@@ -116,7 +116,7 @@ export const mockData = [
     onSale: false,
     bestSeller: true,
     rating: 4,
-    preview: 11,
+    preview: 7,
     amount: 1,
   },
   {
@@ -135,7 +135,7 @@ export const mockData = [
     onSale: true,
     bestSeller: false,
     rating: 4,
-    preview: 11,
+    preview: 8,
     amount: 1,
   },
   {
@@ -154,7 +154,7 @@ export const mockData = [
     onSale: false,
     bestSeller: true,
     rating: 4,
-    preview: 11,
+    preview: 6,
     amount: 1,
   },
   {
@@ -173,7 +173,7 @@ export const mockData = [
     onSale: true,
     bestSeller: false,
     rating: 4,
-    preview: 11,
+    preview: 5,
     amount: 1,
   },
   {
@@ -192,7 +192,7 @@ export const mockData = [
     onSale: false,
     bestSeller: true,
     rating: 4,
-    preview: 11,
+    preview: 4,
     amount: 1,
   },
   {
@@ -211,7 +211,7 @@ export const mockData = [
     onSale: true,
     bestSeller: false,
     rating: 4,
-    preview: 11,
+    preview: 7,
     amount: 1,
   },
 ];
@@ -231,7 +231,7 @@ export const mockData2 = {
   onSale: false,
   bestSeller: true,
   rating: 4,
-  preview: 11,
+  preview: 9,
   amount: 1,
 };
 vi.mock("../data managment/UseFetch.jsx", () => ({
@@ -242,6 +242,50 @@ vi.mock("../data managment/UseFetch.jsx", () => ({
     error: null,
   })),
 }));
+// export const mockCartContext = {
+//   cart: [],
+//   clearCart: vi.fn(),
+//   total: 69.99,
+//   amount: 1,
+//   updatedCart: vi.fn(),
+//   addToCart: vi.fn((id) => {
+//     // Simulate adding a product to the cart
+//     const newItem = {
+//       id: 1,
+//       productName: "jacket1",
+//       slug: "2023 Woolen Coat High Quality Men's wool coat",
+//       type: "jacket",
+//       price: 69.99,
+//       size: ["s", "m", "l", "xl"],
+//       newPrice: "",
+//       images: [
+//         "src/images/men/jacket1/image1.jpg",
+//         "src/images/men/jacket1/image2.jpg",
+//       ],
+//       newArrival: true,
+//       onSale: false,
+//       bestSeller: true,
+//       rating: 4,
+//       preview: 11,
+//       amount: 1,
+//     };
+//     mockCartContext.cart.push(newItem);
+//   }),
+//   setFormUser: vi.fn(),
+//   updateLoginStatus: vi.fn(),
+// };
+// export const AppContext = createContext();
+
+// vi.mock("../data managment/AppProvider.jsx", () => ({
+//   __esModule: true,
+//   AppContext: createContext(mockCartContext),
+//   default: ({ children }) => (
+//     <AppContext.Provider value={mockCartContext}>
+//       {children}
+//     </AppContext.Provider>
+//   ),
+// }));
+
 export const mockCartContext = {
   cart: [],
   clearCart: vi.fn(),
@@ -249,7 +293,6 @@ export const mockCartContext = {
   amount: 1,
   updatedCart: vi.fn(),
   addToCart: vi.fn((id) => {
-    // Simulate adding a product to the cart
     const newItem = {
       id: 1,
       productName: "jacket1",
@@ -272,10 +315,26 @@ export const mockCartContext = {
     mockCartContext.cart.push(newItem);
   }),
   setFormUser: vi.fn(),
+  updateLoginStatus: vi.fn(false),
+  logout: vi.fn(),
+  setFormUser: vi.fn(),
   formUser: null,
-  updateLoginStatus: vi.fn(),
+  googleUser: null,
+  GoogleAuthProvider: vi.fn(),
+  cartShipping: vi.fn(),
+  cartPayment: vi.fn(),
+  payment: { payment: "paypal" },
+  shipping: {
+    fullName: "you",
+    address: "11 street",
+    city: "algiers",
+    postalCode: "1600",
+    country: "algeria",
+  },
+  paymentSucceeded: true,
 };
-const AppContext = createContext();
+
+export const AppContext = createContext(mockCartContext);
 
 vi.mock("../data managment/AppProvider.jsx", () => ({
   __esModule: true,

@@ -107,7 +107,7 @@ const Payment = () => {
               onChange={handleChange}
               checked={payment.payment === "stripe"}
             />
-          </label>{" "}
+          </label>
           <br />
           {payment.payment === "paypal" && (
             <PayPalScriptProvider options={initialOptions}>
@@ -121,11 +121,11 @@ const Payment = () => {
               </Elements>
             </div>
           )}
-          {paymentSucceeded && (
-            <button type="submit" className="addCart">
-              Continue
-            </button>
-          )}
+          {/* {paymentSucceeded && ( */}
+          <button type="submit" className="addCart">
+            Continue
+          </button>
+          {/* )} */}
         </form>
       </motion.div>
     </motion.div>

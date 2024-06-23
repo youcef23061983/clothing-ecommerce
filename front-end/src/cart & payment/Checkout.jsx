@@ -46,7 +46,11 @@ const Checkout = ({ onSuccess }) => {
         <p>LOADING...</p>
       ) : (
         <div className="paypal">
-          <select value={currency} onChange={onCurrencyChange}>
+          <select
+            value={currency}
+            onChange={onCurrencyChange}
+            data-testid="money-div"
+          >
             <option value="USD">💵 USD</option>
             <option value="EUR">💶 Euro</option>
           </select>
