@@ -2,7 +2,7 @@ import React from "react";
 import { GoArrowRight } from "react-icons/go";
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from "react-icons/fa";
 
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -33,27 +33,63 @@ const Footer = () => {
         </div>
         <div className="footerCompany">
           <h3>Company</h3>
-          <Link className="footerLink" to="story">
+          <NavLink
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            className="footerLink"
+            to="story"
+          >
             Our Story
-          </Link>
-          <Link className="footerLink" to="contact">
+          </NavLink>
+          <NavLink
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            className="footerLink"
+            to="contact"
+          >
             Contact Us
-          </Link>
-          <Link className="footerLink" to="login">
+          </NavLink>
+          <NavLink
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            className="footerLink"
+            to="login"
+          >
             Sign In
-          </Link>
+          </NavLink>
         </div>
         <div className="footerCompany">
           <h3>Shop</h3>
-          <Link className="footerLink" to="best">
+          <NavLink
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            className="footerLink"
+            to="best"
+          >
             Best Sellers
-          </Link>
-          <Link className="footerLink" to="rating">
+          </NavLink>
+          <NavLink
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            className="footerLink"
+            to="rating"
+          >
             Top Rates
-          </Link>
-          <Link className="footerLink" to="sale">
+          </NavLink>
+          <NavLink
+            style={({ isActive }) => {
+              return { color: isActive ? " red" : "grey" };
+            }}
+            className="footerLink"
+            to="sale"
+          >
             Sale
-          </Link>
+          </NavLink>
         </div>
       </div>
       <ul className="copyrights">
@@ -61,13 +97,37 @@ const Footer = () => {
           <p className="footerReserved">© 2024 Desire All Rights Reserved</p>
         </li>
         <li className="footerTerms">
-          <a href="/policy">Privacy Policy |</a>
+          <NavLink
+            className="footerTerms"
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            to="policy"
+          >
+            Privacy Policy |{" "}
+          </NavLink>
         </li>
         <li className="footerTerms">
-          <a href="/terms">Terms &amp; Conditions |</a>
+          <NavLink
+            className="footerTerms"
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            to="terms"
+          >
+            Terms &amp; Conditions |{" "}
+          </NavLink>
         </li>
         <li className="footerTerms">
-          <a href="/cookies">Cookies Policy |</a>
+          <NavLink
+            className="footerTerms"
+            style={({ isActive }) => {
+              return { color: isActive ? " rgb(249, 175, 35)" : "grey" };
+            }}
+            to="cookies"
+          >
+            Cookies Policy |{" "}
+          </NavLink>
         </li>
       </ul>
     </div>
