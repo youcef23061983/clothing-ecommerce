@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import Rating from "./Rating";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { AppContext } from "../data managment/AppProvider";
 
@@ -43,14 +43,9 @@ const Product = ({ product }) => {
         <img src={images[0]} alt="" className="img" />
       </div>
       <div className="productInfo">
-        <NavLink
-          to={`/${id}`} // style={({ isActive }) => {
-          //   return { color: isActive ? "rgb(249, 175, 35)" : "black" };
-          // }}
-          className="linkTitle"
-        >
+        <Link to={id} className="linkTitle">
           {slug.substring(0, 70)}...
-        </NavLink>
+        </Link>
         <div className="rating">
           <div>
             <Rating rating={rating} />
@@ -63,9 +58,9 @@ const Product = ({ product }) => {
           {onSale && <h3>{newPrice} $</h3>}
         </div>
 
-        <NavLink className="addCart" to="/cart" onClick={() => addToCart(id)}>
+        <Link className="addCart" to="/cart" onClick={() => addToCart(id)}>
           add to cart
-        </NavLink>
+        </Link>
 
         {onSale && <p className="saleTag">on sale</p>}
         {bestSeller && <p className="newTag">best seller</p>}
