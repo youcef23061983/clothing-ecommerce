@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import img from "../images/men/banner/bestSeller.jpg";
 import { NavLink } from "react-router-dom";
@@ -13,6 +13,7 @@ const Detail = () => {
   const [selectedImage, setSelectedImage] = useState("");
   const { addToCart } = useContext(AppContext);
   const queryClient = useQueryClient();
+  const location = useLocation();
 
   const productFun = async () => {
     const res = await fetch(`${url}/${id}`);
@@ -37,23 +38,33 @@ const Detail = () => {
       setSelectedImage(data.images[0]);
     }
   }, [data]);
+  const goBack = (search) => {
+    if (search && search.includes("jacket")) {
+      return "go back to jacket";
+    } else if (search && search.includes("jeans")) {
+      return "go back to jeans";
+    } else if (search && search.includes("shirt")) {
+      return "go back to shirt";
+    } else if (search && search.includes("shoes")) {
+      return "go back to shoes";
+    } else if (search && search.includes("sneakers")) {
+      return "go back to sneakers";
+    } else if (search && search.includes("sweatshirt")) {
+      return "go back to sweatshirt";
+    } else if (search && search.includes("trousers")) {
+      return "go back to trousesr";
+    } else if (search && search.includes("tshirt")) {
+      return "go back to tshirt";
+    } else {
+      return "go back to all products";
+    }
+  };
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
 
-  const {
-    slug,
-    price,
-    newPrice,
-    newArrival,
-    onSale,
-    bestSeller,
-    type,
-    rating,
-    preview,
-    size,
-    images,
-  } = data;
+  const { slug, price, newPrice, onSale, type, rating, preview, size, images } =
+    data;
 
   return (
     <div>
@@ -106,9 +117,17 @@ const Detail = () => {
             </div>
             {onSale && <h3>new price: {newPrice} $</h3>}
           </div>
-          <NavLink className="addCart" to="/cart" onClick={() => addToCart(id)}>
+          <Link className="addCart" to="/cart" onClick={() => addToCart(id)}>
             add to cart
-          </NavLink>
+          </Link>
+          <Link
+            className="addCart"
+            to={`..${location.state?.search || ""}`}
+            relative="path"
+          >
+            &larr;
+            <span>{goBack(location.state?.search)}</span>
+          </Link>
         </div>
       </div>
     </div>

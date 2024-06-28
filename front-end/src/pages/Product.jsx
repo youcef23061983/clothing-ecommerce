@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useRef } from "react";
 import Rating from "./Rating";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { AppContext } from "../data managment/AppProvider";
 
-const Product = ({ product }) => {
+const Product = ({ product, searchParams }) => {
   const { addToCart } = useContext(AppContext);
 
   const {
@@ -20,7 +20,6 @@ const Product = ({ product }) => {
     preview,
   } = product;
 
-  const navigate = useNavigate();
   const ref = useRef();
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -39,11 +38,22 @@ const Product = ({ product }) => {
         opacity: scrollOpacity,
       }}
     >
-      <div className="imgDiv" onClick={() => navigate(`/${id}`)}>
-        <img src={images[0]} alt="" className="img" />
-      </div>
+      <Link
+        to={id}
+        className="linkTitle"
+        state={{ search: `?${searchParams.toString()}` }}
+      >
+        <div className="imgDiv">
+          <img src={images[0]} alt="" className="img" />
+        </div>
+      </Link>
+
       <div className="productInfo">
-        <Link to={id} className="linkTitle">
+        <Link
+          to={id}
+          className="linkTitle"
+          state={{ search: `?${searchParams.toString()}` }}
+        >
           {slug.substring(0, 70)}...
         </Link>
         <div className="rating">

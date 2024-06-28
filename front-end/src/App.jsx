@@ -31,9 +31,9 @@ function App() {
     <AppProvider>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.key}>
-          <Route path="/" element={<Layout />}>
+          <Route path="" element={<Layout />}>
             <Route index element={<Homepage />} />
-            <Route path="/:id" element={<Detail />} />
+            <Route path=":id" element={<Detail />} />
             <Route path="contact" element={<Contact />} />
             <Route path="shipping" element={<Shipping />} />
             <Route path="payment" element={<Payment />} />
@@ -46,6 +46,7 @@ function App() {
             <Route path="sale" element={<Sale />} />
             <Route path="terms" element={<Terms />} />
             <Route path="policy" element={<Policy />} />
+
             <Route
               path="cart"
               element={
