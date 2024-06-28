@@ -1,7 +1,6 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import img from "../images/men/banner/bestSeller.jpg";
-import { NavLink } from "react-router-dom";
 import { AppContext } from "../data managment/AppProvider";
 import Rating from "./Rating";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

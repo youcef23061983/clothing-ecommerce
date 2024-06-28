@@ -1,11 +1,13 @@
 import React, { useContext, useRef } from "react";
 import Rating from "./Rating";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { AppContext } from "../data managment/AppProvider";
 
 const Product = ({ product, searchParams }) => {
   const { addToCart } = useContext(AppContext);
+  const location = useLocation();
+  console.log(location.pathname);
 
   const {
     id,
@@ -27,6 +29,13 @@ const Product = ({ product, searchParams }) => {
   });
   const scrollScall = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+  const getPath = () => {
+    if (location.pathname === "/new" || "/rating" || "/best" || "/sale") {
+      return `../${id}`;
+    } else {
+      return `${id}`;
+    }
+  };
 
   return (
     <motion.div
@@ -39,7 +48,7 @@ const Product = ({ product, searchParams }) => {
       }}
     >
       <Link
-        to={id}
+        to={getPath()}
         className="linkTitle"
         state={{ search: `?${searchParams.toString()}` }}
       >
@@ -50,7 +59,7 @@ const Product = ({ product, searchParams }) => {
 
       <div className="productInfo">
         <Link
-          to={id}
+          to={getPath()}
           className="linkTitle"
           state={{ search: `?${searchParams.toString()}` }}
         >
@@ -72,9 +81,9 @@ const Product = ({ product, searchParams }) => {
           add to cart
         </Link>
 
-        {onSale && <p className="saleTag">on sale</p>}
-        {bestSeller && <p className="newTag">best seller</p>}
-        {newArrival && <p className="newTag">new seller</p>}
+        {onSale && <p className="saleTag">On Sale</p>}
+        {bestSeller && <p className="newTag">Best Seller</p>}
+        {newArrival && <p className="newTag">New Arrival</p>}
       </div>
     </motion.div>
   );
