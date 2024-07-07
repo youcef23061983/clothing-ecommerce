@@ -1,6 +1,5 @@
 import React, { useReducer, useEffect, createContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 
 export const AppContext = createContext();
 
@@ -16,7 +15,6 @@ const initialState = {
 };
 
 const AppProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const productsFun = async () => {

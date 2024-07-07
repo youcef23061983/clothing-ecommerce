@@ -3,12 +3,7 @@ import img from "../images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { auth } from "../info & contact/Firebase";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-} from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { AppContext } from "../data managment/AppProvider";
 
 const Login = () => {
@@ -31,7 +26,7 @@ const Login = () => {
 
     setFormUser(loginFormData);
     updateLoginStatus(true);
-    navigate("/cart");
+    navigate("/cart", { replace: true });
   };
 
   const handleChange = (e) => {
@@ -56,7 +51,7 @@ const Login = () => {
           photo: user.photoURL,
         });
         updateLoginStatus(true);
-        navigate("/cart");
+        navigate("/cart", { replace: true });
       })
       .catch((error) => {
         console.log(error);
