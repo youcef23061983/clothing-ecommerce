@@ -1,4 +1,3 @@
-import React from "react";
 import { GoArrowRight } from "react-icons/go";
 import { FaInstagram, FaTwitter, FaFacebook, FaYoutube } from "react-icons/fa";
 
@@ -6,7 +5,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div>
+    <div className="footer">
       <div className="footerContainer">
         <div className="footerEmail">
           <h2>stay in the know</h2>

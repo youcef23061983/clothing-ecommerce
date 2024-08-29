@@ -144,7 +144,7 @@ const Navbar = () => {
           </div>
           <div className="cart">
             {googleUser ? (
-              <div div className="cart">
+              <div className="cart">
                 <p className="displayName">
                   Welcome, {user && user.displayName}
                 </p>

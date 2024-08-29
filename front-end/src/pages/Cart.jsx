@@ -22,7 +22,9 @@ const Cart = () => {
       <h2 className="cartTitle">your bag</h2>
 
       <div>
-        {cart.length === 0 && <h4 className="emptyCart">is currently empty</h4>}
+        {cart.length === 0 && (
+          <h4 className="emptyCart">your cart is currently empty</h4>
+        )}
       </div>
       <div className="cartContainer">
         {cart.map((item) => {

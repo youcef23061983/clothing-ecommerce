@@ -436,6 +436,11 @@ button {
   line-height: 2.2rem;
   font-weight: lighter;
 }
+.footer {
+  box-shadow: 0.2rem 0.2rem 1rem var(--clr-secondary-header-color);
+  margin: 1rem;
+  padding: 1rem;
+}
 @media screen and (min-width: 336px) {
   .nav-header {
     display: flex;
