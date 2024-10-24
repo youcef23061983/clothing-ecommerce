@@ -21,7 +21,7 @@ const Homepage = () => {
 
   const [user, setUser] = useState(initialUserState);
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
+  // console.log(searchParams);
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -138,11 +138,11 @@ const Homepage = () => {
   const ref = useRef();
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["0 1", isMediumScreen ? "0.15 1" : "0.06 1"],
+    offset: ["0 1", isMediumScreen ? "0.7 1" : "0.4 1"],
   });
-  const scrollScall = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const scrollScall = useTransform(scrollYProgress, [0, 1], [0.5, 1]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
-  const scrollX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
+  const scrollX = useTransform(scrollYProgress, [0, 1], ["50vw", "0vw"]);
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
@@ -151,100 +151,100 @@ const Homepage = () => {
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
-
-      <motion.form
-        ref={ref}
-        style={{
-          scale: scrollScall,
-          opacity: scrollOpacity,
-          x: scrollX,
-        }}
-        className="searchContainer"
-      >
-        <div className="searchElement">
-          <label htmlFor="type">Products Type</label>
-          <select
-            name="type"
-            id="type"
-            value={user.type}
-            onChange={handleChange}
-            className="formSelect"
-          >
-            {types}
-          </select>
-        </div>
-        <div className="searchElement">
-          <label htmlFor="price">price:{user.price} $</label>
-          <input
-            type="range"
-            name="price"
-            id="price"
-            value={user.price}
-            min={minPrice}
-            max={maxPrice}
-            onChange={handleChange}
-            className="formSelect"
-          />
-        </div>
-        <div className="searchElement">
-          <label htmlFor="rating">Products Rating</label>
-          <select
-            name="rating"
-            id="rating"
-            value={user.rating}
-            onChange={handleChange}
-            className="formSelect"
-          >
-            {ratings}
-          </select>
-        </div>
-        <div className="searchElement">
-          <div className="elementCheck">
-            <input
-              type="checkbox"
-              name="onSale"
-              id="onSale"
-              checked={user.onSale}
+      <div ref={ref}>
+        <motion.form
+          style={{
+            scale: scrollScall,
+            opacity: scrollOpacity,
+            x: scrollX,
+          }}
+          className="searchContainer"
+        >
+          <div className="searchElement">
+            <label htmlFor="type">Products Type</label>
+            <select
+              name="type"
+              id="type"
+              value={user.type}
               onChange={handleChange}
-            />
-            <label htmlFor="onSale">onSale:</label>
+              className="formSelect"
+            >
+              {types}
+            </select>
           </div>
-          <div className="elementCheck">
+          <div className="searchElement">
+            <label htmlFor="price">price:{user.price} $</label>
             <input
-              type="checkbox"
-              name="bestSeller"
-              id="bestSeller"
-              checked={user.bestSeller}
+              type="range"
+              name="price"
+              id="price"
+              value={user.price}
+              min={minPrice}
+              max={maxPrice}
               onChange={handleChange}
+              className="formSelect"
             />
-            <label htmlFor="bestSeller">bestSeller:</label>
           </div>
-          <div className="elementCheck">
-            <input
-              type="checkbox"
-              name="newArrival"
-              id="newArrival"
-              checked={user.newArrival}
+          <div className="searchElement">
+            <label htmlFor="rating">Products Rating</label>
+            <select
+              name="rating"
+              id="rating"
+              value={user.rating}
               onChange={handleChange}
-            />
-            <label htmlFor="newArrival">newArrival:</label>
+              className="formSelect"
+            >
+              {ratings}
+            </select>
           </div>
-        </div>
-        <div className="searchElement">
-          <label htmlFor="sortPrice">Sort By:</label>
-          <select
-            name="sortOption"
-            id="sortPrice"
-            value={user.sortOption}
-            onChange={handleChange}
-            className="formSelect"
-          >
-            <option value="">-- Select --</option>
-            <option value="priceLowToHigh">Price Low to High</option>
-            <option value="priceHighToLow">Price High to Low</option>
-          </select>
-        </div>
-      </motion.form>
+          <div className="searchElement">
+            <div className="elementCheck">
+              <input
+                type="checkbox"
+                name="onSale"
+                id="onSale"
+                checked={user.onSale}
+                onChange={handleChange}
+              />
+              <label htmlFor="onSale">onSale:</label>
+            </div>
+            <div className="elementCheck">
+              <input
+                type="checkbox"
+                name="bestSeller"
+                id="bestSeller"
+                checked={user.bestSeller}
+                onChange={handleChange}
+              />
+              <label htmlFor="bestSeller">bestSeller:</label>
+            </div>
+            <div className="elementCheck">
+              <input
+                type="checkbox"
+                name="newArrival"
+                id="newArrival"
+                checked={user.newArrival}
+                onChange={handleChange}
+              />
+              <label htmlFor="newArrival">newArrival:</label>
+            </div>
+          </div>
+          <div className="searchElement">
+            <label htmlFor="sortPrice">Sort By:</label>
+            <select
+              name="sortOption"
+              id="sortPrice"
+              value={user.sortOption}
+              onChange={handleChange}
+              className="formSelect"
+            >
+              <option value="">-- Select --</option>
+              <option value="priceLowToHigh">Price Low to High</option>
+              <option value="priceHighToLow">Price High to Low</option>
+            </select>
+          </div>
+        </motion.form>
+      </div>
 
       <motion.div layout className="productsDiv">
         {productsFilter?.map((product) => {

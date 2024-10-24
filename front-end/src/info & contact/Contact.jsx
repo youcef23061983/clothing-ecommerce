@@ -50,7 +50,7 @@ const Contact = () => {
           <form ref={form} onSubmit={sendEmail}>
             <div className="info">
               <label htmlFor="name">First Name:</label>
-              <input type="text" name="ame" id="name" />
+              <input type="text" name="name" id="name" />
             </div>
 
             <div className="info">

@@ -7,7 +7,7 @@ import { AppContext } from "../data managment/AppProvider";
 const Product = ({ product, searchParams }) => {
   const { addToCart } = useContext(AppContext);
   const location = useLocation();
-  console.log(location.pathname);
+  // console.log(location.pathname);
 
   const {
     id,
@@ -25,7 +25,7 @@ const Product = ({ product, searchParams }) => {
   const ref = useRef();
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["0 1", "0.7 1"],
+    offset: ["0 1", "0.4 1"],
   });
   const scrollScall = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
