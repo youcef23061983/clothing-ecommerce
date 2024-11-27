@@ -46,6 +46,7 @@ const Sale = () => {
     });
   };
   useEffect(() => {
+    document.title = "Sale";
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",

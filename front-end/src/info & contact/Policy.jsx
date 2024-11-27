@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import img from "../images/men/banner/privacy.jpg";
 
 const Policy = () => {
+  useEffect(() => {
+    document.title = "Policy";
+  }, []);
   return (
     <div>
       <div className="headerimages">

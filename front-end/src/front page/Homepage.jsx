@@ -21,7 +21,6 @@ const Homepage = () => {
 
   const [user, setUser] = useState(initialUserState);
   const [searchParams, setSearchParams] = useSearchParams();
-  // console.log(searchParams);
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -47,6 +46,8 @@ const Homepage = () => {
     });
   };
   useEffect(() => {
+    document.title = "Shop";
+
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",

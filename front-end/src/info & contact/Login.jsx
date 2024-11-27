@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import img from "../images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
@@ -72,7 +72,9 @@ const Login = () => {
         console.log(error);
       });
   };
-
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
   return (
     <div>
       <div className="headerimages">

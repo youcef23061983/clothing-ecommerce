@@ -46,6 +46,7 @@ const Best = () => {
     });
   };
   useEffect(() => {
+    document.title = "Best";
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",

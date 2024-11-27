@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import img from "../images/men/banner/signup.jpg";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+  useEffect(() => {
+    document.title = "SignUp";
+  }, []);
   const [formData, setFormData] = useState({
     username: "",
     email: "",

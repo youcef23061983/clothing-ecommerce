@@ -46,6 +46,8 @@ const NewArrival = () => {
     });
   };
   useEffect(() => {
+    document.title = "NewArrival";
+
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",

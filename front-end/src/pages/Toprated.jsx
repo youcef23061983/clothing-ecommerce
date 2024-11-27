@@ -9,37 +9,6 @@ const Toprated = () => {
   const key1 = "products";
   const { data, isPending, error } = UseFetch(url, key1);
 
-  // const optionsX = {
-  //   method: "GET",
-  //   qs: {
-  //     limit: "10",
-  //     offset: "0",
-  //   },
-  //   headers: {
-  //     "x-rapidapi-key": "fcc7ada39fmshe7e27571ff286cbp1fc7e8jsnae6feeef0387",
-  //     "x-rapidapi-host": "exercisedb.p.rapidapi.com",
-  //   },
-  // };
-  // const urll = "https://exercisedb.p.rapidapi.com/exercises";
-  // const [x, setX] = useState(null);
-  // useEffect(() => {
-  //   const fetchData = async (urlll, options) => {
-  //     try {
-  //       const response = await fetch(urlll, options);
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const result = await response.json();
-  //       setX(result);
-  //     } catch (error) {
-  //       console.error("Fetch error:", error);
-  //     }
-  //   };
-  //   fetchData(urll, optionsX);
-  // }, []);
-
-  // console.log(x);
-
   const initialUserState = {
     type: "all",
     price: 0,
@@ -52,7 +21,6 @@ const Toprated = () => {
 
   const [user, setUser] = useState(initialUserState);
   const [searchParams, setSearchParams] = useSearchParams();
-  // console.log(searchParams);
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -78,6 +46,7 @@ const Toprated = () => {
     });
   };
   useEffect(() => {
+    document.title = "Top";
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",

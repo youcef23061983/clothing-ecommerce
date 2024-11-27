@@ -1,5 +1,10 @@
+import { useEffect } from "react";
 import img from "../images/men/banner/story.jpg";
+
 const Story = () => {
+  useEffect(() => {
+    document.title = "Story";
+  }, []);
   return (
     <div>
       <div className="headerimages">
