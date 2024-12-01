@@ -9,10 +9,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": "",
       "images": [
-        "src/images/men/jacket1/image1.jpg",
-        "src/images/men/jacket1/image2.jpg",
-        "src/images/men/jacket1/image3.jpg",
-        "src/images/men/jacket1/image4.jpg"
+        "/images/men/jacket1/image1.jpg",
+        "/images/men/jacket1/image2.jpg",
+        "/images/men/jacket1/image3.jpg",
+        "/images/men/jacket1/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -30,10 +30,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 39.99,
       "images": [
-        "src/images/men/jacket2/image1.jpg",
-        "src/images/men/jacket2/image2.jpg",
-        "src/images/men/jacket2/image3.jpg",
-        "src/images/men/jacket2/image4.jpg"
+        "/images/men/jacket2/image1.jpg",
+        "/images/men/jacket2/image2.jpg",
+        "/images/men/jacket2/image3.jpg",
+        "/images/men/jacket2/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -51,10 +51,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 49.99,
       "images": [
-        "src/images/men/jacket3/image1.jpg",
-        "src/images/men/jacket3/image2.jpg",
-        "src/images/men/jacket3/image3.jpg",
-        "src/images/men/jacket3/image4.jpg"
+        "/images/men/jacket3/image1.jpg",
+        "/images/men/jacket3/image2.jpg",
+        "/images/men/jacket3/image3.jpg",
+        "/images/men/jacket3/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -72,10 +72,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 59.99,
       "images": [
-        "src/images/men/jacket4/image1.jpg",
-        "src/images/men/jacket4/image2.jpg",
-        "src/images/men/jacket4/image3.jpg",
-        "src/images/men/jacket4/image4.jpg"
+        "/images/men/jacket4/image1.jpg",
+        "/images/men/jacket4/image2.jpg",
+        "/images/men/jacket4/image3.jpg",
+        "/images/men/jacket4/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -93,10 +93,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 19.99,
       "images": [
-        "src/images/men/jacket5/image1.jpg",
-        "src/images/men/jacket5/image2.jpg",
-        "src/images/men/jacket5/image3.jpg",
-        "src/images/men/jacket5/image4.jpg"
+        "/images/men/jacket5/image1.jpg",
+        "/images/men/jacket5/image2.jpg",
+        "/images/men/jacket5/image3.jpg",
+        "/images/men/jacket5/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -114,10 +114,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": "",
       "images": [
-        "src/images/men/jeans/image1.jpg",
-        "src/images/men/jeans/image2.jpg",
-        "src/images/men/jeans/image3.jpg",
-        "src/images/men/jeans/image4.jpg"
+        "/images/men/jeans/image1.jpg",
+        "/images/men/jeans/image2.jpg",
+        "/images/men/jeans/image3.jpg",
+        "/images/men/jeans/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -135,10 +135,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 19.99,
       "images": [
-        "src/images/men/shirt/image1.jpg",
-        "src/images/men/shirt/image2.jpg",
-        "src/images/men/shirt/image3.jpg",
-        "src/images/men/shirt/image4.jpg"
+        "/images/men/shirt/image1.jpg",
+        "/images/men/shirt/image2.jpg",
+        "/images/men/shirt/image3.jpg",
+        "/images/men/shirt/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -156,10 +156,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": "",
       "images": [
-        "src/images/men/shirt2/image1.jpg",
-        "src/images/men/shirt2/image2.jpg",
-        "src/images/men/shirt2/image3.jpg",
-        "src/images/men/shirt2/image4.jpg"
+        "/images/men/shirt2/image1.jpg",
+        "/images/men/shirt2/image2.jpg",
+        "/images/men/shirt2/image3.jpg",
+        "/images/men/shirt2/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -177,10 +177,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": 19.99,
       "images": [
-        "src/images/men/shoes/image1.jpg",
-        "src/images/men/shoes/image2.jpg",
-        "src/images/men/shoes/image3.jpg",
-        "src/images/men/shoes/image4.jpg"
+        "/images/men/shoes/image1.jpg",
+        "/images/men/shoes/image2.jpg",
+        "/images/men/shoes/image3.jpg",
+        "/images/men/shoes/image4.jpg"
       ],
       "newArrival": false,
       "amount": 1,
@@ -198,10 +198,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": "",
       "images": [
-        "src/images/men/shoes2/image1.jpg",
-        "src/images/men/shoes2/image2.jpg",
-        "src/images/men/shoes2/image3.jpg",
-        "src/images/men/shoes2/image4.jpg"
+        "/images/men/shoes2/image1.jpg",
+        "/images/men/shoes2/image2.jpg",
+        "/images/men/shoes2/image3.jpg",
+        "/images/men/shoes2/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -219,10 +219,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": 39.99,
       "images": [
-        "src/images/men/sneakers1/image1.jpg",
-        "src/images/men/sneakers1/image2.jpg",
-        "src/images/men/sneakers1/image3.jpg",
-        "src/images/men/sneakers1/image4.jpg"
+        "/images/men/sneakers1/image1.jpg",
+        "/images/men/sneakers1/image2.jpg",
+        "/images/men/sneakers1/image3.jpg",
+        "/images/men/sneakers1/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -240,10 +240,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": "",
       "images": [
-        "src/images/men/sneakers2/image1.jpg",
-        "src/images/men/sneakers2/image2.jpg",
-        "src/images/men/sneakers2/image3.jpg",
-        "src/images/men/sneakers2/image4.jpg"
+        "/images/men/sneakers2/image1.jpg",
+        "/images/men/sneakers2/image2.jpg",
+        "/images/men/sneakers2/image3.jpg",
+        "/images/men/sneakers2/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -261,10 +261,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": 19.99,
       "images": [
-        "src/images/men/sneakers3/image1.jpg",
-        "src/images/men/sneakers3/image2.jpg",
-        "src/images/men/sneakers3/image3.jpg",
-        "src/images/men/sneakers3/image4.jpg"
+        "/images/men/sneakers3/image1.jpg",
+        "/images/men/sneakers3/image2.jpg",
+        "/images/men/sneakers3/image3.jpg",
+        "/images/men/sneakers3/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -282,10 +282,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": "",
       "images": [
-        "src/images/men/sneakers4/image1.jpg",
-        "src/images/men/sneakers4/image2.jpg",
-        "src/images/men/sneakers4/image3.jpg",
-        "src/images/men/sneakers4/image4.jpg"
+        "/images/men/sneakers4/image1.jpg",
+        "/images/men/sneakers4/image2.jpg",
+        "/images/men/sneakers4/image3.jpg",
+        "/images/men/sneakers4/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -303,10 +303,10 @@
       "size": [39, 40, 41, 42],
       "newPrice": 39.99,
       "images": [
-        "src/images/men/sneakers5/image1.jpg",
-        "src/images/men/sneakers5/image2.jpg",
-        "src/images/men/sneakers5/image3.jpg",
-        "src/images/men/sneakers5/image4.jpg"
+        "/images/men/sneakers5/image1.jpg",
+        "/images/men/sneakers5/image2.jpg",
+        "/images/men/sneakers5/image3.jpg",
+        "/images/men/sneakers5/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -324,10 +324,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": "",
       "images": [
-        "src/images/men/sweatshirt1/image1.jpg",
-        "src/images/men/sweatshirt1/image2.jpg",
-        "src/images/men/sweatshirt1/image3.jpg",
-        "src/images/men/sweatshirt1/image4.jpg"
+        "/images/men/sweatshirt1/image1.jpg",
+        "/images/men/sweatshirt1/image2.jpg",
+        "/images/men/sweatshirt1/image3.jpg",
+        "/images/men/sweatshirt1/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -345,10 +345,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 19.99,
       "images": [
-        "src/images/men/sweatshirt2/image1.jpg",
-        "src/images/men/sweatshirt2/image2.jpg",
-        "src/images/men/sweatshirt2/image3.jpg",
-        "src/images/men/sweatshirt2/image4.jpg"
+        "/images/men/sweatshirt2/image1.jpg",
+        "/images/men/sweatshirt2/image2.jpg",
+        "/images/men/sweatshirt2/image3.jpg",
+        "/images/men/sweatshirt2/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -366,10 +366,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": "",
       "images": [
-        "src/images/men/trousers1/image1.jpg",
-        "src/images/men/trousers1/image2.jpg",
-        "src/images/men/trousers1/image3.jpg",
-        "src/images/men/trousers1/image4.jpg"
+        "/images/men/trousers1/image1.jpg",
+        "/images/men/trousers1/image2.jpg",
+        "/images/men/trousers1/image3.jpg",
+        "/images/men/trousers1/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,
@@ -387,10 +387,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": 29.99,
       "images": [
-        "src/images/men/trousers2/image1.jpg",
-        "src/mages/men/trousers2/image2.jpg",
-        "src/images/men/trousers2/image3.jpg",
-        "src/images/men/trousers2/image4.jpg"
+        "/images/men/trousers2/image1.jpg",
+        "/mages/men/trousers2/image2.jpg",
+        "/images/men/trousers2/image3.jpg",
+        "/images/men/trousers2/image4.jpg"
       ],
       "newArrival": false,
       "onSale": true,
@@ -408,10 +408,10 @@
       "size": ["s", "m", "l", "xl"],
       "newPrice": "",
       "images": [
-        "src/images/men/tshirt/image1.jpg",
-        "src/images/men/tshirt/image2.jpg",
-        "src/images/men/tshirt/image3.jpg",
-        "src/images/men/tshirt/image4.jpg"
+        "/images/men/tshirt/image1.jpg",
+        "/images/men/tshirt/image2.jpg",
+        "/images/men/tshirt/image3.jpg",
+        "/images/men/tshirt/image4.jpg"
       ],
       "newArrival": true,
       "onSale": false,

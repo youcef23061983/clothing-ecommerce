@@ -124,7 +124,7 @@ const Navbar = () => {
       <motion.div className="nav-header" variants={containerVariants}>
         <div className="logo">
           <Link to="">
-            <img src="./src/images/desire.png" alt="" className="img" />
+            <img src="/images/desire.png" alt="" className="img" />
           </Link>
         </div>
 

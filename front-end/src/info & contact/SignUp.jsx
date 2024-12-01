@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import img from "../images/men/banner/signup.jpg";
+import img from "/images/men/banner/signup.jpg";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {

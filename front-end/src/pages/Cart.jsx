@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { AppContext } from "../data managment/AppProvider";
-import img from "../images/men/banner/cart.jpg";
+import img from "/images/men/banner/cart.jpg";
 import CartItem from "./CartItem";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, clearCart, total, amount, updatedCart } =
-    useContext(AppContext);
+  const { cart, clearCart, total, amount } = useContext(AppContext);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
 
@@ -41,7 +40,7 @@ const Cart = () => {
           <Link onClick={clearCart} className="addCart">
             clear all
           </Link>
-          <Link className="addCart" to="/shipping" onClick={updatedCart}>
+          <Link className="addCart" to="/shipping">
             proceed to checkout{" "}
           </Link>
         </div>

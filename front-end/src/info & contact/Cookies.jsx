@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import img from "../images/men/banner/cookies.jpg";
+import img from "/images/men/banner/cookies.jpg";
 import { Link } from "react-router-dom";
 const Cookies = () => {
   useEffect(() => {

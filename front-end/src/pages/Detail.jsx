@@ -1,12 +1,12 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
-import img from "../images/men/banner/bestSeller.jpg";
+import img from "/images/men/banner/bestSeller.jpg";
 import { AppContext } from "../data managment/AppProvider";
 import Rating from "./Rating";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Detail = () => {
-  const url = "http://localhost:3000/products";
+  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
 
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState("");
@@ -80,7 +80,7 @@ const Detail = () => {
             {images.map((image, index) => (
               <div className="imgSelect" key={index}>
                 <img
-                  src={`/${image}`}
+                  src={`${image}`}
                   alt={`Image ${index + 1}`}
                   onClick={() => setSelectedImage(image)}
                   className="img"

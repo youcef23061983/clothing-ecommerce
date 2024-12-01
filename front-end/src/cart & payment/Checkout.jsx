@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import React, { useContext } from "react";
 import { AppContext } from "../data managment/AppProvider";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";

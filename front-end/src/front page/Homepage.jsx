@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import img from "../images/men/banner/Homepage3.jpg";
+import img from "../../public/images/men/banner/homepage3.jpg";
 import Product from "../pages/Product";
 import UseFetch from "../data managment/UseFetch";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 
 const Homepage = () => {
-  const url = "http://localhost:3000/products";
+  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
   const { data, isPending, error } = UseFetch(url, key1);
+  console.log(data);
+
   const initialUserState = {
     type: "all",
     price: 0,

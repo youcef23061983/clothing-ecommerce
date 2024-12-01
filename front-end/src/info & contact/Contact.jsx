@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import img from "../images/men/banner/contact.jpg";
+import img from "/images/men/banner/contact.jpg";
 import emailjs from "@emailjs/browser";
 import { useRef } from "react";
 

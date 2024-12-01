@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import img from "../images/men/banner/privacy.jpg";
+import img from "/images/men/banner/privacy.jpg";
 
 const Policy = () => {
   useEffect(() => {

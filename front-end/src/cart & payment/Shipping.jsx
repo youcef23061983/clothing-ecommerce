@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import img from "../images/men/banner/shipping.jpg";
+import img from "/images/men/banner/shipping.jpg";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AppContext } from "../data managment/AppProvider";

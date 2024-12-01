@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import img from "../images/men/banner/login.jpg";
+import img from "/images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { auth } from "../info & contact/Firebase";
