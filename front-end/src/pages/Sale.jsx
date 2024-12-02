@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import img from "/images/men/banner/new.jpg";
+import img from "/images/men/banner/sale.jpg";
 import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
