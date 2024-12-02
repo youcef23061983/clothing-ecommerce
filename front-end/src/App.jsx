@@ -33,7 +33,7 @@ function App() {
         <Routes location={location} key={location.key}>
           <Route path="" element={<Layout />}>
             <Route index element={<Homepage />} />
-            <Route path=":id" element={<Detail />} />
+            <Route path=":productID" element={<Detail />} />
             <Route path="contact" element={<Contact />} />
             <Route path="shipping" element={<Shipping />} />
             <Route path="payment" element={<Payment />} />

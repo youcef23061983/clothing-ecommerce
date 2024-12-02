@@ -8,26 +8,26 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 const Detail = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
 
-  const { id } = useParams();
+  const { productID } = useParams();
   const [selectedImage, setSelectedImage] = useState("");
   const { addToCart } = useContext(AppContext);
   const queryClient = useQueryClient();
   const location = useLocation();
 
   const productFun = async () => {
-    const res = await fetch(`${url}/${id}`);
+    const res = await fetch(`${url}/${productID}`);
     if (!res.ok) {
       throw Error("There is no product data");
     }
     return res.json();
   };
   const { data, error, isPending } = useQuery({
-    queryKey: ["product", id],
+    queryKey: ["product", productID],
     queryFn: productFun,
     initialData: () => {
       return queryClient
         .getQueryData(["products"])
-        ?.find((x) => x.id === parseInt(id));
+        ?.find((x) => x.id === parseInt(productID));
     },
   });
 
@@ -62,8 +62,18 @@ const Detail = () => {
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
 
-  const { slug, price, newPrice, onSale, type, rating, preview, size, images } =
-    data;
+  const {
+    slug,
+    price,
+    newPrice,
+    onSale,
+    type,
+    rating,
+    preview,
+    size,
+    images,
+    id,
+  } = data;
 
   return (
     <div>
