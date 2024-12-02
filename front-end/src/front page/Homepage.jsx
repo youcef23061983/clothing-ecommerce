@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import img from "../../public/images/men/banner/homepage3.jpg";
+import img from "/images/men/banner/homepage3.jpg";
 import Product from "../pages/Product";
 import UseFetch from "../data managment/UseFetch";
 import { motion, useScroll, useTransform } from "framer-motion";
