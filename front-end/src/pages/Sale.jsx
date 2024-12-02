@@ -5,7 +5,7 @@ import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
 import { useScroll, useTransform, motion } from "framer-motion";
 const Sale = () => {
-  const url = "http://localhost:3000/products";
+  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
   const { data, isPending, error } = UseFetch(url, key1);
   const initialUserState = {

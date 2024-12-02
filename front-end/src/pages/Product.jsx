@@ -7,7 +7,6 @@ import { AppContext } from "../data managment/AppProvider";
 const Product = ({ product, searchParams }) => {
   const { addToCart } = useContext(AppContext);
   const location = useLocation();
-  // console.log(location.pathname);
 
   const {
     id,
