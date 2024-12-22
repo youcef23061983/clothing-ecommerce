@@ -16,9 +16,10 @@ const initialState = {
 
 const AppProvider = ({ children }) => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
 
   const productsFun = async () => {
-    const res = await fetch("http://localhost:3000/products");
+    const res = await fetch(url);
     if (!res.ok) {
       throw Error("there is no products data");
     }
