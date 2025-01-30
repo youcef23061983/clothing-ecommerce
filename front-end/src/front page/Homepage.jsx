@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, useRef } from "react";
+import React, { useState, useEffect, Suspense, useRef, lazy } from "react";
 import img from "/images/men/banner/homepage3.jpg";
 import UseFetch from "../data managment/UseFetch";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -36,6 +36,8 @@ const useMediaQuery = (query) => {
 
   return matches;
 };
+const HeavyComponent = lazy(() => import("./Products"));
+
 const Homepage = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
@@ -306,7 +308,10 @@ const Homepage = () => {
         </div>
       </motion.form>
       <Suspense fallback={<h2>...is loading</h2>}>
-        <Products productsFilter={productsFilter} searchParams={searchParams} />
+        <HeavyComponent
+          productsFilter={productsFilter}
+          searchParams={searchParams}
+        />
       </Suspense>
     </ReactLenis>
   );
