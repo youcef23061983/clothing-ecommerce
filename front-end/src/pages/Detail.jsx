@@ -4,6 +4,8 @@ import img from "/images/men/banner/bestSeller.jpg";
 import { AppContext } from "../data managment/AppProvider";
 import Rating from "./Rating";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ReactLenis } from "@studio-freight/react-lenis";
+import { Helmet } from "react-helmet-async";
 
 const Detail = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
@@ -76,7 +78,11 @@ const Detail = () => {
   } = data;
 
   return (
-    <div>
+    <ReactLenis root={true}>
+      <Helmet>
+        <title>Sale Products</title>
+        <meta name="description" content="Detail product" />
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
@@ -139,7 +145,7 @@ const Detail = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </ReactLenis>
   );
 };
 

@@ -15,4 +15,4 @@ User-agent: Googlebot
 Disallow: /no-google/
 
 # Sitemap URL for search engines
-Sitemap: https://www.yourwebsite.com/sitemap.xml
+Sitemap: https://clothing-ecommerce-phi.vercel.app/sitemap.xml

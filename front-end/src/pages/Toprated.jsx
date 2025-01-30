@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
 import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { ReactLenis } from "@studio-freight/react-lenis";
+import { Helmet } from "react-helmet-async";
 const Toprated = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
@@ -98,63 +100,33 @@ const Toprated = () => {
     ?.sort((a, b) => {
       return (b.newPrice || b.price) - (a.newPrice || a.price);
     });
-  const useMediaQuery = (query) => {
-    const [matches, setMatches] = useState(false);
-
-    useEffect(() => {
-      const media = window.matchMedia(query);
-      if (media.matches !== matches) {
-        setMatches(media.matches);
-      }
-
-      const listener = () => {
-        setMatches(media.matches);
-      };
-
-      if (typeof media.addEventListener === "function") {
-        media.addEventListener("change", listener);
-      } else {
-        media.addListener(listener);
-      }
-
-      return () => {
-        if (typeof media.removeEventListener === "function") {
-          media.removeEventListener("change", listener);
-        } else {
-          media.removeListener(listenerList);
-        }
-      };
-    }, [matches, query]);
-
-    return matches;
+  const filterVariant = {
+    hidden: { opacity: 0 },
+    visible: () => ({
+      opacity: 1,
+      transition: { delay: 0.3, ease: "easeInOut" },
+    }),
   };
-  const isMediumScreen = useMediaQuery("(min-width: 768px)");
-  const ref = useRef();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["0 1", isMediumScreen ? "0.15 1" : "0.06 1"],
-  });
-  const scrollScall = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
-  const scrollX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
 
   return (
-    <div>
+    <ReactLenis root={true}>
+      <Helmet>
+        <title>Top Rated Products</title>
+        <meta name="description" content="Buy our top rated products." />
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your Top Rated</h2>
         <motion.form
-          ref={ref}
-          style={{
-            scale: scrollScall,
-            opacity: scrollOpacity,
-            x: scrollX,
-          }}
+          variants={filterVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
           className="searchContainer"
         >
           <div className="searchElement">
@@ -239,7 +211,7 @@ const Toprated = () => {
           })}
         </motion.div>
       </div>
-    </div>
+    </ReactLenis>
   );
 };
 
