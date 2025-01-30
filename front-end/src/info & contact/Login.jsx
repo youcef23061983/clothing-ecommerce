@@ -1,10 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import img from "/images/men/banner/login.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { auth } from "../info & contact/Firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { AppContext } from "../data managment/AppProvider";
+import { Helmet } from "react-helmet-async";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -72,11 +73,14 @@ const Login = () => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    document.title = "Login";
-  }, []);
+
   return (
     <div>
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>Login</title>
+        <meta name="description" content="Login to your account" />
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>

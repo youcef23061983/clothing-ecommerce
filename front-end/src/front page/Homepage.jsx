@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import img from "/images/men/banner/homepage3.jpg";
-import Product from "../pages/Product";
 import UseFetch from "../data managment/UseFetch";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
+import Products from "./Products";
 
 const Homepage = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
@@ -47,9 +49,8 @@ const Homepage = () => {
       return updatedUser;
     });
   };
-  useEffect(() => {
-    document.title = "Shop";
 
+  useEffect(() => {
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",
@@ -62,6 +63,7 @@ const Homepage = () => {
     };
     setUser(updatedUserState);
   }, [searchParams]);
+
   let types = ["all", ...new Set(data?.map((product) => product.type))];
   types = types.map((type, index) => {
     return (
@@ -70,6 +72,7 @@ const Homepage = () => {
       </option>
     );
   });
+
   let ratings = [2, 3, 4];
   ratings = ratings.map((rating, index) => {
     return (
@@ -78,6 +81,7 @@ const Homepage = () => {
       </option>
     );
   });
+
   let minPrice = data ? Math.min(...data.map((product) => product.price)) : 0;
   let maxPrice = data ? Math.max(...data.map((product) => product.price)) : 0;
 
@@ -107,62 +111,41 @@ const Homepage = () => {
         return "";
       }
     });
-  const useMediaQuery = (query) => {
-    const [matches, setMatches] = useState(false);
 
-    useEffect(() => {
-      const media = window.matchMedia(query);
-      if (media.matches !== matches) {
-        setMatches(media.matches);
-      }
-
-      const listener = () => {
-        setMatches(media.matches);
-      };
-
-      if (typeof media.addEventListener === "function") {
-        media.addEventListener("change", listener);
-      } else {
-        media.addListener(listener);
-      }
-
-      return () => {
-        if (typeof media.removeEventListener === "function") {
-          media.removeEventListener("change", listener);
-        } else {
-          media.removeListener(listenerList);
-        }
-      };
-    }, [matches, query]);
-
-    return matches;
+  const filterVariant = {
+    hidden: { opacity: 0 },
+    visible: () => ({
+      opacity: 1,
+      transition: { delay: 0.3, ease: "easeInOut" },
+    }),
   };
-  const isMediumScreen = useMediaQuery("(min-width: 768px)");
-  const ref = useRef();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["0 1", isMediumScreen ? "0.7 1" : "0.4 1"],
+
+  useLenis((lenis) => {
+    lenis.on("scroll", ({ scroll }) => {
+      console.log("Scroll position:", scroll);
+    });
   });
-  const scrollScall = useTransform(scrollYProgress, [0, 1], [0.5, 1]);
-  const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
-  const scrollX = useTransform(scrollYProgress, [0, 1], ["50vw", "0vw"]);
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
+
   return (
-    <div>
+    <ReactLenis root={true}>
+      <Helmet>
+        <title>Shop</title>
+        <meta name="description" content="Buy our products." />
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
-      <div ref={ref}>
-        <motion.form
-          style={{
-            scale: scrollScall,
-            opacity: scrollOpacity,
-            x: scrollX,
-          }}
-          className="searchContainer"
-        >
+
+      <motion.div
+        variants={filterVariant}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <form className="searchContainer">
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -246,21 +229,11 @@ const Homepage = () => {
               <option value="priceHighToLow">Price High to Low</option>
             </select>
           </div>
-        </motion.form>
-      </div>
-
-      <motion.div layout className="productsDiv">
-        {productsFilter?.map((product) => {
-          return (
-            <Product
-              key={product.id}
-              product={product}
-              searchParams={searchParams}
-            />
-          );
-        })}
+        </form>
       </motion.div>
-    </div>
+
+      <Products productsFilter={productsFilter} searchParams={searchParams} />
+    </ReactLenis>
   );
 };
 

@@ -1,0 +1,18 @@
+# Allow all crawlers to access all content
+User-agent: *
+Disallow:
+
+# Block specific directories
+Disallow: /admin/
+Disallow: /login/
+Disallow: /private/
+
+# Allow search engines to index the blog section
+Allow: /blog/
+
+# Block specific search engines (if necessary)
+User-agent: Googlebot
+Disallow: /no-google/
+
+# Sitemap URL for search engines
+Sitemap: https://www.yourwebsite.com/sitemap.xml
