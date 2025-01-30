@@ -79,9 +79,34 @@ const Detail = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>{`${data.slug}`}</title>
-        <meta name="description" content="Detail Product" />
+        <title>{slug}</title>
+        <meta
+          name="description"
+          content={slug || "Detailed product information."}
+        />
+        <meta
+          property="og:title"
+          content={slug || "High-quality clothing for every occasion."}
+        />
+        <meta
+          property="og:description"
+          content={data.description || "Product details"}
+        />
+        <meta property="og:image" content={selectedImage || "image"} />
+        <meta
+          property="og:url"
+          content={`https://clothing-ecommerce-phi.vercel.app/${id}`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={slug} />
+        <meta name="twitter:description" content={slug || "Product details"} />
+        <meta name="twitter:image" content={selectedImage || "image"} />
+        <link
+          rel="canonical"
+          href={`https://clothing-ecommerce-phi.vercel.app/${id}`}
+        />
       </Helmet>
+
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>

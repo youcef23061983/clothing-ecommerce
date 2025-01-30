@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
-import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
+import Products from "../front page/Products";
 
 const Best = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
@@ -68,6 +67,7 @@ const Best = () => {
       </option>
     );
   });
+
   let ratings = [2, 3, 4];
   ratings = ratings.map((rating, index) => {
     return (
@@ -108,35 +108,53 @@ const Best = () => {
       }
     });
 
-  const filterVariant = {
-    hidden: { opacity: 0 },
-    visible: () => ({
-      opacity: 1,
-      transition: { delay: 0.3, ease: "easeInOut" },
-    }),
-  };
-
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
+  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
 
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>Best Products</title>
-        <meta name="description" content="Buy Our Best Products." />
+        <title>{`Shop Products - ${productsFilter?.length || 0} items`}</title>
+        <meta
+          name="description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more to find the perfect item.`}
+        />
+        <meta
+          property="og:title"
+          content={`Shop Products - ${productsFilter?.length || 0} items`}
+        />
+        <meta
+          property="og:description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more.`}
+        />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={window.location.href} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={`Shop Products - ${productsFilter?.length || 0} items`}
+        />
+        <meta
+          name="twitter:description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more.`}
+        />
+        <meta name="twitter:image" content={ogImage} />
       </Helmet>
+
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} className="detailImg" alt="Best Sellers" />
       </div>
       <div>
         <h2 className="orderTitle">Your Best Sellers</h2>
-        <motion.form
-          variants={filterVariant}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="searchContainer"
-        >
+        <form className="searchContainer">
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -189,18 +207,13 @@ const Best = () => {
               <option value="priceHighToLow">Price High to Low</option>
             </select>
           </div>
-        </motion.form>
-        <motion.div layout className="productsDiv">
-          {productsFilter?.map((product) => {
-            return (
-              <Product
-                key={product.id}
-                product={product}
-                searchParams={searchParams}
-              />
-            );
-          })}
-        </motion.div>
+        </form>
+        <Suspense fallback={<h2>...is loading</h2>}>
+          <Products
+            productsFilter={productsFilter}
+            searchParams={searchParams}
+          />
+        </Suspense>
       </div>
     </ReactLenis>
   );

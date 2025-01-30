@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
 import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
+import Products from "../front page/Products";
 const Toprated = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
@@ -99,35 +100,43 @@ const Toprated = () => {
     ?.sort((a, b) => {
       return (b.newPrice || b.price) - (a.newPrice || a.price);
     });
-  const filterVariant = {
-    hidden: { opacity: 0 },
-    visible: () => ({
-      opacity: 1,
-      transition: { delay: 0.3, ease: "easeInOut" },
-    }),
-  };
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
+  const pageTitle = `Top Rated Products - ${productsFilter?.length || 0} items`;
+  const pageDescription = `Browse our top-rated products${
+    user.type !== "all" ? ` in ${user.type}` : ""
+  }. Filter by price, rating, and more to find the perfect item.`;
+  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
 
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>Top Rated Products</title>
-        <meta name="description" content="Buy Our Top Rated Products." />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta
+          property="og:url"
+          content={`https://clothing-ecommerce-phi.vercel.app/sale`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={ogImage} />
+        <link
+          rel="canonical"
+          href={`https://clothing-ecommerce-phi.vercel.app/sale`}
+        />
       </Helmet>
+
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your Top Rated</h2>
-        <motion.form
-          variants={filterVariant}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="searchContainer"
-        >
+        <form className="searchContainer">
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -197,18 +206,13 @@ const Toprated = () => {
               <label htmlFor="newArrival">newArrival:</label>
             </div>
           </div>
-        </motion.form>
-        <motion.div layout className="productsDiv">
-          {productsFilter?.map((product) => {
-            return (
-              <Product
-                key={product.id}
-                product={product}
-                searchParams={searchParams}
-              />
-            );
-          })}
-        </motion.div>
+        </form>
+        <Suspense fallback={<h2>...is loading</h2>}>
+          <Products
+            productsFilter={productsFilter}
+            searchParams={searchParams}
+          />
+        </Suspense>
       </div>
     </ReactLenis>
   );

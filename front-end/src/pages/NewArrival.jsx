@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
-import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
-import { useScroll, useTransform, motion } from "framer-motion";
+import Products from "../front page/Products";
+import ReactLenis from "@studio-freight/react-lenis";
 const NewArrival = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
 
@@ -108,65 +108,58 @@ const NewArrival = () => {
         return "";
       }
     });
-  const useMediaQuery = (query) => {
-    const [matches, setMatches] = useState(false);
-
-    useEffect(() => {
-      const media = window.matchMedia(query);
-      if (media.matches !== matches) {
-        setMatches(media.matches);
-      }
-
-      const listener = () => {
-        setMatches(media.matches);
-      };
-
-      if (typeof media.addEventListener === "function") {
-        media.addEventListener("change", listener);
-      } else {
-        media.addListener(listener);
-      }
-
-      return () => {
-        if (typeof media.removeEventListener === "function") {
-          media.removeEventListener("change", listener);
-        } else {
-          media.removeListener(listenerList);
-        }
-      };
-    }, [matches, query]);
-
-    return matches;
-  };
-  const isMediumScreen = useMediaQuery("(min-width: 768px)");
-  const ref = useRef();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["0 1", isMediumScreen ? "0.15 1" : "0.06 1"],
-  });
-  const scrollScall = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
-  const scrollX = useTransform(scrollYProgress, [0, 1], ["40vw", "0vw"]);
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
-
+  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
+  const pageTitle = `NewArrivals Products - ${
+    productsFilter?.length || 0
+  } items`;
   return (
-    <div>
+    <ReactLenis root={true}>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta
+          name="description"
+          content={`Browse our new arrival products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more to find the perfect item.`}
+        />
+        <meta
+          property="og:title"
+          content={`NewArrivals Products - ${
+            productsFilter?.length || 0
+          } items`}
+        />
+        <meta
+          property="og:description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more.`}
+        />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={window.location.href} />
+
+        {/* Twitter Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={`Shop Products - ${productsFilter?.length || 0} items`}
+        />
+        <meta
+          name="twitter:description"
+          content={`Browse our new arrival products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more.`}
+        />
+        <meta name="twitter:image" content={ogImage} />
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your New Arrivals</h2>
-        <motion.form
-          ref={ref}
-          style={{
-            scale: scrollScall,
-            opacity: scrollOpacity,
-            x: scrollX,
-          }}
-          className="searchContainer"
-        >
+        <form className="searchContainer">
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -219,20 +212,15 @@ const NewArrival = () => {
               <option value="priceHighToLow">Price High to Low</option>
             </select>
           </div>
-        </motion.form>
-        <motion.div layout className="productsDiv">
-          {productsFilter?.map((product) => {
-            return (
-              <Product
-                key={product.id}
-                product={product}
-                searchParams={searchParams}
-              />
-            );
-          })}
-        </motion.div>
+        </form>
+        <Suspense fallback={<h2>...is loading</h2>}>
+          <Products
+            productsFilter={productsFilter}
+            searchParams={searchParams}
+          />
+        </Suspense>
       </div>
-    </div>
+    </ReactLenis>
   );
 };
 

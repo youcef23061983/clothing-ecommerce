@@ -1,17 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import img from "/images/men/banner/homepage3.jpg";
 import UseFetch from "../data managment/UseFetch";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
 import Products from "./Products";
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
 
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+
+    const listener = () => {
+      setMatches(media.matches);
+    };
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", listener);
+    } else {
+      media.addListener(listener);
+    }
+
+    return () => {
+      if (typeof media.removeEventListener === "function") {
+        media.removeEventListener("change", listener);
+      } else {
+        media.removeListener(listener);
+      }
+    };
+  }, [matches, query]);
+
+  return matches;
+};
 const Homepage = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
   const { data, isPending, error } = UseFetch(url, key1);
-  console.log(data);
 
   const initialUserState = {
     type: "all",
@@ -125,114 +153,155 @@ const Homepage = () => {
       console.log("Scroll position:", scroll);
     });
   });
+  const isMediumScreen = useMediaQuery("(min-width: 768px)");
+  const ref = useRef();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["0 1", isMediumScreen ? "0.4 1" : "0.2 1"],
+  });
+  const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
+  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
+  const pageTitle = `Shop Products - ${productsFilter?.length || 0} items`;
 
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>Shop Products</title>
-        <meta name="description" content="Buy Our Products." />
+        <title>{pageTitle}</title>
+        <meta
+          name="description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more to find the perfect item.`}
+        />
+        <meta
+          property="og:title"
+          content={`Shop Products - ${productsFilter?.length || 0} items`}
+        />
+        <meta
+          property="og:description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more.`}
+        />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={window.location.href} />
+
+        {/* Twitter Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={`Shop Products - ${productsFilter?.length || 0} items`}
+        />
+        <meta
+          name="twitter:description"
+          content={`Browse our shop products${
+            user.type !== "all" ? ` in ${user.type}` : ""
+          }. Filter by price, rating, and more.`}
+        />
+        <meta name="twitter:image" content={ogImage} />
       </Helmet>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>
-
-      <motion.div
-        variants={filterVariant}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+      <motion.form
+        className="searchContainer"
+        ref={ref}
+        style={{
+          opacity: scrollOpacity,
+          x: scrollX,
+          willChange: "transform, opacity",
+        }}
       >
-        <form className="searchContainer">
-          <div className="searchElement">
-            <label htmlFor="type">Products Type</label>
-            <select
-              name="type"
-              id="type"
-              value={user.type}
-              onChange={handleChange}
-              className="formSelect"
-            >
-              {types}
-            </select>
-          </div>
-          <div className="searchElement">
-            <label htmlFor="price">price:{user.price} $</label>
+        <div className="searchElement">
+          <label htmlFor="type">Products Type</label>
+          <select
+            name="type"
+            id="type"
+            value={user.type}
+            onChange={handleChange}
+            className="formSelect"
+          >
+            {types}
+          </select>
+        </div>
+        <div className="searchElement">
+          <label htmlFor="price">price:{user.price} $</label>
+          <input
+            type="range"
+            name="price"
+            id="price"
+            value={user.price}
+            min={minPrice}
+            max={maxPrice}
+            onChange={handleChange}
+            className="formSelect"
+          />
+        </div>
+        <div className="searchElement">
+          <label htmlFor="rating">Products Rating</label>
+          <select
+            name="rating"
+            id="rating"
+            value={user.rating}
+            onChange={handleChange}
+            className="formSelect"
+          >
+            {ratings}
+          </select>
+        </div>
+        <div className="searchElement">
+          <div className="elementCheck">
             <input
-              type="range"
-              name="price"
-              id="price"
-              value={user.price}
-              min={minPrice}
-              max={maxPrice}
+              type="checkbox"
+              name="onSale"
+              id="onSale"
+              checked={user.onSale}
               onChange={handleChange}
-              className="formSelect"
             />
+            <label htmlFor="onSale">onSale:</label>
           </div>
-          <div className="searchElement">
-            <label htmlFor="rating">Products Rating</label>
-            <select
-              name="rating"
-              id="rating"
-              value={user.rating}
+          <div className="elementCheck">
+            <input
+              type="checkbox"
+              name="bestSeller"
+              id="bestSeller"
+              checked={user.bestSeller}
               onChange={handleChange}
-              className="formSelect"
-            >
-              {ratings}
-            </select>
+            />
+            <label htmlFor="bestSeller">bestSeller:</label>
           </div>
-          <div className="searchElement">
-            <div className="elementCheck">
-              <input
-                type="checkbox"
-                name="onSale"
-                id="onSale"
-                checked={user.onSale}
-                onChange={handleChange}
-              />
-              <label htmlFor="onSale">onSale:</label>
-            </div>
-            <div className="elementCheck">
-              <input
-                type="checkbox"
-                name="bestSeller"
-                id="bestSeller"
-                checked={user.bestSeller}
-                onChange={handleChange}
-              />
-              <label htmlFor="bestSeller">bestSeller:</label>
-            </div>
-            <div className="elementCheck">
-              <input
-                type="checkbox"
-                name="newArrival"
-                id="newArrival"
-                checked={user.newArrival}
-                onChange={handleChange}
-              />
-              <label htmlFor="newArrival">newArrival:</label>
-            </div>
-          </div>
-          <div className="searchElement">
-            <label htmlFor="sortPrice">Sort By:</label>
-            <select
-              name="sortOption"
-              id="sortPrice"
-              value={user.sortOption}
+          <div className="elementCheck">
+            <input
+              type="checkbox"
+              name="newArrival"
+              id="newArrival"
+              checked={user.newArrival}
               onChange={handleChange}
-              className="formSelect"
-            >
-              <option value="">-- Select --</option>
-              <option value="priceLowToHigh">Price Low to High</option>
-              <option value="priceHighToLow">Price High to Low</option>
-            </select>
+            />
+            <label htmlFor="newArrival">newArrival:</label>
           </div>
-        </form>
-      </motion.div>
-
-      <Products productsFilter={productsFilter} searchParams={searchParams} />
+        </div>
+        <div className="searchElement">
+          <label htmlFor="sortPrice">Sort By:</label>
+          <select
+            name="sortOption"
+            id="sortPrice"
+            value={user.sortOption}
+            onChange={handleChange}
+            className="formSelect"
+          >
+            <option value="">-- Select --</option>
+            <option value="priceLowToHigh">Price Low to High</option>
+            <option value="priceHighToLow">Price High to Low</option>
+          </select>
+        </div>
+      </motion.form>
+      <Suspense fallback={<h2>...is loading</h2>}>
+        <Products productsFilter={productsFilter} searchParams={searchParams} />
+      </Suspense>
     </ReactLenis>
   );
 };

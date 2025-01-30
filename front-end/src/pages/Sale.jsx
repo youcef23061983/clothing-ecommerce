@@ -106,35 +106,55 @@ const Sale = () => {
         return "";
       }
     });
-  const filterVariant = {
-    hidden: { opacity: 0 },
-    visible: () => ({
-      opacity: 1,
-      transition: { delay: 0.3, ease: "easeInOut" },
-    }),
-  };
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
+
+  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
 
   return (
     <ReactLenis root={true}>
       <Helmet>
         <title>Sale Products</title>
-        <meta name="description" content="Buy Our Sale Products." />
+        <meta
+          name="description"
+          content="Browse and buy our sale products at discounted prices. Limited time offers!"
+        />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Sale Products" />
+        <meta
+          property="og:description"
+          content="Browse and buy our sale products at discounted prices. Limited time offers!"
+        />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:title" content="Sale Products" />
+        <meta
+          name="twitter:description"
+          content="Browse and buy our sale products at discounted prices. Limited time offers!"
+        />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+
+        {/* Additional meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="sale, products, discounts, buy, offers, shopping"
+        />
+        <meta name="author" content="Your Company Name" />
       </Helmet>
+
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your Sale</h2>
-        <motion.form
-          variants={filterVariant}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="searchContainer"
-        >
+        <motion.form className="searchContainer">
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
