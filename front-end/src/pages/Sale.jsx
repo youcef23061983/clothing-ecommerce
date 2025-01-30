@@ -47,7 +47,6 @@ const Sale = () => {
     });
   };
   useEffect(() => {
-    document.title = "Sale";
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",
@@ -122,7 +121,7 @@ const Sale = () => {
     <ReactLenis root={true}>
       <Helmet>
         <title>Sale Products</title>
-        <meta name="description" content="Buy our Sale products." />
+        <meta name="description" content="Buy Our Sale Products." />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />

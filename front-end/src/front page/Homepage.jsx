@@ -132,8 +132,8 @@ const Homepage = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>Shop</title>
-        <meta name="description" content="Buy our products." />
+        <title>Shop Products</title>
+        <meta name="description" content="Buy Our Products." />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />

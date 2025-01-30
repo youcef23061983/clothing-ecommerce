@@ -48,7 +48,6 @@ const Best = () => {
     });
   };
   useEffect(() => {
-    document.title = "Best";
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",
@@ -123,8 +122,8 @@ const Best = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>Sale Products</title>
-        <meta name="description" content="Buy our Sale products." />
+        <title>Best Products</title>
+        <meta name="description" content="Buy Our Best Products." />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />

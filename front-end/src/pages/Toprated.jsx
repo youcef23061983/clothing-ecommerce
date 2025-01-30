@@ -48,7 +48,6 @@ const Toprated = () => {
     });
   };
   useEffect(() => {
-    document.title = "Top";
     const updatedUserState = {
       ...initialUserState,
       type: searchParams.get("type") || "all",
@@ -115,7 +114,7 @@ const Toprated = () => {
     <ReactLenis root={true}>
       <Helmet>
         <title>Top Rated Products</title>
-        <meta name="description" content="Buy our top rated products." />
+        <meta name="description" content="Buy Our Top Rated Products." />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />

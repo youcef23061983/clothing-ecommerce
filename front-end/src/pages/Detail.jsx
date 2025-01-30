@@ -35,7 +35,6 @@ const Detail = () => {
 
   useEffect(() => {
     if (data) {
-      document.title = `${data.slug}`;
       setSelectedImage(data.images[0]);
     }
   }, [data]);
@@ -80,8 +79,8 @@ const Detail = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>Sale Products</title>
-        <meta name="description" content="Detail product" />
+        <title>{`${data.slug}`}</title>
+        <meta name="description" content="Detail Product" />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />
