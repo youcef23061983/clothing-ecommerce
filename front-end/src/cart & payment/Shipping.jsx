@@ -81,7 +81,7 @@ const Shipping = () => {
       exit="exit"
     >
       <motion.div className="headerimages" variants={childVariants}>
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="shipping" loading="lazy" className="detailImg" />
       </motion.div>
       <motion.div className="loginContainer" variants={containerVariants}>
         <h3>Shipping Address</h3>

@@ -124,7 +124,12 @@ const Navbar = () => {
       <motion.div className="nav-header" variants={containerVariants}>
         <div className="logo">
           <Link to="">
-            <img src="/images/desire.png" alt="" className="img" />
+            <img
+              src="/images/desire.png"
+              alt="log"
+              loading="lazy"
+              className="img"
+            />
           </Link>
         </div>
 
@@ -153,6 +158,8 @@ const Navbar = () => {
                     src={user && user.photoURL}
                     className="img"
                     style={{ borderRadius: "50%" }}
+                    alt="phto"
+                    loading="lazy"
                   />
                 </Link>
                 <Link className="displayName" to="/" onClick={logout}>

@@ -80,7 +80,7 @@ const Payment = () => {
       exit="exit"
     >
       <motion.div className="headerimages" variants={childVariants}>
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="payment" loading="lazy" className="detailImg" />
       </motion.div>
       <motion.div className="loginContainer" variants={containerVariants}>
         <h3>Payment Method</h3>

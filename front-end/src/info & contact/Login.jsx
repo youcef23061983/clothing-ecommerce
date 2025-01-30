@@ -82,7 +82,7 @@ const Login = () => {
         <meta name="description" content="Login to your account" />
       </Helmet>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="login" loading="lazy" className="detailImg" />
       </div>
       <div className="loginContainer">
         <h1>Sign in to your account</h1>

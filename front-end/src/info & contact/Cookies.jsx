@@ -8,7 +8,7 @@ const Cookies = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="cookies" loading="lazy" className="detailImg" />
       </div>
       <div className="story">
         <h1 className="orderTitle">Cookies Policy for Desire</h1>

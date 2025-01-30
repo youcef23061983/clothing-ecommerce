@@ -147,7 +147,6 @@ const Best = () => {
           }. Filter by price, rating, and more.`}
         />
         <meta name="twitter:image" content={ogImage} />
-        {/* Additional meta tags */}
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
@@ -157,7 +156,12 @@ const Best = () => {
       </Helmet>
 
       <div className="headerimages">
-        <img src={img} className="detailImg" alt="Best Sellers" />
+        <img
+          src={img}
+          className="detailImg"
+          alt="Best Sellers"
+          loading="lazy"
+        />
       </div>
       <div>
         <h2 className="orderTitle">Your Best Sellers</h2>

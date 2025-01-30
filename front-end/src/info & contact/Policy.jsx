@@ -8,7 +8,7 @@ const Policy = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="policy" loading="lazy" className="detailImg" />
       </div>
       <div className="story">
         <h1 className="orderTitle">Privacy Policy</h1>

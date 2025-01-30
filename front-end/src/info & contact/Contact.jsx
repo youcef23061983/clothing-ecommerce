@@ -47,7 +47,7 @@ const Contact = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="contact" loading="lazy" className="detailImg" />
       </div>
       <div className="form">
         <div className="touches">

@@ -121,7 +121,6 @@ const Sale = () => {
           content="Browse and buy our sale products at discounted prices. Limited time offers!"
         />
 
-        {/* Open Graph */}
         <meta property="og:title" content="Sale Products" />
         <meta
           property="og:description"
@@ -131,7 +130,6 @@ const Sale = () => {
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="website" />
 
-        {/* Twitter Cards */}
         <meta name="twitter:title" content="Sale Products" />
         <meta
           name="twitter:description"
@@ -140,7 +138,6 @@ const Sale = () => {
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:card" content="summary_large_image" />
 
-        {/* Additional meta tags */}
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
@@ -150,7 +147,7 @@ const Sale = () => {
       </Helmet>
 
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="sale" loading="lazy" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your Sale</h2>

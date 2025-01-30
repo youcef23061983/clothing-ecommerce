@@ -16,7 +16,7 @@ const Cart = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="cart" loading="lazy" className="detailImg" />
       </div>
       <h2 className="cartTitle">your bag</h2>
 

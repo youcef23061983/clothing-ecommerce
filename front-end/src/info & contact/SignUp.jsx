@@ -50,7 +50,7 @@ const SignUp = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="signup" loading="lazy" className="detailImg" />
       </div>
       <div className="loginContainer">
         <h1>Sign Up</h1>

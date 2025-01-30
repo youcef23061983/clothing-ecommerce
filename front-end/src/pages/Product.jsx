@@ -52,7 +52,7 @@ const Product = ({ product, searchParams }) => {
         state={{ search: `?${searchParams.toString()}` }}
       >
         <div className="imgDiv">
-          <img src={images[0]} alt="" className="img" />
+          <img src={images[0]} alt="product" loading="lazy" className="img" />
         </div>
       </Link>
 

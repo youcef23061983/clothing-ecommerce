@@ -101,7 +101,6 @@ const Detail = () => {
         <meta name="twitter:title" content={slug} />
         <meta name="twitter:description" content={slug || "Product details"} />
         <meta name="twitter:image" content={selectedImage || "image"} />
-        {/* Additional meta tags */}
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
@@ -115,7 +114,7 @@ const Detail = () => {
       </Helmet>
 
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="detail" loading="lazy" className="detailImg" />
       </div>
       <h2 className="orderTitle" data-testid="detailId">
         Product Detail
@@ -131,12 +130,19 @@ const Detail = () => {
                   alt={`Image ${index + 1}`}
                   onClick={() => setSelectedImage(image)}
                   className="img"
+                  altdetail
+                  loading="lazy"
                 />
               </div>
             ))}
           </div>
           <div className="imgDiv" style={{ width: "30rem", margin: "0 auto" }}>
-            <img src={selectedImage} alt="Selected" className="img" />
+            <img
+              src={selectedImage}
+              alt="Selected"
+              className="img"
+              loading="lazy"
+            />
           </div>
         </div>
         <div className="productDetail">

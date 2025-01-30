@@ -48,7 +48,7 @@ const Order = () => {
       exit="exit"
     >
       <motion.div className="headerimages" variants={childVariants}>
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="order" loading="lazy" className="detailImg" />
       </motion.div>
       <motion.h2 className="orderTitle" variants={containerVariants}>
         Your order
@@ -91,7 +91,12 @@ const Order = () => {
               return (
                 <div className="cartDiv" key={item.id}>
                   <div className="cartImg">
-                    <img src={item?.images[0]} alt="" className="img" />
+                    <img
+                      src={item?.images[0]}
+                      alt="cart"
+                      loading="lazy"
+                      className="img"
+                    />
                   </div>
                   <h3 className="cartName">{item?.slug.substring(0, 20)}...</h3>
                   <div>

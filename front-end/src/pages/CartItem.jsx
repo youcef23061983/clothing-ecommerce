@@ -10,7 +10,12 @@ const CartItem = ({ item }) => {
   return (
     <div className="cartDiv" data-testid="cart-item">
       <div className="cartImg">
-        <img src={item?.images[0]} alt="" className="img" />
+        <img
+          src={item?.images[0]}
+          alt="cartItem"
+          loading="lazy"
+          className="img"
+        />
       </div>
       <h3 className="cartName">{item?.slug.substring(0, 10)}...</h3>
       <div>

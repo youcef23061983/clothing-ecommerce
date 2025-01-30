@@ -140,7 +140,6 @@ const NewArrival = () => {
         <meta property="og:image" content={ogImage} />
         <meta property="og:url" content={window.location.href} />
 
-        {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -161,7 +160,7 @@ const NewArrival = () => {
         <meta name="author" content="Desire" />
       </Helmet>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="new" loading="lazy" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your New Arrivals</h2>

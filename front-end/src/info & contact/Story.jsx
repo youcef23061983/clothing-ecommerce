@@ -8,7 +8,7 @@ const Story = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="story" loading="lazy" className="detailImg" />
       </div>
       <div className="story">
         <h2 className="orderTitle">Our Story</h2>

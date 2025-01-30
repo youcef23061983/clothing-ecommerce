@@ -8,7 +8,7 @@ const Terms = () => {
   return (
     <div>
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="terms" loading="lazy" className="detailImg" />
       </div>
       <div className="story">
         <h1 className="orderTitle">Terms & Conditions</h1>

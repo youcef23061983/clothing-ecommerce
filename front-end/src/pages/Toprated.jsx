@@ -125,7 +125,6 @@ const Toprated = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={ogImage} />
-        {/* Additional meta tags */}
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
@@ -135,7 +134,7 @@ const Toprated = () => {
       </Helmet>
 
       <div className="headerimages">
-        <img src={img} alt="" className="detailImg" />
+        <img src={img} alt="top" loading="lazy" className="detailImg" />
       </div>
       <div>
         <h2 className="orderTitle">Your Top Rated</h2>
