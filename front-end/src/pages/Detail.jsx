@@ -101,6 +101,13 @@ const Detail = () => {
         <meta name="twitter:title" content={slug} />
         <meta name="twitter:description" content={slug || "Product details"} />
         <meta name="twitter:image" content={selectedImage || "image"} />
+        {/* Additional meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="destail, product, discounts, buy, offers, shopping"
+        />
+        <meta name="author" content="Desire" />
         <link
           rel="canonical"
           href={`https://clothing-ecommerce-phi.vercel.app/${id}`}

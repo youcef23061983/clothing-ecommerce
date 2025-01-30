@@ -146,7 +146,7 @@ const Sale = () => {
           name="keywords"
           content="sale, products, discounts, buy, offers, shopping"
         />
-        <meta name="author" content="Your Company Name" />
+        <meta name="author" content="Desire" />
       </Helmet>
 
       <div className="headerimages">

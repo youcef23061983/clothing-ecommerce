@@ -153,6 +153,12 @@ const NewArrival = () => {
           }. Filter by price, rating, and more.`}
         />
         <meta name="twitter:image" content={ogImage} />
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="new arrival, products, discounts, buy, offers, shopping"
+        />
+        <meta name="author" content="Desire" />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="" className="detailImg" />

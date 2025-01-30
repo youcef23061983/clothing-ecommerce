@@ -202,6 +202,13 @@ const Homepage = () => {
           }. Filter by price, rating, and more.`}
         />
         <meta name="twitter:image" content={ogImage} />
+        {/* Additional meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="shop, products, discounts, buy, offers, shopping"
+        />
+        <meta name="author" content="Desire" />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />

@@ -115,20 +115,20 @@ const Best = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>{`Shop Products - ${productsFilter?.length || 0} items`}</title>
+        <title>{`Best Products - ${productsFilter?.length || 0} items`}</title>
         <meta
           name="description"
-          content={`Browse our shop products${
+          content={`Browse our best products${
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more to find the perfect item.`}
         />
         <meta
           property="og:title"
-          content={`Shop Products - ${productsFilter?.length || 0} items`}
+          content={`Best Products - ${productsFilter?.length || 0} items`}
         />
         <meta
           property="og:description"
-          content={`Browse our shop products${
+          content={`Browse our best products ${
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
@@ -138,15 +138,22 @@ const Best = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content={`Shop Products - ${productsFilter?.length || 0} items`}
+          content={`Best Products - ${productsFilter?.length || 0} items`}
         />
         <meta
           name="twitter:description"
-          content={`Browse our shop products${
+          content={`Browse our best products${
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
         <meta name="twitter:image" content={ogImage} />
+        {/* Additional meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="best, products, discounts, buy, offers, shopping"
+        />
+        <meta name="author" content="Desire" />
       </Helmet>
 
       <div className="headerimages">

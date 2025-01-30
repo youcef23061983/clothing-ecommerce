@@ -125,10 +125,13 @@ const Toprated = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={ogImage} />
-        <link
-          rel="canonical"
-          href={`https://clothing-ecommerce-phi.vercel.app/sale`}
+        {/* Additional meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta
+          name="keywords"
+          content="rating, products, discounts, buy, offers, shopping"
         />
+        <meta name="author" content="Desire" />
       </Helmet>
 
       <div className="headerimages">
