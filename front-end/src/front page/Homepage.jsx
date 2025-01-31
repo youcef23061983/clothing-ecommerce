@@ -5,7 +5,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
-import Products from "./Products";
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(false);
 
