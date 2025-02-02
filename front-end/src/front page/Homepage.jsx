@@ -173,9 +173,9 @@ const Homepage = () => {
         <title>{pageTitle}</title>
         <meta
           name="description"
-          content={`Browse our shop products${
+          content={`Discover our shop products${
             user.type !== "all" ? ` in ${user.type}` : ""
-          }. Filter by price, rating, and more to find the perfect item.`}
+          }. Filter by price, rating, and find your favorite men's clothing. Shop now for the latest trends and exclusive discounts!`}
         />
         <meta
           property="og:title"
@@ -183,14 +183,14 @@ const Homepage = () => {
         />
         <meta
           property="og:description"
-          content={`Browse our shop products${
+          content={`Explore our shop products${
             user.type !== "all" ? ` in ${user.type}` : ""
-          }. Filter by price, rating, and more.`}
+          }. Filter by price, rating, and discover your favorite men's clothing. Shop now for exclusive deals and styles!`}
         />
-        <meta property="og:image" content={img} />
+        <meta property="og:image" content="/images/men/banner/homepage3.jpg" />
         <meta
           property="og:url"
-          content={`${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}`}
+          content="https://clothing-ecommerce-phi.vercel.app"
         />
 
         {/* Twitter Meta Tags */}
@@ -203,13 +203,18 @@ const Homepage = () => {
           name="twitter:description"
           content={`Browse our shop products${
             user.type !== "all" ? ` in ${user.type}` : ""
-          }. Filter by price, rating, and more.`}
+          }. Filter by price, rating, and find your favorite men's clothing. Shop now for exclusive deals!`}
         />
-        <meta name="twitter:image" content={img} />
+        <meta name="twitter:image" content="/images/men/banner/homepage3.jpg" />
+        <meta
+          property="twitter:url"
+          content="https://clothing-ecommerce-phi.vercel.app"
+        />
+
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
-          content="shop, products, discounts, buy, offers, shopping"
+          content="shop, products, discounts, buy, offers, shopping, men's clothing, fashion, trends"
         />
         <meta name="author" content="Desire" />
       </Helmet>
