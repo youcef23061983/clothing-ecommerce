@@ -196,7 +196,6 @@ const Homepage = () => {
           content="https://clothing-ecommerce-phi.vercel.app"
         />
 
-        {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -208,7 +207,10 @@ const Homepage = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and find your favorite men's clothing. Shop now for exclusive deals!`}
         />
-        <meta name="twitter:image" content="/images/men/banner/homepage3.jpg" />
+        <meta
+          name="twitter:image"
+          content="https://clothing-ecommerce-phi.vercel.app/images/men/banner/homepage3.jpg"
+        />
         <meta
           property="twitter:url"
           content="https://clothing-ecommerce-phi.vercel.app"
