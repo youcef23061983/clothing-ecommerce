@@ -187,9 +187,11 @@ const Homepage = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
-        {/* <meta property="og:image" content={ogImage} /> */}
-        <meta property="og:image" content="/images/men/banner/homepage3.jpg" />
-        <meta property="og:url" content="clothing-ecommerce-phi.vercel.app" />
+        <meta property="og:image" content={img} />
+        <meta
+          property="og:url"
+          content={`${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}`}
+        />
 
         {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -203,9 +205,7 @@ const Homepage = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
-        {/* <meta name="twitter:image" content={ogImage} /> */}
-        <meta name="twitter:image" content="/images/men/banner/homepage3.jpg" />
-        <meta name="twitter:url" content="clothing-ecommerce-phi.vercel.app" />
+        <meta name="twitter:image" content={img} />
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
@@ -213,7 +213,6 @@ const Homepage = () => {
         />
         <meta name="author" content="Desire" />
       </Helmet>
-
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>
