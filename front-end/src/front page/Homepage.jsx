@@ -188,7 +188,7 @@ const Homepage = () => {
           }. Filter by price, rating, and more.`}
         />
         {/* <meta property="og:image" content={ogImage} /> */}
-        <meta property="og:image" content={img} />
+        <meta property="og:image" content="/images/men/banner/homepage3.jpg" />
         <meta property="og:url" content="clothing-ecommerce-phi.vercel.app" />
 
         {/* Twitter Meta Tags */}
@@ -204,7 +204,7 @@ const Homepage = () => {
           }. Filter by price, rating, and more.`}
         />
         {/* <meta name="twitter:image" content={ogImage} /> */}
-        <meta name="twitter:image" content={img} />
+        <meta name="twitter:image" content="/images/men/banner/homepage3.jpg" />
         <meta name="twitter:url" content="clothing-ecommerce-phi.vercel.app" />
         <meta name="robots" content="index, follow" />
         <meta
