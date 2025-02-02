@@ -13,13 +13,8 @@
 // });
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import ssr from "vite-plugin-ssr/plugin";
+import { ViteSSG } from "vite-plugin-ssg";
 
 export default defineConfig({
-  plugins: [react(), ssr()],
-  test: {
-    environment: "jsdom",
-    globals: true,
-    setupFiles: "./src/tests/SetupTest.jsx",
-  },
+  plugins: [react(), ViteSSG()],
 });
