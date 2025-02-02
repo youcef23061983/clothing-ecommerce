@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
 import Products from "../front page/Products";
+import Head from "next/head";
 
 const Best = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
@@ -114,7 +115,7 @@ const Best = () => {
 
   return (
     <ReactLenis root={true}>
-      <Helmet>
+      <Head>
         <title>{`Best Products - ${productsFilter?.length || 0} items`}</title>
         <meta
           name="description"
@@ -159,7 +160,7 @@ const Best = () => {
           content="best, products, discounts, buy, offers, shopping"
         />
         <meta name="author" content="Desire" />
-      </Helmet>
+      </Head>
 
       <div className="headerimages">
         <img
