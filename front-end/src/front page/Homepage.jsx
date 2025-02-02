@@ -187,7 +187,8 @@ const Homepage = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
-        <meta property="og:image" content={ogImage} />
+        {/* <meta property="og:image" content={ogImage} /> */}
+        <meta property="og:image" content={img} />
         <meta property="og:url" content={window.location.href} />
 
         {/* Twitter Meta Tags */}
@@ -202,7 +203,9 @@ const Homepage = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
-        <meta name="twitter:image" content={ogImage} />
+        {/* <meta name="twitter:image" content={ogImage} /> */}
+        <meta name="twitter:image" content={img} />
+        <meta name="twitter:url" content={window.location.href} />
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
