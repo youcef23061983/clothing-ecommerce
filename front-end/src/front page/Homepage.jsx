@@ -189,7 +189,7 @@ const Homepage = () => {
         />
         {/* <meta property="og:image" content={ogImage} /> */}
         <meta property="og:image" content={img} />
-        <meta property="og:url" content={window.location.href} />
+        <meta property="og:url" content="clothing-ecommerce-phi.vercel.app" />
 
         {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -205,7 +205,7 @@ const Homepage = () => {
         />
         {/* <meta name="twitter:image" content={ogImage} /> */}
         <meta name="twitter:image" content={img} />
-        <meta name="twitter:url" content={window.location.href} />
+        <meta name="twitter:url" content="clothing-ecommerce-phi.vercel.app" />
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
@@ -213,6 +213,7 @@ const Homepage = () => {
         />
         <meta name="author" content="Desire" />
       </Helmet>
+
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>
