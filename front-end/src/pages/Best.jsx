@@ -132,7 +132,10 @@ const Best = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
-        <meta property="og:image" content={ogImage} />
+        <meta
+          property="og:image"
+          content="https://clothing-ecommerce-phi.vercel.app/images/men/banner/new.jpg"
+        />
         <meta property="og:url" content={window.location.href} />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -146,7 +149,10 @@ const Best = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more.`}
         />
-        <meta name="twitter:image" content={ogImage} />
+        <meta
+          name="twitter:image"
+          content="https://clothing-ecommerce-phi.vercel.app/images/men/banner/new.jpg"
+        />
         <meta name="robots" content="index, follow" />
         <meta
           name="keywords"
