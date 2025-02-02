@@ -211,7 +211,7 @@ const Homepage = () => {
         <meta name="twitter:image" content="/images/men/banner/homepage3.jpg" />
         <meta
           property="twitter:url"
-          content="https://clothing-ecommerce-phi.vercel.app/images/men/banner/homepage3.jpg"
+          content="https://clothing-ecommerce-phi.vercel.app"
         />
 
         <meta name="robots" content="index, follow" />
