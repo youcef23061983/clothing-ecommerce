@@ -13,11 +13,29 @@
 // });
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import ViteStaticSiteGenerator from "vite-plugin-static-site-generator";
+import { ViteSSG } from "vite-plugin-ssg";
 
 export default defineConfig({
-  plugins: [react(), ViteStaticSiteGenerator()],
+  plugins: [
+    react(),
+    ViteSSG({
+      // Configure the entry point and any other options for SSG if needed
+      onBeforeRender({ Page, props }) {
+        // You can customize this to fetch data before rendering the page, etc.
+      },
+    }),
+  ],
+  test: {
+    environment: "jsdom",
+    globals: true,
+    setupFiles: "./src/tests/SetupTest.jsx",
+  },
   build: {
-    outDir: "dist", // Output directory for your static site
+    target: "esnext", // Set to modern JS (or modify as needed)
+    outDir: "dist", // Output directory for static files
+    ssr: true, // Enable SSR if you're using SSR features
+    rollupOptions: {
+      input: "src/main.js", // Your entry file for the app
+    },
   },
 });
