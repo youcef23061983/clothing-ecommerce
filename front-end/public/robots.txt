@@ -1,6 +1,6 @@
 # Allow all crawlers to access all content
 User-agent: *
-Allow: /
+Disallow:
 
 # Block specific directories
 Disallow: /admin/
@@ -10,18 +10,9 @@ Disallow: /private/
 # Allow search engines to index the blog section
 Allow: /blog/
 
-# Allow social media bots (LinkedIn, Twitter, Discord, Facebook)
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: Discordbot
-Allow: /
+# Block specific search engines (if necessary)
+User-agent: Googlebot
+Disallow: /no-google/
 
 # Sitemap URL for search engines
 Sitemap: https://clothing-ecommerce-phi.vercel.app/sitemap.xml

@@ -142,14 +142,6 @@ const Homepage = () => {
       }
     });
 
-  const filterVariant = {
-    hidden: { opacity: 0 },
-    visible: () => ({
-      opacity: 1,
-      transition: { delay: 0.3, ease: "easeInOut" },
-    }),
-  };
-
   useLenis((lenis) => {
     lenis.on("scroll", ({ scroll }) => {
       console.log("Scroll position:", scroll);
@@ -165,13 +157,11 @@ const Homepage = () => {
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
-  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
   const pageTitle = `Shop Products - ${productsFilter?.length || 0} items`;
-  useDocumentMeta();
 
   return (
     <ReactLenis root={true}>
-      {/* <Helmet>
+      <Helmet>
         <title>{pageTitle}</title>
         <meta
           name="description"
@@ -224,7 +214,7 @@ const Homepage = () => {
           content="shop, products, discounts, buy, offers, shopping, men's clothing, fashion, trends"
         />
         <meta name="author" content="Desire" />
-      </Helmet> */}
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>

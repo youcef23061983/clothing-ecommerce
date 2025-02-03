@@ -29,8 +29,7 @@
     "react-helmet-async": "^2.0.5",
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.2",
-    "vite-plugin-ssr": "^0.4.142",
-    "vite-ssg": "^25.0.0"
+    "vite-plugin-ssr": "^0.4.142"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.5",
