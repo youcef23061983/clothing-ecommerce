@@ -214,6 +214,9 @@ const Homepage = () => {
           content="shop, products, discounts, buy, offers, shopping, men's clothing, fashion, trends"
         />
         <meta name="author" content="Desire" />
+        <meta property="og:type" content="website" />
+
+        <meta property="og:site_name" content="Clothing E-commerce" />
       </Helmet>
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
