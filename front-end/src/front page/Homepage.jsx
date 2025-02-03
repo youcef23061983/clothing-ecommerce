@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
+import useDocumentMeta from "../../utils/useDocumentMeta";
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(false);
 
@@ -166,10 +167,11 @@ const Homepage = () => {
   if (error) return <h2>{error.message}</h2>;
   const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
   const pageTitle = `Shop Products - ${productsFilter?.length || 0} items`;
+  useDocumentMeta();
 
   return (
     <ReactLenis root={true}>
-      <Helmet>
+      {/* <Helmet>
         <title>{pageTitle}</title>
         <meta
           name="description"
@@ -222,7 +224,7 @@ const Homepage = () => {
           content="shop, products, discounts, buy, offers, shopping, men's clothing, fashion, trends"
         />
         <meta name="author" content="Desire" />
-      </Helmet>
+      </Helmet> */}
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>

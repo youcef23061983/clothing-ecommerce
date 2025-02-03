@@ -1,15 +1,18 @@
 import React, { Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
 import UseFetch from "../data managment/UseFetch";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
 import Products from "../front page/Products";
+import useDocumentMeta from "../../utils/useDocumentMeta";
 
 const Best = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
   const { data, isPending, error } = UseFetch(url, key1);
+  useDocumentMeta();
+
   const initialUserState = {
     type: "all",
     price: 0,
@@ -111,10 +114,9 @@ const Best = () => {
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
   const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
-
   return (
     <ReactLenis root={true}>
-      <Helmet>
+      {/* <Helmet>
         <title>{`Best Products - ${productsFilter?.length || 0} items`}</title>
         <meta
           name="description"
@@ -159,7 +161,7 @@ const Best = () => {
           content="best, products, discounts, buy, offers, shopping"
         />
         <meta name="author" content="Desire" />
-      </Helmet>
+      </Helmet> */}
 
       <div className="headerimages">
         <img
