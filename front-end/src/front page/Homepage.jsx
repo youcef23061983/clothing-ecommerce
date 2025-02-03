@@ -179,6 +179,8 @@ const Homepage = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and discover your favorite men's clothing. Shop now for exclusive deals and styles!`}
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta
           property="og:image"
           content="https://clothing-ecommerce-phi.vercel.app/images/men/banner/homepage3.jpg"
