@@ -3,16 +3,16 @@ User-agent: *
 Disallow:
 
 # Block specific directories
-Disallow: /admin/
-Disallow: /login/
-Disallow: /private/
+Disallow: /admin/       # Block access to admin panel
+Disallow: /login/       # Block access to login page
+Disallow: /private/     # Block access to private content
 
 # Allow search engines to index the blog section
 Allow: /blog/
 
 # Block specific search engines (if necessary)
 User-agent: Googlebot
-Disallow: /no-google/
+Disallow: /no-google/   # Block Googlebot from accessing /no-google/
 
 # Sitemap URL for search engines
 Sitemap: https://clothing-ecommerce-phi.vercel.app/sitemap.xml
