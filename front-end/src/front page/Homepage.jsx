@@ -1,11 +1,10 @@
-import React, { useState, useEffect, Suspense, useRef, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import img from "/images/men/banner/homepage3.jpg";
 import UseFetch from "../data managment/UseFetch";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
-import useDocumentMeta from "../../utils/useDocumentMeta";
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(false);
 
@@ -32,7 +31,7 @@ const useMediaQuery = (query) => {
         media.removeListener(listener);
       }
     };
-  }, [matches, query]);
+  }, [query]);
 
   return matches;
 };
@@ -107,7 +106,7 @@ const Homepage = () => {
   ratings = ratings.map((rating, index) => {
     return (
       <option value={rating} key={index}>
-        {rating} <h3>stars and up</h3>
+        {rating} stars and up
       </option>
     );
   });
@@ -147,17 +146,19 @@ const Homepage = () => {
       console.log("Scroll position:", scroll);
     });
   });
-  const isMediumScreen = useMediaQuery("(min-width: 768px)");
-  const ref = useRef();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["0 1", isMediumScreen ? "0.4 1" : "0.2 1"],
-  });
-  const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+
+  const Filter = {
+    hidden: { opacity: 0 },
+    visible: {
+      x: [0, 10, -10, 0],
+      opacity: 1,
+      transition: { delay: 0.7, duration: 1 },
+    },
+  };
+  const pageTitle = `Shop Products - ${productsFilter?.length || 0} items`;
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
-  const pageTitle = `Shop Products - ${productsFilter?.length || 0} items`;
 
   return (
     <ReactLenis root={true}>
@@ -224,13 +225,11 @@ const Homepage = () => {
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>
       <motion.form
+        variants={Filter}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
         className="searchContainer"
-        ref={ref}
-        style={{
-          opacity: scrollOpacity,
-          x: scrollX,
-          willChange: "transform, opacity",
-        }}
       >
         <div className="searchElement">
           <label htmlFor="type">Products Type</label>

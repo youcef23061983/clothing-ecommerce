@@ -1,17 +1,17 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
 import UseFetch from "../data managment/UseFetch";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { ReactLenis } from "@studio-freight/react-lenis";
+import { motion } from "framer-motion";
+
 import { Helmet } from "react-helmet-async";
-import Products from "../front page/Products";
-import useDocumentMeta from "../../utils/useDocumentMeta";
+const HeavyComponent = lazy(() => import("../front page/Products"));
 
 const Best = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
   const { data, isPending, error } = UseFetch(url, key1);
-  useDocumentMeta();
 
   const initialUserState = {
     type: "all",
@@ -75,7 +75,7 @@ const Best = () => {
   ratings = ratings.map((rating, index) => {
     return (
       <option value={rating} key={index}>
-        {rating} <h3>stars and up</h3>
+        {rating} stars and up
       </option>
     );
   });
@@ -110,13 +110,20 @@ const Best = () => {
         return "";
       }
     });
+  const Filter = {
+    hidden: { opacity: 0 },
+    visible: {
+      x: [0, 10, -10, 0],
+      opacity: 1,
+      transition: { delay: 0.7, duration: 1 },
+    },
+  };
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
-  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
   return (
     <ReactLenis root={true}>
-      {/* <Helmet>
+      <Helmet>
         <title>{`Best Products - ${productsFilter?.length || 0} items`}</title>
         <meta
           name="description"
@@ -161,7 +168,7 @@ const Best = () => {
           content="best, products, discounts, buy, offers, shopping"
         />
         <meta name="author" content="Desire" />
-      </Helmet> */}
+      </Helmet>
 
       <div className="headerimages">
         <img
@@ -173,7 +180,13 @@ const Best = () => {
       </div>
       <div>
         <h2 className="orderTitle">Your Best Sellers</h2>
-        <form className="searchContainer">
+        <motion.form
+          className="searchContainer"
+          variants={Filter}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -226,9 +239,9 @@ const Best = () => {
               <option value="priceHighToLow">Price High to Low</option>
             </select>
           </div>
-        </form>
+        </motion.form>
         <Suspense fallback={<h2>...is loading</h2>}>
-          <Products
+          <HeavyComponent
             productsFilter={productsFilter}
             searchParams={searchParams}
           />

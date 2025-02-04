@@ -1,12 +1,12 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
-import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
-import Products from "../front page/Products";
+import { motion } from "framer-motion";
+
+const HeavyComponent = lazy(() => import("../front page/Products"));
 const Toprated = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
@@ -73,7 +73,7 @@ const Toprated = () => {
   ratings = ratings.map((rating, index) => {
     return (
       <option value={rating} key={index}>
-        {rating} <h3>stars and up</h3>
+        {rating} stars and up
       </option>
     );
   });
@@ -100,7 +100,14 @@ const Toprated = () => {
     ?.sort((a, b) => {
       return (b.newPrice || b.price) - (a.newPrice || a.price);
     });
-
+  const Filter = {
+    hidden: { opacity: 0 },
+    visible: {
+      x: [0, 10, -10, 0],
+      opacity: 1,
+      transition: { delay: 0.7, duration: 1 },
+    },
+  };
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
   const pageTitle = `Top Rated Products - ${productsFilter?.length || 0} items`;
@@ -138,7 +145,13 @@ const Toprated = () => {
       </div>
       <div>
         <h2 className="orderTitle">Your Top Rated</h2>
-        <form className="searchContainer">
+        <motion.form
+          className="searchContainer"
+          variants={Filter}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -208,9 +221,9 @@ const Toprated = () => {
               <label htmlFor="newArrival">newArrival:</label>
             </div>
           </div>
-        </form>
+        </motion.form>
         <Suspense fallback={<h2>...is loading</h2>}>
-          <Products
+          <HeavyComponent
             productsFilter={productsFilter}
             searchParams={searchParams}
           />

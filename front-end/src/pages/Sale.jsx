@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/sale.jpg";
-import Product from "./Product";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
+const HeavyComponent = lazy(() => import("../front page/Products"));
+
 const Sale = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
@@ -71,7 +72,7 @@ const Sale = () => {
   ratings = ratings.map((rating, index) => {
     return (
       <option value={rating} key={index}>
-        {rating} <h3>stars and up</h3>
+        {rating} stars and up
       </option>
     );
   });
@@ -106,11 +107,16 @@ const Sale = () => {
         return "";
       }
     });
-
+  const Filter = {
+    hidden: { opacity: 0 },
+    visible: {
+      x: [0, 10, -10, 0],
+      opacity: 1,
+      transition: { delay: 0.7, duration: 1 },
+    },
+  };
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
-
-  const ogImage = data && data.images && data.images[0] ? data.images[0] : img;
 
   return (
     <ReactLenis root={true}>
@@ -126,7 +132,10 @@ const Sale = () => {
           property="og:description"
           content="Browse and buy our sale products at discounted prices. Limited time offers!"
         />
-        <meta property="og:image" content={ogImage} />
+        <meta
+          property="og:image"
+          content={`https://clothing-ecommerce-phi.vercel.app/${img}`}
+        />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="website" />
 
@@ -135,7 +144,10 @@ const Sale = () => {
           name="twitter:description"
           content="Browse and buy our sale products at discounted prices. Limited time offers!"
         />
-        <meta name="twitter:image" content={ogImage} />
+        <meta
+          name="twitter:image"
+          content={`https://clothing-ecommerce-phi.vercel.app/${img}`}
+        />
         <meta name="twitter:card" content="summary_large_image" />
 
         <meta name="robots" content="index, follow" />
@@ -151,7 +163,13 @@ const Sale = () => {
       </div>
       <div>
         <h2 className="orderTitle">Your Sale</h2>
-        <motion.form className="searchContainer">
+        <motion.form
+          className="searchContainer"
+          variants={Filter}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -205,17 +223,12 @@ const Sale = () => {
             </select>
           </div>
         </motion.form>
-        <motion.div layout className="productsDiv">
-          {productsFilter?.map((product) => {
-            return (
-              <Product
-                key={product.id}
-                product={product}
-                searchParams={searchParams}
-              />
-            );
-          })}
-        </motion.div>
+        <Suspense fallback={<h2>...is loading</h2>}>
+          <HeavyComponent
+            productsFilter={productsFilter}
+            searchParams={searchParams}
+          />
+        </Suspense>
       </div>
     </ReactLenis>
   );

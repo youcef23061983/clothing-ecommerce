@@ -1,9 +1,12 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import img from "/images/men/banner/new.jpg";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
-import Products from "../front page/Products";
 import ReactLenis from "@studio-freight/react-lenis";
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+const HeavyComponent = lazy(() => import("../front page/Products"));
+
 const NewArrival = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
 
@@ -21,7 +24,6 @@ const NewArrival = () => {
 
   const [user, setUser] = useState(initialUserState);
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -73,7 +75,7 @@ const NewArrival = () => {
   ratings = ratings.map((rating, index) => {
     return (
       <option value={rating} key={index}>
-        {rating} <h3>stars and up</h3>
+        {rating} stars and up
       </option>
     );
   });
@@ -108,6 +110,14 @@ const NewArrival = () => {
         return "";
       }
     });
+  const Filter = {
+    hidden: { opacity: 0 },
+    visible: {
+      x: [0, 10, -10, 0],
+      opacity: 1,
+      transition: { delay: 0.7, duration: 1 },
+    },
+  };
 
   if (isPending) return <h2>...is loading</h2>;
   if (error) return <h2>{error.message}</h2>;
@@ -164,7 +174,13 @@ const NewArrival = () => {
       </div>
       <div>
         <h2 className="orderTitle">Your New Arrivals</h2>
-        <form className="searchContainer">
+        <motion.form
+          className="searchContainer"
+          variants={Filter}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           <div className="searchElement">
             <label htmlFor="type">Products Type</label>
             <select
@@ -217,9 +233,9 @@ const NewArrival = () => {
               <option value="priceHighToLow">Price High to Low</option>
             </select>
           </div>
-        </form>
+        </motion.form>
         <Suspense fallback={<h2>...is loading</h2>}>
-          <Products
+          <HeavyComponent
             productsFilter={productsFilter}
             searchParams={searchParams}
           />

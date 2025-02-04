@@ -10,4 +10,7 @@ export default defineConfig({
     globals: true,
     setupFiles: "./src/tests/SetupTest.jsx",
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // Increase from 500 KB to 1MB
+  },
 });
