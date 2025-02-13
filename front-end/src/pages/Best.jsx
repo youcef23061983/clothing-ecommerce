@@ -131,6 +131,8 @@ const Best = () => {
             user.type !== "all" ? ` in ${user.type}` : ""
           }. Filter by price, rating, and more to find the perfect item.`}
         />
+        <meta property="og:type" content="website" />
+
         <meta
           property="og:title"
           content={`Best Products - ${productsFilter?.length || 0} items`}
