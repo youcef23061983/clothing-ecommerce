@@ -7,33 +7,6 @@ import { Helmet } from "react-helmet-async";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
 
 const HeavyComponent = lazy(() => import("./Products"));
-export const meta = {
-  title: `Shop Products - ${productsFilter?.length || 0} items`,
-  description: `Discover our shop products${
-    user.type !== "all" ? ` in ${user.type}` : ""
-  }. Filter by price, rating, and find your favorite men's clothing. Shop now for the latest trends and exclusive discounts!`,
-  ogTitle: `Shop Products - ${productsFilter?.length || 0} items`,
-  ogDescription: `Explore our shop products${
-    user.type !== "all" ? ` in ${user.type}` : ""
-  }. Filter by price, rating, and discover your favorite men's clothing. Shop now for exclusive deals and styles!`,
-  ogImage:
-    "https://clothing-ecommerce-phi.vercel.app/images/men/banner/homepage3.jpg",
-  ogUrl: "https://clothing-ecommerce-phi.vercel.app",
-  twitterCard: "summary_large_image",
-  twitterTitle: `Shop Products - ${productsFilter?.length || 0} items`,
-  twitterDescription: `Browse our shop products${
-    user.type !== "all" ? ` in ${user.type}` : ""
-  }. Filter by price, rating, and find your favorite men's clothing. Shop now for exclusive deals!`,
-  twitterImage:
-    "https://clothing-ecommerce-phi.vercel.app/images/men/banner/homepage3.jpg",
-  twitterUrl: "https://clothing-ecommerce-phi.vercel.app",
-  robots: "index, follow",
-  keywords:
-    "shop, products, discounts, buy, offers, shopping, men's clothing, fashion, trends",
-  author: "Desire",
-  ogType: "website",
-  ogSiteName: "Clothing E-commerce",
-};
 
 const Homepage = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
@@ -160,8 +133,7 @@ const Homepage = () => {
 
   return (
     <ReactLenis root={true}>
-      {/* <Helmet>
-        <meta charSet="utf-8" />
+      <Helmet>
         <title>{pageTitle}</title>
         <meta
           name="description"
@@ -219,7 +191,7 @@ const Homepage = () => {
         <meta property="og:type" content="website" />
 
         <meta property="og:site_name" content="Clothing E-commerce" />
-      </Helmet> */}
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="Product" loading="lazy" className="detailImg" />
       </div>
