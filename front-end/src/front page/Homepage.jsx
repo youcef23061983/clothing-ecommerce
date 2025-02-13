@@ -134,6 +134,7 @@ const Homepage = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
+        <meta charSet="utf-8" />
         <title>{pageTitle}</title>
         <meta
           name="description"
