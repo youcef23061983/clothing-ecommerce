@@ -23,6 +23,15 @@ import Terms from "./info & contact/Terms";
 import Policy from "./info & contact/Policy";
 import Contact from "./info & contact/Contact";
 import { AnimatePresence } from "framer-motion";
+import Dashboard from "./dashboard/Dashboard";
+import Dashboardlayout from "./dashboard/Dashboardlayout";
+import Team from "./dashboard/Team";
+import Form from "./dashboard/Form";
+import Calendar from "./dashboard/Calendar";
+import BarChart from "./dashboard/BarChart";
+import PieChart from "./dashboard/PieChart";
+import GeographyChart from "./dashboard/GeographyChart";
+import LineChart from "./dashboard/LineChart";
 
 function App() {
   const location = useLocation();
@@ -57,6 +66,16 @@ function App() {
             />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<SignUp />} />
+            <Route path="dashboard" element={<Dashboardlayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="users" element={<Team />} />
+              <Route path="form" element={<Form />} />
+              <Route path="calendar" element={<Calendar />} />
+              <Route path="pie" element={<PieChart />} />
+              <Route path="line" element={<LineChart />} />
+              <Route path="geo" element={<GeographyChart />} />
+              <Route path="bar" element={<BarChart />} />
+            </Route>
           </Route>
         </Routes>
       </AnimatePresence>
