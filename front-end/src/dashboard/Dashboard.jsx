@@ -10,8 +10,8 @@ import GeographyChart from "./GeographyChart";
 import BarChart from "./BarChart";
 import StatBox from "./StatBox ";
 import ProgressCircle from "./ProgressCircle";
-import { tokens } from "../../../theme";
 import "./dashboard.css";
+import { tokens } from "../../theme";
 
 const Dashboard = () => {
   const theme = useTheme();

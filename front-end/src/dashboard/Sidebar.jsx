@@ -15,11 +15,8 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-// import { DarkModeContext } from "../context/DarkModeContext ";
 
 const Sidebar = () => {
-  // const { dispatch } = useContext(DarkModeContext);
   return (
     <div className="sidebar">
       <div className="center">

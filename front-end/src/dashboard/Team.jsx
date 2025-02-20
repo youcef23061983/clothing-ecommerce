@@ -4,7 +4,7 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import { mockDataTeam } from "./data/mockData";
-import { tokens } from "../../../theme";
+import { tokens } from "../../theme";
 
 const Team = () => {
   const theme = useTheme();

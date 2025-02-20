@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { ColorModeContext, useMode } from "../../../theme";
+import { ColorModeContext, useMode } from "../../theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Topbar from "./Topbar";
@@ -9,7 +8,6 @@ import "./dashboardlayout.css";
 
 const Dashboardlayout = () => {
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
