@@ -32,6 +32,8 @@ import BarChart from "./dashboard/BarChart";
 import PieChart from "./dashboard/PieChart";
 import GeographyChart from "./dashboard/GeographyChart";
 import LineChart from "./dashboard/LineChart";
+import ProductsDashboard from "./dashboard/ProductsDashboard";
+import AddProduct from "./dashboard/AddProduct";
 
 function App() {
   const location = useLocation();
@@ -69,6 +71,8 @@ function App() {
             <Route path="dashboard" element={<Dashboardlayout />}>
               <Route index element={<Dashboard />} />
               <Route path="users" element={<Team />} />
+              <Route path="productsdashboard" element={<ProductsDashboard />} />
+              <Route path="addProduct" element={<AddProduct />} />
               <Route path="form" element={<Form />} />
               <Route path="calendar" element={<Calendar />} />
               <Route path="pie" element={<PieChart />} />

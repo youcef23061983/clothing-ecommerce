@@ -6,7 +6,12 @@
       "slug": "Latest 2023 Custom Latest Design Spring Winter Wool Men Overcoat Casual Slim Fit Long Woolen Coat High Quality Men's wool coat",
       "type": "jacket",
       "price": 79.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": "",
       "images": [
         "/images/men/jacket1/image1.jpg",
@@ -27,7 +32,12 @@
       "slug": "Long Lasting Quality Popular Brown In Color Leather Jacket jackets For Men Fashionable Trending Cloths Accessories",
       "type": "jacket",
       "price": 59.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 39.99,
       "images": [
         "/images/men/jacket2/image1.jpg",
@@ -48,7 +58,12 @@
       "slug": "Ultra Light Outdoor Hiking Unisex Men Warm Insulated Duck Down Coat Waterproof Padded Quilted Puffer Jacket",
       "type": "jacket",
       "price": 59.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 49.99,
       "images": [
         "/images/men/jacket3/image1.jpg",
@@ -69,7 +84,12 @@
       "slug": "Hot Selling Men's Winter Fleece Jaket Coat Long Sleeve Solid Color Cotton-padded Shirt Jacket Mens Sports Jacket",
       "type": "jacket",
       "price": 79.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 59.99,
       "images": [
         "/images/men/jacket4/image1.jpg",
@@ -90,7 +110,12 @@
       "slug": "Army Green puffer jacket zip up inside and out side buttons with removable hood customize cheap price",
       "type": "jacket",
       "price": 29.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 19.99,
       "images": [
         "/images/men/jacket5/image1.jpg",
@@ -111,7 +136,12 @@
       "slug": "Fashion New Design Hot-sell ripped vintage Elastic Breathable Long Pants Men's Denim jean's loose jeans for men",
       "type": "jeans",
       "price": 39.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": "",
       "images": [
         "/images/men/jeans/image1.jpg",
@@ -132,7 +162,12 @@
       "slug": "Custom Fashion Men's Long Sleeve Shirt Double Breasted Long Sleeve Menufecture Shirt for men",
       "type": "shirt",
       "price": 29.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 19.99,
       "images": [
         "/images/men/shirt/image1.jpg",
@@ -153,7 +188,12 @@
       "slug": "Cheap office shirt men short sleeve Casual men's office plain shirt wear shirts for men office",
       "type": "shirt",
       "price": 17.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": "",
       "images": [
         "/images/men/shirt2/image1.jpg",
@@ -174,7 +214,12 @@
       "slug": "LANCI Cow Skin Real Leather Men Casual Footwear Shoes Men'S Loafer Shoes Good Quality",
       "type": "shoes",
       "price": 29.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": 19.99,
       "images": [
         "/images/men/shoes/image1.jpg",
@@ -195,7 +240,12 @@
       "slug": "High Quality Leather Shoes Lace Up Stylish Formal Casual Business Boots Men Dress Shoes New Design Men Leather Shoes",
       "type": "shoes",
       "price": 89.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": "",
       "images": [
         "/images/men/shoes2/image1.jpg",
@@ -216,7 +266,12 @@
       "slug": "Top quality Man Leather Shoe sports Running Sneakers, White fashion men's skateboard Casual Shoes",
       "type": "sneaker",
       "price": 49.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": 39.99,
       "images": [
         "/images/men/sneakers1/image1.jpg",
@@ -237,7 +292,12 @@
       "slug": "Genuine GT-2000-11 Stable Support Racing Shoe Lightweight Cushioning Elastic Durable Casual Men's Running Shoe",
       "type": "sneaker",
       "price": 29.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": "",
       "images": [
         "/images/men/sneakers2/image1.jpg",
@@ -258,7 +318,12 @@
       "slug": "Factory Wholesale Breathable Walking Style Shies High Quality Lace-up Casual Women Sneakers",
       "type": "sneaker",
       "price": 29.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": 19.99,
       "images": [
         "/images/men/sneakers3/image1.jpg",
@@ -279,7 +344,12 @@
       "slug": "Wholesale Popular New Design High Quality Fashion Mesh Breathable Shoes Men Casual Running Sneakers",
       "type": "sneaker",
       "price": 39.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": "",
       "images": [
         "/images/men/sneakers4/image1.jpg",
@@ -300,7 +370,12 @@
       "slug": "Popular fashion athletic anti slip men sport shoes breathable Casual sport shoes",
       "type": "sneaker",
       "price": 49.99,
-      "size": [39, 40, 41, 42],
+      "size": [
+        39,
+        40,
+        41,
+        42
+      ],
       "newPrice": 39.99,
       "images": [
         "/images/men/sneakers5/image1.jpg",
@@ -321,7 +396,12 @@
       "slug": "wholesale winter hoodies & sweatshirts unisex manufacturers Custom blank cropped oversized men high quality cut and sew hoodie",
       "type": "sweatshirt",
       "price": 29.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": "",
       "images": [
         "/images/men/sweatshirt1/image1.jpg",
@@ -342,7 +422,12 @@
       "slug": "Casual Street Wear Pullover Plain Full Sleeve Winter Style Men Sweatshirts Best Quality Men Wear Stylish Sweatshirts",
       "type": "sweatshirt",
       "price": 29.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 19.99,
       "images": [
         "/images/men/sweatshirt2/image1.jpg",
@@ -363,7 +448,12 @@
       "slug": "Wholesale blank office khaki men's business pants black cotton spandex elastic casual men's pants",
       "type": "trousers",
       "price": 29.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": "",
       "images": [
         "/images/men/trousers1/image1.jpg",
@@ -384,7 +474,12 @@
       "slug": "Custom Sale Men Latest Fashion Khaki Color Good Quality Jogger Pants",
       "type": "trousers",
       "price": 39.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": 29.99,
       "images": [
         "/images/men/trousers2/image1.jpg",
@@ -405,7 +500,12 @@
       "slug": "Wholesale Oversized Drop Shoulder T-shirt Mens Blank Heavyweight Cotton Tshirt Custom Printing Men T Shirts",
       "type": "tshirt",
       "price": 19.99,
-      "size": ["s", "m", "l", "xl"],
+      "size": [
+        "s",
+        "m",
+        "l",
+        "xl"
+      ],
       "newPrice": "",
       "images": [
         "/images/men/tshirt/image1.jpg",
@@ -421,5 +521,9 @@
       "preview": 10
     }
   ],
-  "stripe": [{ "name": "you" }]
+  "stripe": [
+    {
+      "name": "you"
+    }
+  ]
 }

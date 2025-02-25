@@ -2,7 +2,6 @@ import "./sidebar.css";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StoreIcon from "@mui/icons-material/Store";
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
@@ -13,6 +12,11 @@ import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
+import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
+import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined";
+import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 
 import { Link } from "react-router-dom";
 
@@ -35,16 +39,23 @@ const Sidebar = () => {
               <span>Users</span>
             </li>
           </Link>
-          <Link to="/products" style={{ textDecoration: "none" }}>
+          <Link
+            to="/dashboard/productsdashboard"
+            style={{ textDecoration: "none" }}
+          >
             <li>
               <StoreIcon className="icon" />
               <span>Products</span>
             </li>
           </Link>
-          <li>
-            <CreditCardIcon className="icon" />
-            <span>Orders</span>
-          </li>
+
+          <Link to="/dashboard/addProduct" style={{ textDecoration: "none" }}>
+            <li>
+              <AddBoxIcon className="icon" />
+              <span>Add Product</span>
+            </li>
+          </Link>
+
           <li>
             <LocalShippingIcon className="icon" />
             <span>Delivery</span>
@@ -84,28 +95,33 @@ const Sidebar = () => {
               <span>Calendar</span>
             </li>
           </Link>
+
           <p className="title">CHARTS</p>
+
           <Link to="/dashboard/bar" style={{ textDecoration: "none" }}>
             <li>
-              <PersonOutlinedIcon className="icon" />
-              <span>Bar CHart</span>
+              <BarChartOutlinedIcon className="icon" />
+              <span>Bar Chart</span>
             </li>
           </Link>
+
           <Link to="/dashboard/pie" style={{ textDecoration: "none" }}>
             <li>
-              <CalendarTodayOutlinedIcon className="icon" />
+              <PieChartOutlineOutlinedIcon className="icon" />
               <span>Pie Chart</span>
             </li>
           </Link>
+
           <Link to="/dashboard/line" style={{ textDecoration: "none" }}>
             <li>
-              <CalendarTodayOutlinedIcon className="icon" />
+              <ShowChartOutlinedIcon className="icon" />
               <span>Line Chart</span>
             </li>
           </Link>
+
           <Link to="/dashboard/geo" style={{ textDecoration: "none" }}>
             <li>
-              <CalendarTodayOutlinedIcon className="icon" />
+              <PublicOutlinedIcon className="icon" />
               <span>Geographic Chart</span>
             </li>
           </Link>
