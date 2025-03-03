@@ -6,19 +6,22 @@ import Toprated from "../pages/Toprated";
 import Cart from "../pages/Cart";
 import Detail from "../pages/Detail";
 import userEvent from "@testing-library/user-event";
+import { HelmetProvider } from "react-helmet-async";
 
 describe("group of testing Toprated component", () => {
   const queryClient = new QueryClient();
   beforeEach(async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/rating"]}>
-          <Routes>
-            <Route path="/rating" element={<Toprated />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/:id" element={<Detail />} />
-          </Routes>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={["/rating"]}>
+            <Routes>
+              <Route path="/rating" element={<Toprated />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/:id" element={<Detail />} />
+            </Routes>
+          </MemoryRouter>
+        </HelmetProvider>
       </QueryClientProvider>
     );
     await waitFor(() => {

@@ -10,6 +10,17 @@ expect.extend(matchers);
 afterEach(() => {
   cleanup();
 });
+global.ResizeObserver = class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+global.IntersectionObserver = class {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
 const mockMatchMedia = (matches) => ({
   matches,
   addListener: () => {},

@@ -5,18 +5,21 @@ import { beforeEach, expect } from "vitest";
 import Login from "../info & contact/Login";
 import Cart from "../pages/Cart";
 import userEvent from "@testing-library/user-event";
+import { HelmetProvider } from "react-helmet-async";
 
 describe("group of testing Login component", () => {
   const queryClient = new QueryClient();
   beforeEach(async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/login"]}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/cart" element={<Cart />} />
-          </Routes>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={["/login"]}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/cart" element={<Cart />} />
+            </Routes>
+          </MemoryRouter>
+        </HelmetProvider>
       </QueryClientProvider>
     );
   });

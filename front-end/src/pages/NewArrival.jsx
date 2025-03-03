@@ -127,7 +127,7 @@ const NewArrival = () => {
   } items`;
   return (
     <ReactLenis root={true}>
-      <Helmet>
+      {/* <Helmet>
         <title>{pageTitle}</title>
         <meta
           name="description"
@@ -168,7 +168,7 @@ const NewArrival = () => {
           content="new arrival, products, discounts, buy, offers, shopping"
         />
         <meta name="author" content="Desire" />
-      </Helmet>
+      </Helmet> */}
       <div className="headerimages">
         <img src={img} alt="new" loading="lazy" className="detailImg" />
       </div>

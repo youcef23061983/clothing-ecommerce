@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import img from "/images/men/banner/contact.jpg";
 import emailjs from "@emailjs/browser";
-import { useRef } from "react";
 
-const Contact = () => {
+const Contact = ({ onSubmit }) => {
   const [formStatus, setFormStatus] = useState(null);
   const form = useRef();
   const [user, setUser] = useState({ name: "", email: "", comment: "" });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({
@@ -21,7 +21,13 @@ const Contact = () => {
     // Validation check
     if (!user.name || !user.email || !user.comment) {
       alert("Please enter your information");
-      return; // Return early to prevent further execution
+      return;
+    }
+
+    // If an onSubmit prop is provided (for testing), call it with the user data
+    if (onSubmit) {
+      onSubmit(user);
+      return; // Skip the emailjs logic in tests
     }
 
     emailjs
@@ -41,9 +47,11 @@ const Contact = () => {
         }
       );
   };
+
   useEffect(() => {
     document.title = "Contact";
   }, []);
+
   return (
     <div>
       <div className="headerimages">
@@ -102,7 +110,7 @@ const Contact = () => {
                 style={{ height: "20rem" }}
               />
             </div>
-            <button onClick="submit" className="addCart">
+            <button type="submit" className="addCart">
               Submit:
             </button>
           </form>

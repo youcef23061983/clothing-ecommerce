@@ -14,27 +14,30 @@ import SignUp from "../info & contact/SignUp";
 import Contact from "../info & contact/Contact";
 import { AppContext } from "./SetupTest";
 import { mockContextValue } from "./SetupTest";
+import { HelmetProvider } from "react-helmet-async";
 
 describe("group of Navbar testing", () => {
   const queryClient = new QueryClient();
   beforeEach(async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/"]}>
-          <AppContext.Provider value={mockContextValue}>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/new" element={<NewArrival />} />
-                <Route path="/story" element={<Story />} />
-                <Route path="/policy" element={<Policy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/contact" element={<Contact />} />
-              </Route>
-            </Routes>
-          </AppContext.Provider>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={["/"]}>
+            <AppContext.Provider value={mockContextValue}>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/new" element={<NewArrival />} />
+                  <Route path="/story" element={<Story />} />
+                  <Route path="/policy" element={<Policy />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/contact" element={<Contact />} />
+                </Route>
+              </Routes>
+            </AppContext.Provider>
+          </MemoryRouter>
+        </HelmetProvider>
       </QueryClientProvider>
     );
     await waitFor(() => {
@@ -62,6 +65,7 @@ describe("group of Navbar testing", () => {
       name: "Your New Arrivals",
     });
     expect(newHeader).toBeInTheDocument();
+    console.log("Before click:", window.location.pathname);
   });
   it("should render NewArrival component", async () => {
     const contactLink = screen.getAllByRole("link", { name: "Contact Us" })[0];

@@ -7,19 +7,22 @@ import Sale from "../pages/Sale";
 
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { HelmetProvider } from "react-helmet-async";
 
 describe("group of testinf Sale component ", () => {
   const queryClient = new QueryClient();
   beforeEach(async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/sale"]}>
-          <Routes>
-            <Route path="/sale" element={<Sale />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/:id" element={<Detail />} />
-          </Routes>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={["/sale"]}>
+            <Routes>
+              <Route path="/sale" element={<Sale />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/:id" element={<Detail />} />
+            </Routes>
+          </MemoryRouter>
+        </HelmetProvider>
       </QueryClientProvider>
     );
     await waitFor(() => {
