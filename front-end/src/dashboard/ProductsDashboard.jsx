@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Box,
   IconButton,
@@ -20,7 +21,8 @@ const ProductsDashboard = () => {
   const [products, setProducts] = useState([]);
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
   const key1 = "products";
@@ -45,30 +47,75 @@ const ProductsDashboard = () => {
     }
   }, [data]);
 
-  const handleDelete = async (id) => {
+  // DELETE MUTATION
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const response = await fetch(`${url}/${id}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Failed to delete");
+      return id;
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [key1] });
+    },
+    onMutate: async (id) => {
+      // Ensures no new fetch completes while we are making an optimistic update:When you call await queryClient.cancelQueries({ queryKey: [key1] }), it pauses any ongoing fetching for that query key until the mutation is complete..
+
+      await queryClient.cancelQueries({ queryKey: [key1] });
+
+      const previousProducts = queryClient.getQueryData([key1]);
+      queryClient.setQueryData([key1], (old) =>
+        old?.filter((product) => product.id !== id)
+      );
+
+      return { previousProducts };
+    },
+    onError: (err, id, context) => {
+      console.error("Delete failed:", err);
+      queryClient.setQueryData([key1], context.previousProducts);
+    },
+  });
+
+  // EDIT MUTATION
+  const editMutation = useMutation({
+    mutationFn: async (updatedProduct) => {
+      const response = await fetch(`${url}/${updatedProduct.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedProduct),
+      });
+
+      if (!response.ok) throw new Error("Failed to update");
+      return updatedProduct;
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [key1] });
+    },
+    onMutate: async (updatedProduct) => {
+      // Ensures no new fetch completes while we are making an optimistic update:When you call await queryClient.cancelQueries({ queryKey: [key1] }), it pauses any ongoing fetching for that query key until the mutation is complete..
+
+      await queryClient.cancelQueries({ queryKey: [key1] });
+
+      const previousProducts = queryClient.getQueryData([key1]);
+
+      queryClient.setQueryData([key1], (old) =>
+        old?.map((product) =>
+          product.id === updatedProduct.id ? updatedProduct : product
+        )
+      );
+
+      return { previousProducts };
+    },
+    onError: (err, updatedProduct, context) => {
+      console.error("Update failed:", err);
+      queryClient.setQueryData([key1], context.previousProducts);
+    },
+  });
+
+  const handleDelete = (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this product?"
     );
-    if (!confirmDelete) return;
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (response.ok) {
-        setProducts((prevProducts) =>
-          prevProducts.filter((product) => product.id !== id)
-        );
-      } else {
-        console.error("Failed to delete the product");
-      }
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
+    if (confirmDelete) deleteMutation.mutate(id);
   };
 
   const handleEdit = (product) => {
@@ -81,33 +128,9 @@ const ProductsDashboard = () => {
     setSelectedProduct(null);
   };
 
-  const handleSaveEdit = async () => {
-    if (!selectedProduct) return;
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products/${
-          selectedProduct.id
-        }`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(selectedProduct),
-        }
-      );
-
-      if (response.ok) {
-        setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.id === selectedProduct.id ? selectedProduct : product
-          )
-        );
-        handleCloseEdit();
-      } else {
-        console.error("Failed to update the product");
-      }
-    } catch (error) {
-      console.error("Error updating product:", error);
+  const handleSaveEdit = () => {
+    if (selectedProduct) {
+      editMutation.mutate(selectedProduct, { onSuccess: handleCloseEdit });
     }
   };
 
