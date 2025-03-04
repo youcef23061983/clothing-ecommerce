@@ -15,12 +15,12 @@ const Cookies = () => {
         <br />
         <br />
         <p>
-          Desire ("us", "we", or "our") operates the website
-          [https://www.desire.com] . This page informs you of our policies
-          regarding the collection, use, and disclosure of personal data when
-          you use our Service and the choices you have associated with that
-          data. We use cookies and similar tracking technologies to track the
-          activity on our Service and hold certain information.
+          Desire operates the website https://clothing-ecommerce-phi.vercel.app.
+          This page informs you of our policies regarding the collection, use,
+          and disclosure of personal data when you use our Service and the
+          choices you have associated with that data. We use cookies and similar
+          tracking technologies to track the activity on our Service and hold
+          certain information.
         </p>
         <br />
         <br />
