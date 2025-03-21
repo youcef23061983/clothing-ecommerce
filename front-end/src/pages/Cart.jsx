@@ -41,7 +41,7 @@ const Cart = () => {
             clear all
           </Link>
           <Link className="addCart" to="/shipping">
-            proceed to checkout{" "}
+            proceed to checkout
           </Link>
         </div>
       </div>

@@ -29,7 +29,7 @@ const Product = ({ product, searchParams }) => {
   const scrollScall = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
   const getPath = () => {
-    if (location.pathname === "/new" || "/rating" || "/best" || "/sale") {
+    if (location?.pathname === "/new" || "/rating" || "/best" || "/sale") {
       return `../${id}`;
     } else {
       return `${id}`;

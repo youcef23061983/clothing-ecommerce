@@ -12,8 +12,7 @@ import Policy from "../info & contact/Policy";
 import Terms from "../info & contact/Terms";
 import SignUp from "../info & contact/SignUp";
 import Contact from "../info & contact/Contact";
-import { AppContext } from "./SetupTest";
-import { mockContextValue } from "./SetupTest";
+
 import { HelmetProvider } from "react-helmet-async";
 
 describe("group of Navbar testing", () => {
@@ -23,7 +22,7 @@ describe("group of Navbar testing", () => {
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
           <MemoryRouter initialEntries={["/"]}>
-            <AppContext.Provider value={mockContextValue}>
+            <AppProvider>
               <Routes>
                 <Route path="/" element={<Layout />}>
                   <Route path="/login" element={<Login />} />
@@ -35,7 +34,7 @@ describe("group of Navbar testing", () => {
                   <Route path="/contact" element={<Contact />} />
                 </Route>
               </Routes>
-            </AppContext.Provider>
+            </AppProvider>
           </MemoryRouter>
         </HelmetProvider>
       </QueryClientProvider>
@@ -45,7 +44,7 @@ describe("group of Navbar testing", () => {
     });
   });
 
-  it("should render the Login CComponent ", async () => {
+  it("should render the Login Component ", async () => {
     const login = screen.getByRole("link", { name: "Login" });
     expect(login).toBeInTheDocument();
     const user = userEvent.setup();
@@ -93,7 +92,7 @@ describe("group of Navbar testing", () => {
     const storyHeader = screen.getByRole("heading", { name: "Our Story" });
     expect(storyHeader).toBeInTheDocument();
   });
-  it("should render policy component correctky", async () => {
+  it("should render policy component correctly", async () => {
     const privacyPolicyLink = screen.getByRole("link", {
       name: /privacy policy/i,
     });

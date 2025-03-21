@@ -3,38 +3,24 @@ import { useEffect, useState, useContext } from "react";
 import img from "/images/men/banner/bestSeller.jpg";
 import { AppContext } from "../data managment/AppProvider";
 import Rating from "./Rating";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ReactLenis } from "@studio-freight/react-lenis";
 import { Helmet } from "react-helmet-async";
+import DetailUseFetch from "../data managment/DetailUseFetch";
 
 const Detail = () => {
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
+  const key = "products";
 
   const { productID } = useParams();
   const [selectedImage, setSelectedImage] = useState("");
   const { addToCart } = useContext(AppContext);
-  const queryClient = useQueryClient();
   const location = useLocation();
 
-  const productFun = async () => {
-    const res = await fetch(`${url}/${productID}`);
-    if (!res.ok) {
-      throw Error("There is no product data");
-    }
-    return res.json();
-  };
-  const { data, error, isPending } = useQuery({
-    queryKey: ["product", productID],
-    queryFn: productFun,
-    initialData: () => {
-      return queryClient
-        .getQueryData(["products"])
-        ?.find((x) => x.id === parseInt(productID));
-    },
-  });
-
+  const { data, error, isPending } = DetailUseFetch(url, key, productID);
   useEffect(() => {
-    if (data) {
+    // if (data) {  i change this to      if (data?.images?.length > 0) because of testing data itself is not yet available when you try to access data.images[0]
+
+    if (data?.images?.length > 0) {
       setSelectedImage(data.images[0]);
     }
   }, [data]);
@@ -123,7 +109,7 @@ const Detail = () => {
       <div className="productContainer">
         <div className="imagesContainer">
           <div className="imagesDiv" key={id}>
-            {images.map((image, index) => (
+            {images?.map((image, index) => (
               <div className="imgSelect" key={index}>
                 <img
                   src={`${image}`}
@@ -154,7 +140,7 @@ const Detail = () => {
           </p>
           <div className="sizeContainer">
             <span className="productSpan">size:</span>
-            {size.map((x) => {
+            {size?.map((x) => {
               return <button className="sizeBtn">{x}</button>;
             })}
           </div>
@@ -174,11 +160,11 @@ const Detail = () => {
           </Link>
           <Link
             className="addCart"
-            to={`..${location.state?.search || ""}`}
+            to={`..${location?.state?.search || ""}`}
             relative="path"
           >
             &larr;
-            <span>{goBack(location.state?.search)}</span>
+            <span>{goBack(location?.state.search)}</span>
           </Link>
         </div>
       </div>

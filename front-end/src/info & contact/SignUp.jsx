@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import img from "/images/men/banner/signup.jpg";
 import { useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+const SignUp = ({ onSubmit }) => {
   useEffect(() => {
     document.title = "SignUp";
   }, []);
@@ -39,6 +39,10 @@ const SignUp = () => {
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
       return;
+    }
+    if (onSubmit) {
+      onSubmit(formData);
+      return; // Skip the emailjs logic in tests
     }
     setFormData({
       ...formData,

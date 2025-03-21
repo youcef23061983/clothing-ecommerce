@@ -7,7 +7,7 @@ import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { AppContext } from "../data managment/AppProvider";
 import { Helmet } from "react-helmet-async";
 
-const Login = () => {
+const Login = ({ onSubmit }) => {
   const navigate = useNavigate();
   const { setGoogleUser, setFormUser, logout, updateLoginStatus } =
     useContext(AppContext);
@@ -21,10 +21,14 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!loginFormData.email || !loginFormData.password) {
       return alert("Enter your information please");
     }
-
+    if (onSubmit) {
+      onSubmit(loginFormData);
+      return; // Skip the emailjs logic in tests
+    }
     setFormUser(loginFormData);
     updateLoginStatus(true);
     navigate("/cart", { replace: true });

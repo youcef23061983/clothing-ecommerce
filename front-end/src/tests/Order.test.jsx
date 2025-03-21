@@ -7,21 +7,24 @@ import Order from "../cart & payment/Order";
 import userEvent from "@testing-library/user-event";
 import Homepage from "../front page/Homepage";
 import Shipping from "../cart & payment/Shipping";
+import { HelmetProvider } from "react-helmet-async";
 
 describe("group of testing Order component", () => {
   const queryClient = new QueryClient();
   beforeEach(async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/order"]}>
-          <AppContext.Provider>
-            <Routes>
-              <Route path="/order" element={<Order />} />
-              <Route path="/" element={<Homepage />} />
-              <Route path="/shipping" element={<Shipping />} />
-            </Routes>
-          </AppContext.Provider>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={["/order"]}>
+            <AppContext.Provider>
+              <Routes>
+                <Route path="/order" element={<Order />} />
+                <Route path="/" element={<Homepage />} />
+                <Route path="/shipping" element={<Shipping />} />
+              </Routes>
+            </AppContext.Provider>
+          </MemoryRouter>
+        </HelmetProvider>
       </QueryClientProvider>
     );
     await waitFor(() => {
@@ -37,14 +40,14 @@ describe("group of testing Order component", () => {
     expect(tothehomepage).toBeInTheDocument();
     const paypalTag = screen.getByText(/paypal/i);
     expect(paypalTag).toBeInTheDocument();
-    const name = screen.getByText(/you/);
+    const name = screen.getByText(/youcef/i);
     expect(name).toBeInTheDocument();
-    const adress = screen.getByText(/11 street/);
+    const adress = screen.getByText(/11 street/i);
     expect(adress).toBeInTheDocument();
     await userEvent.click(tothehomepage);
-    expect(screen.getByText(/Products Type/)).toBeInTheDocument();
+    expect(screen.getByText(/Products Type/i)).toBeInTheDocument();
   });
-  it("should render to the right page by clicking on link", async () => {
+  it("should render to the right page by clicking on edit link", async () => {
     const toshipping = screen.getAllByRole("link", { name: "edit" })[0];
     expect(toshipping).toBeInTheDocument();
     await userEvent.click(toshipping);

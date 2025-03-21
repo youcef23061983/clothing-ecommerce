@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { beforeEach, expect } from "vitest";
 import { AppContext } from "./SetupTest";
 import Shipping from "../cart & payment/Shipping";
 import Payment from "../cart & payment/Payment";
-import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
 describe("group of testing Shipping component", () => {
@@ -50,13 +50,12 @@ describe("group of testing Shipping component", () => {
     await user.type(PostalCode, code);
     await user.type(Country, country);
     await user.click(btn);
-    // submit.mockReturnValueOnce({ name, email, password });
     console.log(name, adress, city, code, country);
 
     const paymentHeader = screen.getByRole("heading", {
       name: "Payment Method",
     });
     expect(paymentHeader).toBeInTheDocument();
-    // screen.debug(paymentHeader);
+    screen.debug();
   });
 });

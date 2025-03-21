@@ -43,25 +43,23 @@ describe("group of testinf Sale component ", () => {
       name: "Latest 2023 jeans...",
     });
     expect(slugLink).toBeInTheDocument();
+
     const user = userEvent.setup();
     await user.click(slugLink);
     await waitFor(() => {
       expect(screen.queryByText("...is loading")).toBeNull();
     });
-
     const detailHeader = screen.getByRole("heading", {
       name: "Product Detail",
     });
-    const priceHeader = screen.getByRole("heading", {
-      name: "new price: 39.99 $",
-    });
+    const priceHeader = screen.getByRole("heading", { name: "69.99 $" });
     const productName = screen.getByText(
-      /Long Lasting Quality Popular Brown In Color/i
+      /2023 Woolen Coat High Quality Men's wool coat/i
     );
     expect(detailHeader).toBeInTheDocument();
+
     expect(priceHeader).toBeInTheDocument();
     expect(productName).toBeInTheDocument();
-    screen.debug();
   });
   it("should the right elements to Cart componenet", async () => {
     const productLink = screen.getAllByRole("link", {
@@ -72,12 +70,21 @@ describe("group of testinf Sale component ", () => {
     const user3 = userEvent.setup();
     await user3.click(productLink);
 
-    await waitFor(() => {
-      expect(screen.queryByText("...is loading")).toBeNull();
-    });
-
     const cartTitle = await screen.findByText("your bag");
     expect(cartTitle).toBeInTheDocument();
+    const amountHeader = screen.getByRole("heading", { name: "amount: 1" });
+    const priceHeader = screen.getByRole("heading", {
+      name: "SUBTOTAL: 69.99 $",
+    });
+    const productName = screen.getByText("2023 Woole...");
+    const proceedHeader = screen.getByRole("link", {
+      name: "proceed to checkout",
+    });
+
+    expect(amountHeader).toBeInTheDocument();
+    expect(priceHeader).toBeInTheDocument();
+    expect(productName).toBeInTheDocument();
+    expect(proceedHeader).toBeInTheDocument();
     screen.debug();
   });
 });

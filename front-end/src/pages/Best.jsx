@@ -242,7 +242,7 @@ const Best = () => {
             </select>
           </div>
         </motion.form>
-        <Suspense fallback={<h2>...is loading</h2>}>
+        <Suspense fallback={<h3>...is loading</h3>}>
           <HeavyComponent
             productsFilter={productsFilter}
             searchParams={searchParams}

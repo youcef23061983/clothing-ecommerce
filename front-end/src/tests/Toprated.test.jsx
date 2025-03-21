@@ -51,11 +51,12 @@ describe("group of testing Toprated component", () => {
     const detailHeader = screen.getByRole("heading", {
       name: "Product Detail",
     });
-    const priceHeader = screen.getByRole("heading", { name: "79.99 $" });
+    const priceHeader = screen.getByRole("heading", { name: "69.99 $" });
     const productName = screen.getByText(
-      /Latest 2023 Custom Latest Design Spring/i
+      /2023 Woolen Coat High Quality Men's wool coat/i
     );
     expect(detailHeader).toBeInTheDocument();
+
     expect(priceHeader).toBeInTheDocument();
     expect(productName).toBeInTheDocument();
   });

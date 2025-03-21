@@ -2,6 +2,7 @@ import * as matchers from "@testing-library/jest-dom/matchers";
 import { expect, afterEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import { createContext, useState } from "react";
+// import { useParams } from "react-router-dom";
 
 // Extend expect with vi-dom matchers
 expect.extend(matchers);
@@ -220,7 +221,7 @@ export const mockData = [
     ],
     newArrival: false,
     onSale: true,
-    bestSeller: false,
+    bestSeller: true,
     rating: 4,
     preview: 7,
     amount: 1,
@@ -245,58 +246,22 @@ export const mockData2 = {
   preview: 9,
   amount: 1,
 };
-vi.mock("../data managment/UseFetch.jsx", () => ({
-  __esModule: true,
-  default: vi.fn(() => ({
-    data: mockData,
-    isPending: false,
-    error: null,
-  })),
-}));
-// export const mockCartContext = {
-//   cart: [],
-//   clearCart: vi.fn(),
-//   total: 69.99,
-//   amount: 1,
-//   updatedCart: vi.fn(),
-//   addToCart: vi.fn((id) => {
-//     // Simulate adding a product to the cart
-//     const newItem = {
-//       id: 1,
-//       productName: "jacket1",
-//       slug: "2023 Woolen Coat High Quality Men's wool coat",
-//       type: "jacket",
-//       price: 69.99,
-//       size: ["s", "m", "l", "xl"],
-//       newPrice: "",
-//       images: [
-//         "src/images/men/jacket1/image1.jpg",
-//         "src/images/men/jacket1/image2.jpg",
-//       ],
-//       newArrival: true,
-//       onSale: false,
-//       bestSeller: true,
-//       rating: 4,
-//       preview: 11,
-//       amount: 1,
-//     };
-//     mockCartContext.cart.push(newItem);
-//   }),
-//   setFormUser: vi.fn(),
-//   updateLoginStatus: vi.fn(),
-// };
-// export const AppContext = createContext();
 
-// vi.mock("../data managment/AppProvider.jsx", () => ({
-//   __esModule: true,
-//   AppContext: createContext(mockCartContext),
-//   default: ({ children }) => (
-//     <AppContext.Provider value={mockCartContext}>
-//       {children}
-//     </AppContext.Provider>
-//   ),
-// }));
-
+// Mock useParams
+// vi.mock("react-router-dom", async (importOriginal) => {
+//   const actual = await importOriginal(); // Preserve the original module
+//   return {
+//     ...actual, // Spread the original exports
+//     // useParams: vi.fn(() => ({ id: 1 })), // Mock useParams
+//   };
+// });
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useLocation: vi.fn(),
+  };
+});
 export const mockCartContext = {
   cart: [],
   clearCart: vi.fn(),
@@ -336,7 +301,7 @@ export const mockCartContext = {
   cartPayment: vi.fn(),
   payment: { payment: "paypal" },
   shipping: {
-    fullName: "you",
+    fullName: "youcef",
     address: "11 street",
     city: "algiers",
     postalCode: "1600",
@@ -344,9 +309,7 @@ export const mockCartContext = {
   },
   paymentSucceeded: true,
 };
-
 export const AppContext = createContext(mockCartContext);
-
 vi.mock("../data managment/AppProvider.jsx", () => ({
   __esModule: true,
   AppContext: createContext(mockCartContext),
@@ -362,3 +325,19 @@ export const auth = {
   signOut: vi.fn(),
   currentUser: { displayName: "Test User", photoURL: "test-url" },
 };
+vi.mock("../data managment/UseFetch.jsx", () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    data: mockData,
+    isPending: false,
+    error: null,
+  })),
+}));
+vi.mock("../data managment/DetailUseFetch.jsx", () => ({
+  __esModule: true,
+  default: vi.fn(() => ({
+    data: mockData2,
+    isPending: false,
+    error: null,
+  })),
+}));

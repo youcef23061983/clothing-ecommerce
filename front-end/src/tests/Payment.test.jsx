@@ -5,35 +5,30 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import Payment from "../cart & payment/Payment";
 import userEvent from "@testing-library/user-event";
-import { AppContext } from "./SetupTest";
-import CheckoutForm from "../cart & payment/CheckoutForm";
-// import Checkout from "../cart & payment/Checkout";
-import { useState } from "react";
+import AppProvider from "../data managment/AppProvider";
 
-// Create a mock Checkout component
-const MockCheckout = ({ onSuccess }) => {
-  useEffect(() => {
-    onSuccess(); // Simulate successful payment
-  }, [onSuccess]);
-  return <div>Mock Checkout Component</div>;
-};
+// Mock the Checkout component
+// vi.mock("../cart & payment/Checkout", () => ({
+//   default: ({ onSuccess }) => {
+//     // Simulate a successful payment
+//     setTimeout(() => onSuccess(), 100); // Simulate async behavior
+//     return <div>Mock Checkout Component</div>;
+//   },
+// }));
 
 describe("group of testing Payment component", () => {
   const queryClient = new QueryClient();
-  const mockCartContext = {
-    cartPayment: vi.fn(),
-  };
 
   beforeEach(async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter initialEntries={["/payment"]}>
-          <AppContext.Provider value={mockCartContext}>
+          <AppProvider>
             <Routes>
               <Route path="/payment" element={<Payment />} />
               <Route path="/order" element={<Order />} />
             </Routes>
-          </AppContext.Provider>
+          </AppProvider>
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -43,26 +38,55 @@ describe("group of testing Payment component", () => {
   });
 
   it("should render the right elements", async () => {
+    // Verify the payment header
     const paymentHeader = screen.getByRole("heading", {
       name: "Payment Method",
     });
     expect(paymentHeader).toBeInTheDocument();
 
+    // Verify radio buttons
     const paypalRadioButton = screen.getByLabelText("Paypal:");
     const stripeRadioButton = screen.getByLabelText("Stripe:");
+    expect(paypalRadioButton).toBeInTheDocument();
+    expect(stripeRadioButton).toBeInTheDocument();
 
+    // Simulate user selecting PayPal
     const user = userEvent.setup();
     await user.click(paypalRadioButton);
 
+    // Wait for the mock Checkout component to render
+    // await waitFor(() => {
+    //   expect(screen.getByText("Mock Checkout Component")).toBeInTheDocument();
+    // });
+
+    // Wait for the "Continue" button to appear (simulating payment success)
+    // const btn = await screen.findByRole("button", { name: "Continue" });
     const btn = screen.getByRole("button", { name: "Continue" });
+
     expect(btn).toBeInTheDocument();
 
+    // Simulate clicking the "Continue" button
     await user.click(btn);
 
-    const header = screen.getByRole("heading", {
+    // Verify navigation to the Order page
+    await waitFor(() => {
+      const orderheader = screen.getByRole("heading", {
+        name: "Your order",
+      });
+      expect(orderheader).toBeInTheDocument();
+    });
+
+    // Verify the success message and order details
+    const Succeedheader = screen.getByRole("heading", {
       name: "Your Payment Has Been Succeeded",
     });
-    expect(header).toBeInTheDocument();
+    const amountHeader = screen.getByRole("heading", { name: "amount: 1" });
+    const priceHeader = screen.getByRole("heading", {
+      name: "SUBTOTAL: 69.99 $",
+    });
+    expect(Succeedheader).toBeInTheDocument();
+    expect(amountHeader).toBeInTheDocument();
+    expect(priceHeader).toBeInTheDocument();
 
     screen.debug();
   });

@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { beforeEach, expect } from "vitest";
+import { beforeEach, expect, vi } from "vitest";
 import Cart from "../pages/Cart";
 import Detail from "../pages/Detail";
 import Best from "../pages/Best";
@@ -15,8 +15,14 @@ import userEvent from "@testing-library/user-event";
 import { HelmetProvider } from "react-helmet-async";
 import AppProvider from "../data managment/AppProvider";
 describe("group of testing Best component", () => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    // defaultOptions: {
+    //   queries: { retry: false },
+    // },
+  });
   beforeEach(async () => {
+    // vi.clearAllMocks();
+
     render(
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
@@ -40,59 +46,54 @@ describe("group of testing Best component", () => {
   it("should render the right elements", async () => {
     const header = screen.getByRole("heading", { name: "Your Best Sellers" });
     expect(header).toBeInTheDocument();
-
     const price = screen.getByRole("heading", { name: "69.99 $" });
     expect(price).toBeInTheDocument();
     const addLink = screen.getAllByRole("link", { name: "add to cart" })[0];
     expect(addLink).toBeInTheDocument();
-    console.log("Before click:", window.location.pathname);
   });
   it("should render to the detail page", async () => {
     const slugLink = screen.getByRole("link", {
       name: "2023 Woolen Coat High Quality Men's wool coat...",
     });
-    expect(slugLink).toBeInTheDocument();
-    console.log("Before click:", window.location.pathname);
-
     const user = userEvent.setup();
     await user.click(slugLink);
-    console.log("after click:", window.location.pathname);
-
-    // await waitFor(
-    //   () => {
-    //     expect(screen.queryByText("...is loading")).toBeNull();
-    //   },
-    //   { timeout: 5000 }
-    // );
-    await waitForElementToBeRemoved(() => screen.queryByText("...is loading"));
-    screen.debug();
-
-    // const detailHeader = screen.getByRole("heading", {
-    //   name: "Product Detail",
+    await waitFor(() => {
+      expect(screen.queryByText("...is loading")).toBeNull();
+    });
+    // await waitForElementToBeRemoved(() => screen.queryByText("...is loading"), {
+    //   timeout: 3000,
     // });
-    // const priceHeader = screen.getByRole("heading", { name: "79.99 $" });
-    // const productName = screen.getByText(
-    //   /Latest 2023 Custom Latest Design Spring/i
-    // );
-    // expect(detailHeader).toBeInTheDocument();
-    // expect(priceHeader).toBeInTheDocument();
-    // expect(productName).toBeInTheDocument();
+    const detailHeader = screen.getByRole("heading", {
+      name: "Product Detail",
+    });
+    expect(detailHeader).toBeInTheDocument();
+    const priceHeader = screen.getByRole("heading", { name: "69.99 $" });
+    const productName = screen.getByText(
+      /2023 Woolen Coat High Quality Men's wool coat/i
+    );
+    expect(priceHeader).toBeInTheDocument();
+    expect(productName).toBeInTheDocument();
   });
-  // it("should the right elements to Cart componenet", async () => {
-  //   const productLink = screen.getAllByRole("link", {
-  //     name: "add to cart",
-  //   })[0];
-  //   expect(productLink).toBeInTheDocument();
-
-  //   const user3 = userEvent.setup();
-  //   await user3.click(productLink);
-
-  //   await waitFor(() => {
-  //     expect(screen.queryByText("...is loading")).toBeNull();
-  //   });
-
-  //   const cartTitle = await screen.findByText("your bag");
-  //   expect(cartTitle).toBeInTheDocument();
-  //   // screen.debug();
-  // });
+  it("should the right elements to Cart component", async () => {
+    const productLink = screen.getAllByRole("link", {
+      name: "add to cart",
+    })[0];
+    expect(productLink).toBeInTheDocument();
+    const user3 = userEvent.setup();
+    await user3.click(productLink);
+    const cartTitle = await screen.findByText("your bag");
+    expect(cartTitle).toBeInTheDocument();
+    const amountHeader = screen.getByRole("heading", { name: "amount: 1" });
+    const priceHeader = screen.getByRole("heading", {
+      name: "SUBTOTAL: 69.99 $",
+    });
+    const productName = screen.getByText("2023 Woole...");
+    const proceedHeader = screen.getByRole("link", {
+      name: "proceed to checkout",
+    });
+    expect(amountHeader).toBeInTheDocument();
+    expect(priceHeader).toBeInTheDocument();
+    expect(productName).toBeInTheDocument();
+    expect(proceedHeader).toBeInTheDocument();
+  });
 });
