@@ -1,5 +1,5 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
-import img from "/images/men/banner/new.jpg";
+import { lazy, Suspense, useEffect, useState } from "react";
+import img from "/images/men/banner/best.jpg";
 import UseFetch from "../data managment/UseFetch";
 import { useSearchParams } from "react-router-dom";
 import { ReactLenis } from "@studio-freight/react-lenis";
@@ -18,9 +18,9 @@ const Best = () => {
     price: 0,
     rating: 1,
     sortOption: "",
-    onSale: false,
-    bestSeller: false,
-    newArrival: false,
+    on_sale: false,
+    best_seller: false,
+    new_arrival: false,
   };
 
   const [user, setUser] = useState(initialUserState);
@@ -56,9 +56,9 @@ const Best = () => {
       price: searchParams.get("price") || 0,
       rating: searchParams.get("rating") || 1,
       sortOption: searchParams.get("sortOption") || "",
-      onSale: searchParams.get("onSale") === "true",
-      bestSeller: searchParams.get("bestSeller") === "true",
-      newArrival: searchParams.get("newArrival") === "true",
+      on_sale: searchParams.get("on_sale") === "true",
+      best_seller: searchParams.get("best_seller") === "true",
+      new_arrival: searchParams.get("new_arrival") === "true",
     };
     setUser(updatedUserState);
   }, [searchParams]);
@@ -75,7 +75,7 @@ const Best = () => {
   ratings = ratings.map((rating, index) => {
     return (
       <option value={rating} key={index}>
-        {rating} stars and up
+        {rating} stars and upy
       </option>
     );
   });
@@ -84,13 +84,13 @@ const Best = () => {
 
   const productsFilter = data
     ?.filter((product) => {
-      const productsBestSeller = product.bestSeller === true;
+      const productsBestSeller = product.best_seller === true;
       const productsType = user.type === "all" || product.type === user.type;
       const productsPrice = user.price === 0 || product.price >= user.price;
       const productsRating = user.rating === 1 || product.rating >= user.rating;
-      const productsArrivals = !user.newArrival || product.newArrival;
-      const productsSale = !user.onSale || product.onSale;
-      const productsBest = !user.bestSeller || product.bestSeller;
+      const productsArrivals = !user.new_arrival || product.new_arrival;
+      const productsSale = !user.on_sale || product.on_sale;
+      const productsBest = !user.best_seller || product.best_seller;
       return (
         productsBestSeller &&
         productsType &&

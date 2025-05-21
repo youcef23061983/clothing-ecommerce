@@ -1,24 +1,28 @@
-const jsonServer = require("json-server");
-const server = jsonServer.create();
-const router = jsonServer.router("products.json");
-const middlewares = jsonServer.defaults();
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT;
+const cors = require("cors");
+const morgan = require("morgan");
+const productsRoutes = require("./routes/products.js");
+const authRoutes = require("./routes/authUser.js");
 
-server.use(middlewares);
-server.use((req, res, next) => {
-  console.log("Request received");
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
+app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend origin
+    credentials: true, // Allow credentials (cookies)
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  })
+);
+app.use(morgan("dev"));
+app.use("/products", productsRoutes);
+app.use("/auth", authRoutes);
+
+app.use("/", async (req, res) => {
+  res.send("Hello from the server");
 });
 
-server.use(router);
-server.listen(3000, () => {
-  console.log("JSON Server is running");
+app.listen(PORT, () => {
+  console.log("Server is running on port", PORT);
 });

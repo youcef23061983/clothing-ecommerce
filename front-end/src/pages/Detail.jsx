@@ -18,8 +18,6 @@ const Detail = () => {
 
   const { data, error, isPending } = DetailUseFetch(url, key, productID);
   useEffect(() => {
-    // if (data) {  i change this to      if (data?.images?.length > 0) because of testing data itself is not yet available when you try to access data.images[0]
-
     if (data?.images?.length > 0) {
       setSelectedImage(data.images[0]);
     }
@@ -50,14 +48,15 @@ const Detail = () => {
   if (error) return <h2>{error.message}</h2>;
 
   const {
-    slug,
+    product_name,
+    description,
     price,
-    newPrice,
-    onSale,
+    new_price,
+    on_sale,
     type,
     rating,
     preview,
-    size,
+    sizes,
     images,
     id,
   } = data;
@@ -65,14 +64,14 @@ const Detail = () => {
   return (
     <ReactLenis root={true}>
       <Helmet>
-        <title>{slug}</title>
+        <title>{product_name}</title>
         <meta
           name="description"
-          content={slug || "Detailed product information."}
+          content={description || "Detailed product information."}
         />
         <meta
           property="og:title"
-          content={slug || "High-quality clothing for every occasion."}
+          content={product_name || "High-quality clothing for every occasion."}
         />
         <meta
           property="og:description"
@@ -84,8 +83,11 @@ const Detail = () => {
           content={`https://clothing-ecommerce-phi.vercel.app/${id}`}
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={slug} />
-        <meta name="twitter:description" content={slug || "Product details"} />
+        <meta name="twitter:title" content={product_name} />
+        <meta
+          name="twitter:description"
+          content={description || "Product details"}
+        />
         <meta name="twitter:image" content={selectedImage || "image"} />
         <meta name="robots" content="index, follow" />
         <meta
@@ -133,14 +135,18 @@ const Detail = () => {
         </div>
         <div className="productDetail">
           <p className="linkTitle">
-            <span className="productSpan">product name:</span> {slug}
+            <span className="productSpan">product name:</span> {product_name}
           </p>
           <p className="linkTitle">
             <span className="productSpan">product type:</span> {type}
           </p>
+          <p className="linkTitle">
+            <span className="productSpan">product description:</span>{" "}
+            {description}
+          </p>
           <div className="sizeContainer">
             <span className="productSpan">size:</span>
-            {size?.map((x) => {
+            {sizes?.map((x) => {
               return <button className="sizeBtn">{x}</button>;
             })}
           </div>
@@ -151,9 +157,9 @@ const Detail = () => {
           <div className="price">
             <div style={{ display: "flex" }}>
               <span className="productSpan">old price:</span>
-              <h3 className={`${onSale ? "through" : ""}`}>{price} $</h3>
+              <h3 className={`${on_sale ? "through" : ""}`}>{price} $</h3>
             </div>
-            {onSale && <h3>new price: {newPrice} $</h3>}
+            {on_sale && <h3>new price: {new_price} $</h3>}
           </div>
           <Link className="addCart" to="/cart" onClick={() => addToCart(id)}>
             add to cart
@@ -164,7 +170,7 @@ const Detail = () => {
             relative="path"
           >
             &larr;
-            <span>{goBack(location?.state.search)}</span>
+            <span>{goBack(location?.state?.search)}</span>
           </Link>
         </div>
       </div>

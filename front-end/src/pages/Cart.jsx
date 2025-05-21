@@ -11,7 +11,7 @@ const Cart = () => {
 
   useEffect(() => {
     document.title = "Cart";
-  }, [cart]);
+  }, []);
 
   return (
     <div>
@@ -40,7 +40,8 @@ const Cart = () => {
           <Link onClick={clearCart} className="addCart">
             clear all
           </Link>
-          <Link className="addCart" to="/shipping">
+          {/* <Link className="addCart" to="/shipping"> */}
+          <Link className="addCart" to="/payment">
             proceed to checkout
           </Link>
         </div>

@@ -1,5 +1,7 @@
-import React, { useReducer, useEffect, createContext, useState } from "react";
+import { useReducer, useEffect, createContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../info & contact/Firebase";
 
 export const AppContext = createContext();
 
@@ -9,13 +11,15 @@ const initialState = {
   amount: 0,
   shipping: {},
   payment: {},
-  googleUser: null,
+  user: null,
   formUser: null,
+  firebaseUser: null,
   login: false,
 };
 
 const AppProvider = ({ children }) => {
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
 
   const productsFun = async () => {
@@ -87,6 +91,21 @@ const AppProvider = ({ children }) => {
         const updatedCart = [...state.cart, newProduct];
         return { ...state, cart: updatedCart };
       }
+      case "SET_FORM_USER": {
+        return {
+          ...state,
+          formUser: action.payload,
+          // login: !!action.payload,
+        };
+      }
+
+      case "SET_FIREBASE_USER": {
+        return {
+          ...state,
+          firebaseUser: action.payload,
+          // login: !!action.payload,
+        };
+      }
       case "SHIPPING": {
         return {
           ...state,
@@ -99,28 +118,13 @@ const AppProvider = ({ children }) => {
           payment: action.payload,
         };
       }
-      case "SET_GOOGLE_USER": {
-        return {
-          ...state,
-          googleUser: action.payload,
-          login: !!action.payload, // Update login state based on user presence
-        };
-      }
-      case "SET_FORM_USER": {
-        return {
-          ...state,
-          formUser: action.payload,
-          login: !!action.payload, // Update login state based on user presence
-        };
-      }
-      case "SET_LOGIN":
-        return { ...state, login: action.payload };
+
       case "LOGOUT": {
         return {
           ...state,
-          googleUser: null,
+          firebaseUser: null,
           formUser: null,
-          login: false,
+          // login: false,
         };
       }
       case "LOAD_CART": {
@@ -133,107 +137,166 @@ const AppProvider = ({ children }) => {
 
   const [state, dispatch] = useReducer(Reducer, initialState);
 
+  // Initialize Firebase auth listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        const userData = {
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName,
+          email: firebaseUser.email,
+          photoURL: firebaseUser.photoURL,
+          provider: firebaseUser.providerData[0]?.providerId,
+        };
+        setFirebaseUser(userData);
+      } else {
+        setFirebaseUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+  // Action creators
   const addToCart = (id) => {
     dispatch({ type: "ADD_TO_CART", payload: id });
   };
+
   const clearCart = () => {
     dispatch({ type: "CLEAR_CART" });
   };
+
   const remove = (id) => {
     dispatch({ type: "REMOVE", payload: id });
   };
+
   const increase = (id) => {
     dispatch({ type: "INCREASE", payload: id });
   };
+
   const decrease = (id) => {
     dispatch({ type: "DECREASE", payload: id });
   };
 
   const cartShipping = (shipping) => {
     localStorage.setItem("shipping", JSON.stringify(shipping));
-    dispatch({
-      type: "SHIPPING",
-      payload: shipping,
-    });
+    dispatch({ type: "SHIPPING", payload: shipping });
   };
+
   const cartPayment = (payment) => {
     localStorage.setItem("payment", JSON.stringify(payment));
     dispatch({ type: "PAYMENT", payload: payment });
   };
-  const setGoogleUser = (user) => {
-    localStorage.setItem("googleUser", JSON.stringify(user));
-    dispatch({ type: "SET_GOOGLE_USER", payload: user });
-  };
+
   const setFormUser = (user) => {
-    localStorage.setItem("formUser", JSON.stringify(user));
+    sessionStorage.setItem("formUser", JSON.stringify(user));
     dispatch({ type: "SET_FORM_USER", payload: user });
   };
 
-  const logout = () => {
-    setIsLoggingOut(true);
-    localStorage.removeItem("googleUser");
-    localStorage.removeItem("formUser");
-    localStorage.setItem("login", JSON.stringify(false));
-    dispatch({ type: "LOGOUT" });
+  const setFirebaseUser = (user) => {
+    localStorage.setItem("fireUser", JSON.stringify(user));
 
-    setTimeout(() => {
-      setIsLoggingOut(false);
-    }, 2000);
+    dispatch({ type: "SET_FIREBASE_USER", payload: user });
   };
-  const updateLoginStatus = (isLoggedIn) => {
-    localStorage.setItem("login", JSON.stringify(isLoggedIn));
-    dispatch({ type: "SET_LOGIN", payload: isLoggedIn });
+
+  const logout = async () => {
+    try {
+      sessionStorage.removeItem("formUser");
+      sessionStorage.removeItem("fireUser");
+      sessionStorage.removeItem("token");
+      dispatch({ type: "LOGOUT" });
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout error:", error);
+      throw error; // Re-throw to handle in components
+    }
   };
+
+  // Initialize app state
+
   useEffect(() => {
+    if (isInitialized) return;
+
+    const initializeState = () => {
+      const storedCart = localStorage.getItem("cart");
+      if (storedCart) {
+        dispatch({ type: "LOAD_CART", payload: JSON.parse(storedCart) });
+      }
+      try {
+        const savedFirebaseUser = localStorage.getItem("fireUser");
+        if (savedFirebaseUser) {
+          const user = JSON.parse(savedFirebaseUser);
+          // Verify the user object has required fields
+          if (user && user.uid) {
+            dispatch({ type: "SET_FIREBASE_USER", payload: user });
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to load Firebase user", e);
+      }
+
+      try {
+        const savedFormUser = localStorage.getItem("formUser");
+        if (savedFormUser) {
+          const user = JSON.parse(savedFormUser);
+          // Verify the user object has required fields
+          if (user && user.email) {
+            dispatch({ type: "SET_FORM_USER", payload: user });
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to load form user", e);
+      }
+
+      // Load payment
+      const storedPayment = localStorage.getItem("payment");
+      if (storedPayment) {
+        dispatch({ type: "PAYMENT", payload: JSON.parse(storedPayment) });
+      }
+
+      // Load shipping
+      const storedShipping = localStorage.getItem("shipping");
+      if (storedShipping) {
+        dispatch({ type: "SHIPPING", payload: JSON.parse(storedShipping) });
+      }
+
+      setIsInitialized(true);
+    };
+
+    initializeState();
+  }, [isInitialized]);
+  //   // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (!isInitialized) return;
     localStorage.setItem("cart", JSON.stringify(state.cart));
-    dispatch({ type: "LOAD_CART", payload: state.cart });
-  }, []);
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      dispatch({ type: "LOAD_CART", payload: JSON.parse(storedCart) });
-    }
-  }, []);
-
-  useEffect(() => {
-    const savedGoogleUser = localStorage.getItem("googleUser");
-    if (savedGoogleUser) {
-      dispatch({
-        type: "SET_GOOGLE_USER",
-        payload: JSON.parse(savedGoogleUser),
-      });
-    }
-
-    const savedFormUser = localStorage.getItem("formUser");
-    if (savedFormUser) {
-      dispatch({ type: "SET_FORM_USER", payload: JSON.parse(savedFormUser) });
-    }
-  }, []);
-
-  useEffect(() => {
-    const storedLogin = localStorage.getItem("login");
-    if (storedLogin) {
-      dispatch({ type: "SET_LOGIN", payload: JSON.parse(storedLogin) });
-    }
-  }, []);
-
-  useEffect(() => {
-    const storedPayment = localStorage.getItem("payment");
-    if (storedPayment) {
-      dispatch({ type: "PAYMENT", payload: JSON.parse(storedPayment) });
-    }
-  }, []);
-
-  // i change that useEffect by updatedCart i left it below in case of issues
-  // useEffect(() => {
-  //   localStorage.setItem("cart", JSON.stringify(state.cart));
-  // }, [state.cart]);
-
-  // Update totals whenever cart changes
-  useEffect(() => {
     dispatch({ type: "GET_TOTAL" });
-  }, [state.cart]);
+  }, [state.cart, isInitialized]);
+  // Add this to your AppProvider or auth context
+  const checkAuthStatus = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      if (!token) return null;
 
+      const response = await fetch("http://localhost:3000/auth/verify", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        sessionStorage.removeItem("token");
+        return null;
+      }
+
+      const data = await response.json();
+      sessionStorage.setItem("token", data.token);
+
+      return data;
+    } catch (error) {
+      console.error("Auth check error:", error);
+      return null;
+    }
+  };
   return (
     <AppContext.Provider
       value={{
@@ -245,11 +308,10 @@ const AppProvider = ({ children }) => {
         addToCart,
         cartPayment,
         cartShipping,
-        setGoogleUser,
-        setFormUser,
         logout,
-        updateLoginStatus,
-        isLoggingOut,
+        setFirebaseUser,
+        setFormUser,
+        checkAuthStatus,
       }}
     >
       {children}

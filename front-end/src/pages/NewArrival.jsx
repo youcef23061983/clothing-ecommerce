@@ -17,9 +17,9 @@ const NewArrival = () => {
     price: 0,
     rating: 1,
     sortOption: "",
-    onSale: false,
-    bestSeller: false,
-    newArrival: false,
+    on_sale: false,
+    best_seller: false,
+    new_arrival: false,
   };
 
   const [user, setUser] = useState(initialUserState);
@@ -57,9 +57,9 @@ const NewArrival = () => {
       price: searchParams.get("price") || 0,
       rating: searchParams.get("rating") || 1,
       sortOption: searchParams.get("sortOption") || "",
-      onSale: searchParams.get("onSale") === "true",
-      bestSeller: searchParams.get("bestSeller") === "true",
-      newArrival: searchParams.get("newArrival") === "true",
+      onSale: searchParams.get("on_sale") === "true",
+      bestSeller: searchParams.get("best_seller") === "true",
+      new_arrival: searchParams.get("new_arrival") === "true",
     };
     setUser(updatedUserState);
   }, [searchParams]);
@@ -84,13 +84,13 @@ const NewArrival = () => {
 
   const productsFilter = data
     ?.filter((product) => {
-      const productsNew = product.newArrival === true;
+      const productsNew = product.new_arrival === true;
       const productsType = user.type === "all" || product.type === user.type;
       const productsPrice = user.price === 0 || product.price >= user.price;
       const productsRating = user.rating === 1 || product.rating >= user.rating;
-      const productsArrivals = !user.newArrival || product.newArrival;
-      const productsSale = !user.onSale || product.onSale;
-      const productsBest = !user.bestSeller || product.bestSeller;
+      const productsArrivals = !user.new_arrival || product.new_arrival;
+      const productsSale = !user.on_sale || product.on_sale;
+      const productsBest = !user.best_seller || product.best_seller;
       return (
         productsNew &&
         productsType &&
@@ -103,9 +103,9 @@ const NewArrival = () => {
     })
     ?.sort((a, b) => {
       if (user.sortOption === "priceLowToHigh") {
-        return (a.newPrice || a.price) - (b.newPrice || b.price);
+        return (a.new_price || a.price) - (b.new_price || b.price);
       } else if (user.sortOption === "priceHighToLow") {
-        return (b.newPrice || b.price) - (a.newPrice || a.price);
+        return (b.new_price || b.price) - (a.new_price || a.price);
       } else {
         return "";
       }
@@ -127,7 +127,7 @@ const NewArrival = () => {
   } items`;
   return (
     <ReactLenis root={true}>
-      {/* <Helmet>
+      <Helmet>
         <title>{pageTitle}</title>
         <meta
           name="description"
@@ -168,7 +168,7 @@ const NewArrival = () => {
           content="new arrival, products, discounts, buy, offers, shopping"
         />
         <meta name="author" content="Desire" />
-      </Helmet> */}
+      </Helmet>
       <div className="headerimages">
         <img src={img} alt="new" loading="lazy" className="detailImg" />
       </div>

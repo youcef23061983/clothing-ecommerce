@@ -32,12 +32,21 @@ const ProductsDashboard = () => {
     if (data) {
       setProducts(
         data.map(
-          ({ id, type, slug, price, newPrice, rating, preview, images }) => ({
+          ({
             id,
             type,
-            slug,
+            description,
             price,
-            newPrice,
+            new_price,
+            rating,
+            preview,
+            images,
+          }) => ({
+            id,
+            type,
+            description,
+            price,
+            new_price,
             rating,
             preview,
             image: images?.[0],
@@ -137,9 +146,9 @@ const ProductsDashboard = () => {
   const columns = [
     { field: "id", headerName: "ID" },
     { field: "type", headerName: "Type", flex: 1 },
-    { field: "slug", headerName: "Description", flex: 2 },
+    { field: "description", headerName: "Description", flex: 2 },
     { field: "price", headerName: "Old Price", flex: 1 },
-    { field: "newPrice", headerName: "New Price", flex: 1 },
+    { field: "new_price", headerName: "New Price", flex: 1 },
     { field: "rating", headerName: "Rating", flex: 1 },
     { field: "preview", headerName: "Preview", flex: 1 },
     {
@@ -198,9 +207,12 @@ const ProductsDashboard = () => {
             label="Description"
             fullWidth
             margin="dense"
-            value={selectedProduct?.slug || ""}
+            value={selectedProduct?.description || ""}
             onChange={(e) =>
-              setSelectedProduct({ ...selectedProduct, slug: e.target.value })
+              setSelectedProduct({
+                ...selectedProduct,
+                description: e.target.value,
+              })
             }
           />
           <TextField
@@ -218,11 +230,11 @@ const ProductsDashboard = () => {
             type="number"
             fullWidth
             margin="dense"
-            value={selectedProduct?.newPrice || ""}
+            value={selectedProduct?.new_price || ""}
             onChange={(e) =>
               setSelectedProduct({
                 ...selectedProduct,
-                newPrice: e.target.value,
+                new_price: e.target.value,
               })
             }
           />

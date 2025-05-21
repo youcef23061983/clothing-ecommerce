@@ -15,6 +15,8 @@ const Order = () => {
       navigate("/payment");
     }
   }, [payment]);
+  console.log(cart);
+
   const tax = parseFloat((total * 0.1).toFixed(2));
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
   const totalAll = parseFloat((total + tax + shippingPrice).toFixed(2));
@@ -98,7 +100,7 @@ const Order = () => {
                       className="img"
                     />
                   </div>
-                  <h3 className="cartName">{item?.slug.substring(0, 20)}...</h3>
+                  <h3 className="cartName">{item?.product_name}...</h3>
                   <div>
                     <h3>{item?.newPrice || item?.price} $</h3>
                     <h3>{itemsPrice} $</h3>

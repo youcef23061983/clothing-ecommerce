@@ -17,7 +17,7 @@ const CartItem = ({ item }) => {
           className="img"
         />
       </div>
-      <h3 className="cartName">{item?.slug.substring(0, 10)}...</h3>
+      <h3 className="cartName">{item?.product_name}</h3>
       <div>
         <h3>{item?.newPrice || item?.price} $</h3>
         <h3>{itemsPrice} $</h3>

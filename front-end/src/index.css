@@ -213,7 +213,6 @@ input:focus {
   right: 1rem;
   font-size: 1.5rem;
   color: var(--clr-secondary-header-color);
-
   padding: 0.5rem 1rem;
   background-color: aliceblue;
 }
@@ -441,6 +440,15 @@ button {
   margin: 1rem;
   padding: 1rem;
 }
+.error-message {
+  color: #b91c1c;
+  background-color: #fee2e2;
+  border: 1px solid #f87171;
+  padding: 0.7rem;
+  border-radius: 0.25rem;
+  font-size: 1.5rem;
+}
+
 @media screen and (min-width: 336px) {
   .nav-header {
     display: flex;

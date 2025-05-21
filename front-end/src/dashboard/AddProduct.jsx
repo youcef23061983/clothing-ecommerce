@@ -13,19 +13,18 @@ import { useNavigate } from "react-router-dom";
 const AddProduct = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState({
-    productName: "",
-    slug: "",
+    product_name: "",
+    description: "",
     type: "",
     price: "",
-    size: [],
-    newPrice: "",
+    sizes: [],
+    new_price: "",
     images: [],
-    newArrival: false,
-    onSale: false,
-    bestSeller: false,
+    new_arrival: false,
+    on_sale: false,
+    best_seller: false,
     rating: 1,
     preview: 0,
-    amount: 1,
   });
 
   const handleChange = (e) => {
@@ -72,16 +71,16 @@ const AddProduct = () => {
         label="Product Name"
         fullWidth
         margin="dense"
-        name="productName"
-        value={product.productName}
+        name="product_name"
+        value={product.product_name}
         onChange={handleChange}
       />
       <TextField
         label="Description"
         fullWidth
         margin="dense"
-        name="slug"
-        value={product.slug}
+        name="description"
+        value={product.description}
         onChange={handleChange}
       />
       <FormControl fullWidth margin="dense">
@@ -93,13 +92,13 @@ const AddProduct = () => {
           onChange={handleChange}
         >
           <MenuItem value="jacket">jacket</MenuItem>
-          <MenuItem value="shirt">jeans</MenuItem>
-          <MenuItem value="pants">shirt</MenuItem>
+          <MenuItem value="jeans">jeans</MenuItem>
+          <MenuItem value="shirt">shirt</MenuItem>
           <MenuItem value="shoes">shoes</MenuItem>
-          <MenuItem value="accessories">sneaker</MenuItem>
-          <MenuItem value="accessories">sweatshirt</MenuItem>
-          <MenuItem value="accessories">trousers</MenuItem>
-          <MenuItem value="accessories">tshirt</MenuItem>
+          <MenuItem value="sneaker">sneaker</MenuItem>
+          <MenuItem value="sweatshirt">sweatshirt</MenuItem>
+          <MenuItem value="trousers">trousers</MenuItem>
+          <MenuItem value="tshirt">tshirt</MenuItem>
         </Select>
       </FormControl>
       <TextField
@@ -116,8 +115,8 @@ const AddProduct = () => {
         type="number"
         fullWidth
         margin="dense"
-        name="newPrice"
-        value={product.newPrice}
+        name="new_price"
+        value={product.new_price}
         onChange={handleChange}
       />
       <TextField
@@ -134,16 +133,16 @@ const AddProduct = () => {
         }
       />
       <FormControl fullWidth margin="dense">
-        <InputLabel>Size</InputLabel>
+        <InputLabel>Sizes</InputLabel>
         <Select
-          label="Size"
+          label="Sizes"
           multiple
-          name="size"
-          value={product.size}
+          name="sizes"
+          value={product.sizes}
           onChange={(e) =>
             setProduct({
               ...product,
-              size: e.target.value,
+              sizes: e.target.value,
             })
           }
         >
@@ -158,8 +157,8 @@ const AddProduct = () => {
           New Arrival
           <input
             type="checkbox"
-            name="newArrival"
-            checked={product.newArrival}
+            name="new_arrival"
+            checked={product.new_arrival}
             onChange={handleCheckboxChange}
           />
         </label>
@@ -169,8 +168,8 @@ const AddProduct = () => {
           On Sale
           <input
             type="checkbox"
-            name="onSale"
-            checked={product.onSale}
+            name="on_sale"
+            checked={product.on_sale}
             onChange={handleCheckboxChange}
           />
         </label>
@@ -180,8 +179,8 @@ const AddProduct = () => {
           Best Seller
           <input
             type="checkbox"
-            name="bestSeller"
-            checked={product.bestSeller}
+            name="best_seller"
+            checked={product.best_seller}
             onChange={handleCheckboxChange}
           />
         </label>
@@ -202,15 +201,6 @@ const AddProduct = () => {
         margin="dense"
         name="preview"
         value={product.preview}
-        onChange={handleChange}
-      />
-      <TextField
-        label="Amount"
-        type="number"
-        fullWidth
-        margin="dense"
-        name="amount"
-        value={product.amount}
         onChange={handleChange}
       />
 

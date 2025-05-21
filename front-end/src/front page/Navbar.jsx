@@ -1,41 +1,38 @@
 import { FaAlignJustify } from "react-icons/fa";
 import { LuShoppingCart, LuUserCircle2, LuSearch } from "react-icons/lu";
 import { AppContext } from "../data managment/AppProvider";
-import { Link } from "react-router-dom";
-import {
-  useLayoutEffect,
-  useRef,
-  useState,
-  useContext,
-  useEffect,
-} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useLayoutEffect, useRef, useState, useContext } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { motion } from "framer-motion";
 import { auth } from "../info & contact/Firebase";
+import { signOut } from "firebase/auth";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   const [showLinks, setShowLinks] = useState(false);
   const linksContainerRef = useRef(null);
   const linksRef = useRef(null);
   const navCenter = useRef(null);
+  const {
+    user: contextUser,
+    logout,
+    amount,
+    formUser,
+    setFirebaseUser,
+    setFormUser,
+  } = useContext(AppContext);
+  const [firebaseUser, loading] = useAuthState(auth);
 
-  const { googleUser, formUser, logout, amount, setLoginFormData } =
-    useContext(AppContext);
-  const [user, loading] = useAuthState(auth);
+  // Use either Firebase user or context user
+  const currentUser = firebaseUser || contextUser;
 
-  useEffect(() => {
-    const savedLoginFormData = localStorage.getItem("loginFormData");
-    if (savedLoginFormData) {
-      setLoginFormData(JSON.parse(savedLoginFormData));
-    }
-  }, []);
   useLayoutEffect(() => {
     let isMounted = true;
 
     const handleScroll = () => {
-      if (!isMounted) {
-        return;
-      }
+      if (!isMounted || !navCenter.current) return;
 
       const scrollHeight = window.scrollY;
       const navCenterHeight = navCenter.current.getBoundingClientRect().height;
@@ -49,16 +46,19 @@ const Navbar = () => {
         navCenter.current.style.background = "white";
         navCenter.current.style.width = "100%";
         navCenter.current.style.transition = "all 0.8s linear";
-        displayNameElements.forEach((displayNameElement) => {
-          displayNameElement.style.color = "rgb(249, 175, 35)";
+
+        displayNameElements.forEach((el) => {
+          el.style.color = "rgb(249, 175, 35)";
         });
 
         links.forEach((link) => {
           link.style.color = "rgb(249, 175, 35)";
         });
+
         if (sale) {
           sale.style.color = "red";
         }
+
         linkIcon.forEach((icon) => {
           icon.style.color = "rgb(249, 175, 35)";
         });
@@ -72,31 +72,23 @@ const Navbar = () => {
         links.forEach((link) => {
           link.style.color = "white";
         });
+
         if (sale) {
           sale.style.color = "red";
         }
-        displayNameElements.forEach((displayNameElement) => {
-          displayNameElement.style.color = "white";
+
+        displayNameElements.forEach((el) => {
+          el.style.color = "white";
         });
       }
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       isMounted = false;
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  // Define a variable to hold the display name
-  // let displayName;
-
-  // if (user) {
-  //   displayName = user.displayName;
-  // } else {
-  //   displayName = loginFormData.name;
-  // }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -126,7 +118,7 @@ const Navbar = () => {
           <Link to="">
             <img
               src="/images/desire.png"
-              alt="log"
+              alt="logo"
               loading="lazy"
               className="img"
             />
@@ -137,42 +129,71 @@ const Navbar = () => {
           className="nav-toggle"
           type="button"
           onClick={() => setShowLinks(!showLinks)}
+          aria-label="Toggle navigation"
         >
           <FaAlignJustify />
         </button>
       </motion.div>
+
       <div ref={linksContainerRef}>
         <motion.div className="book" variants={containerVariants}>
           <div className="navSearch">
-            <input type="text" />
+            <input type="text" placeholder="Search..." aria-label="Search" />
             <LuSearch className="linkIcon" />
           </div>
+
           <div className="cart">
-            {googleUser ? (
+            {currentUser ? (
               <div className="cart">
                 <p className="displayName">
-                  Welcome, {user && user.displayName}
+                  Welcome, {currentUser.displayName || currentUser.name}
                 </p>
-                <Link className="linkIcon" to="/login">
-                  <img
-                    src={user && user.photoURL}
-                    className="img"
-                    style={{ borderRadius: "50%" }}
-                    alt="phto"
-                    loading="lazy"
-                  />
+
+                <Link
+                  to="/login"
+                  className="linkIcon"
+                  aria-label="User profile"
+                >
+                  {firebaseUser?.photoURL ? (
+                    <img
+                      src={firebaseUser.photoURL}
+                      className="img"
+                      style={{ borderRadius: "50%" }}
+                      alt="Profile"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <LuUserCircle2 />
+                  )}
                 </Link>
-                <Link className="displayName" to="/" onClick={logout}>
+                <Link
+                  className="displayName"
+                  onClick={async (e) => {
+                    e.preventDefault(); // Prevent navigation until signOut completes
+                    try {
+                      await signOut(auth);
+                      setFirebaseUser(null);
+                      setFormUser(null);
+                      sessionStorage.removeItem("token");
+
+                      navigate("/", { replace: true });
+                    } catch (err) {
+                      console.error("Error signing out:", err.message);
+                    }
+                  }}
+                >
                   Logout
                 </Link>
               </div>
             ) : formUser ? (
               <div className="cart">
-                <p className="displayName">Welcome, {formUser.name}</p>
+                <p className="displayName">
+                  Welcome, {formUser?.user?.username}
+                </p>
                 <Link className="linkIcon">
                   <LuUserCircle2 />
                 </Link>
-                <Link className="displayName" to="/" onClick={logout}>
+                <Link className="displayName" onClick={logout}>
                   Logout
                 </Link>
               </div>
@@ -183,22 +204,25 @@ const Navbar = () => {
             )}
 
             <div className="shoppingContainer">
-              <Link className="linkIcon" to="/cart">
-                <LuShoppingCart className="img" />
+              <Link className="linkIcon" to="/cart" aria-label="Shopping cart">
+                <LuShoppingCart className="cart-icon" />
               </Link>
-              <div className="navAmount">
-                <p className="amountTag">{amount}</p>
-              </div>
+              {amount > 0 && (
+                <div className="navAmount">
+                  <p className="amountTag">{amount}</p>
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
+
         <motion.div variants={containerVariants}>
           <ul
             className={`${showLinks ? "links show-nav" : "links"}`}
             ref={linksRef}
           >
             <li>
-              <Link to="" className="sale navlink">
+              <Link to="/" className="sale navlink">
                 Shop
               </Link>
             </li>

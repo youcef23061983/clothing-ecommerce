@@ -18,11 +18,10 @@ const Homepage = () => {
     price: 0,
     rating: 1,
     sortOption: "",
-    onSale: false,
-    bestSeller: false,
-    newArrival: false,
+    on_sale: false,
+    best_seller: false,
+    new_arrival: false,
   };
-
   const [user, setUser] = useState(initialUserState);
   const [searchParams, setSearchParams] = useSearchParams();
   const handleChange = (e) => {
@@ -57,9 +56,9 @@ const Homepage = () => {
       price: searchParams.get("price") || 0,
       rating: searchParams.get("rating") || 1,
       sortOption: searchParams.get("sortOption") || "",
-      onSale: searchParams.get("onSale") === "true",
-      bestSeller: searchParams.get("bestSeller") === "true",
-      newArrival: searchParams.get("newArrival") === "true",
+      on_sale: searchParams.get("on_sale") === "true",
+      best_seller: searchParams.get("best_seller") === "true",
+      new_arrival: searchParams.get("new_arrival") === "true",
     };
     setUser(updatedUserState);
   }, [searchParams]);
@@ -87,12 +86,13 @@ const Homepage = () => {
 
   const productsFilter = data
     ?.filter((product) => {
+      // const productsNew = product.new_arrival === true;
       const productsType = user.type === "all" || product.type === user.type;
       const productsPrice = user.price === 0 || product.price >= user.price;
       const productsRating = user.rating === 1 || product.rating >= user.rating;
-      const productsArrivals = !user.newArrival || product.newArrival;
-      const productsSale = !user.onSale || product.onSale;
-      const productsBest = !user.bestSeller || product.bestSeller;
+      const productsArrivals = !user.new_arrival || product.new_arrival;
+      const productsSale = !user.on_sale || product.on_sale;
+      const productsBest = !user.best_seller || product.best_seller;
       return (
         productsType &&
         productsPrice &&
@@ -104,18 +104,16 @@ const Homepage = () => {
     })
     ?.sort((a, b) => {
       if (user.sortOption === "priceLowToHigh") {
-        return (a.newPrice || a.price) - (b.newPrice || b.price);
+        return (a.new_price || a.price) - (b.new_price || b.price);
       } else if (user.sortOption === "priceHighToLow") {
-        return (b.newPrice || b.price) - (a.newPrice || a.price);
+        return (b.new_price || b.price) - (a.new_price || a.price);
       } else {
         return "";
       }
     });
 
   useLenis((lenis) => {
-    lenis.on("scroll", ({ scroll }) => {
-      console.log("Scroll position:", scroll);
-    });
+    lenis.on("scroll", ({ scroll }) => {});
   });
 
   const Filter = {
@@ -243,32 +241,32 @@ const Homepage = () => {
           <div className="elementCheck">
             <input
               type="checkbox"
-              name="onSale"
-              id="onSale"
-              checked={user.onSale}
+              name="on_sale"
+              id="on_sale"
+              checked={user.on_sale}
               onChange={handleChange}
             />
-            <label htmlFor="onSale">onSale:</label>
+            <label htmlFor="on_sale">onSale:</label>
           </div>
           <div className="elementCheck">
             <input
               type="checkbox"
-              name="bestSeller"
-              id="bestSeller"
-              checked={user.bestSeller}
+              name="best_seller"
+              id="best_seller"
+              checked={user.best_seller}
               onChange={handleChange}
             />
-            <label htmlFor="bestSeller">bestSeller:</label>
+            <label htmlFor="best_seller">bestSeller:</label>
           </div>
           <div className="elementCheck">
             <input
               type="checkbox"
-              name="newArrival"
-              id="newArrival"
-              checked={user.newArrival}
+              name="new_arrival"
+              id="new_arrival"
+              checked={user.new_arrival}
               onChange={handleChange}
             />
-            <label htmlFor="newArrival">newArrival:</label>
+            <label htmlFor="new_arrival">newArrival:</label>
           </div>
         </div>
         <div className="searchElement">

@@ -10,13 +10,13 @@ const Product = ({ product, searchParams }) => {
 
   const {
     id,
-    slug,
+    product_name,
     price,
     images,
-    newPrice,
-    newArrival,
-    onSale,
-    bestSeller,
+    new_price,
+    new_arrival,
+    on_sale,
+    best_seller,
     rating,
     preview,
   } = product;
@@ -62,7 +62,7 @@ const Product = ({ product, searchParams }) => {
           className="linkTitle"
           state={{ search: `?${searchParams.toString()}` }}
         >
-          {slug.substring(0, 70)}...
+          {product_name}
         </Link>
         <div className="rating">
           <div>
@@ -72,17 +72,21 @@ const Product = ({ product, searchParams }) => {
         </div>
 
         <div className="price">
-          <h3 className={`${onSale ? "through" : ""}`}>{price} $</h3>
-          {onSale && <h3>{newPrice} $</h3>}
+          <h3 className={`${on_sale ? "through" : ""}`}>{price} $</h3>
+          {on_sale && <h3>{new_price} $</h3>}
         </div>
 
         <Link className="addCart" to="/cart" onClick={() => addToCart(id)}>
           add to cart
         </Link>
 
-        {onSale && <p className="saleTag">On Sale</p>}
-        {bestSeller && <p className="newTag">Best Seller</p>}
-        {newArrival && <p className="newTag">New Arrival</p>}
+        {on_sale && <p className="saleTag">On Sale</p>}
+        {best_seller && <p className="newTag">Best Seller</p>}
+        {new_arrival && (
+          <p className="newTag" style={{ top: best_seller ? "6rem" : "3rem" }}>
+            New Arrival
+          </p>
+        )}
       </div>
     </motion.div>
   );
