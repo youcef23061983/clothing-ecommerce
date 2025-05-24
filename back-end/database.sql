@@ -235,6 +235,7 @@ VALUES
   '/images/men/sneakers5/image3.jpg',
   '/images/men/sneakers5/image4.jpg'
 ], false, true, true, 4.8, 12, 1),
+-- from 16 to 20 :
 
 (
   
@@ -341,19 +342,20 @@ VALUES
   10,
   1
 );
-CREATE TYPE role AS ENUM ('customer', 'admin');
+
 
 CREATE TABLE tbluser (
-    id SERIAL NOT NULL PRIMARY KEY,
-    email VARCHAR(120) UNIQUE NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    contact VARCHAR(15),
-    accounts TEXT[],
-    password TEXT,
-    provider VARCHAR(10) NULL,
-    country TEXT,
-    currency VARCHAR(5) NOT NULL DEFAULT 'USD',
-    user_role role NOT NULL DEFAULT 'customer',  -- Included here directly
-    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	id SERIAL NOT NULL PRIMARY KEY,
+	email VARCHAR(120) UNIQUE NOT NULL,
+	username VARCHAR(50) NOT NULL,
+	contact VARCHAR(15),
+	accounts TEXT[],
+	password TEXT,
+	provider VARCHAR(10) NULL,
+	country TEXT,
+	currency VARCHAR(5) NOT NULL DEFAULT 'USD',
+	createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TYPE role AS ENUM ('customer', 'admin');
+ALTER TABLE tbluser ADD COLUMN user_role role NOT NULL DEFAULT 'customer';

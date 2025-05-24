@@ -14,6 +14,40 @@ const Payment = () => {
   const [payment, setPayment] = useState({});
   const navigate = useNavigate();
   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
+  const [stripePromise, setStripePromise] = useState(null);
+  const [clientSecret, setClientSecret] = useState(null);
+  console.log(payment);
+
+  useEffect(() => {
+    document.title = "Payment";
+    fetch("http://localhost:3000/config") // Correct URL for the config
+      .then(async (r) => {
+        const { publishableKey } = await r.json();
+        setStripePromise(loadStripe(publishableKey)); // Use publishableKey
+        console.log("Publishable Key:", publishableKey);
+      })
+      .catch((error) => console.error("Error fetching config:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/create-payment-intent", {
+      // Correct URL for create-payment-intent
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+      .then(async (r) => {
+        if (!r.ok) {
+          throw new Error("Failed to fetch client secret");
+        }
+        const { clientSecret } = await r.json();
+        console.log("Client Secret:", clientSecret);
+        setClientSecret(clientSecret);
+      })
+      .catch((error) => console.error("Error fetching client secret:", error));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +67,7 @@ const Payment = () => {
     if (paymentSucceeded) {
       navigate("/order");
     }
-    navigate("/order");
+    // navigate("/payment");
   };
   const handleSuccess = () => {
     setPaymentSucceeded(true);
@@ -43,13 +77,10 @@ const Payment = () => {
     "client-id": paypalClienId,
     currency: "USD",
     intent: "capture",
+    components: "buttons",
+    locale: "en_US",
   };
-  //////---- ----stripe)))
-  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-  const CLIENT_SECRET = import.meta.env.VITE_STRIPE_SECRET_KEY;
-  const stripeOptions = {
-    clientSecret: CLIENT_SECRET,
-  };
+
   const containerVariants = {
     hidden: { x: "100vw", opacity: 0 },
     visible: {
@@ -109,24 +140,22 @@ const Payment = () => {
             />
           </label>
           <br />
-          {payment.payment === "paypal" && (
-            <PayPalScriptProvider options={initialOptions}>
-              <Checkout onSuccess={handleSuccess} />
-            </PayPalScriptProvider>
+          {paymentSucceeded && (
+            <button type="submit" className="addCart">
+              Continue
+            </button>
           )}
-          {payment.payment === "stripe" && (
-            <div>
-              <Elements stripe={stripePromise} options={stripeOptions}>
-                <CheckoutForm />
-              </Elements>
-            </div>
-          )}
-          {/* {paymentSucceeded && ( */}
-          <button type="submit" className="addCart">
-            Continue
-          </button>
-          {/* )} */}
         </form>
+        {payment.payment === "paypal" && (
+          <PayPalScriptProvider options={initialOptions}>
+            <Checkout onSuccess={handleSuccess} />
+          </PayPalScriptProvider>
+        )}
+        {payment.payment === "stripe" && stripePromise && clientSecret && (
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <CheckoutForm onSuccess={handleSuccess} />
+          </Elements>
+        )}
       </motion.div>
     </motion.div>
   );

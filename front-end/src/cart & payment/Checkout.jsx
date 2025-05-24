@@ -4,7 +4,7 @@ import { AppContext } from "../data managment/AppProvider";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 const Checkout = ({ onSuccess }) => {
-  const { total, cartShipping } = useContext(AppContext);
+  const { total, cartShipping, cart } = useContext(AppContext);
 
   const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
   const [currency, setCurrency] = useState(options.currency);
@@ -19,18 +19,62 @@ const Checkout = ({ onSuccess }) => {
       },
     });
   };
-
   const onCreateOrder = (data, actions) => {
+    const items = cart.map((item) => {
+      const price = (item.newPrice ?? item.price) || 0;
+      return {
+        name: item.product_name,
+        unit_amount: {
+          value: price.toFixed(2), // PayPal expects string here
+          currency_code: "USD",
+        },
+        quantity: item.amount.toString(),
+        // image_url is not officially supported in PayPal's items,
+        // but you can add it as a custom field or metadata if needed elsewhere
+      };
+    });
+
+    // Calculate subtotal and tax with 2 decimals as strings
+    const subtotal = total.toFixed(2);
+    const taxAmount = (total * 0.1).toFixed(2);
+    const totalWithTax = (parseFloat(subtotal) + parseFloat(taxAmount)).toFixed(
+      2
+    );
+
     return actions.order.create({
       purchase_units: [
         {
           amount: {
-            value: total,
+            currency_code: "USD",
+            value: totalWithTax,
+            breakdown: {
+              item_total: {
+                currency_code: "USD",
+                value: subtotal,
+              },
+              tax_total: {
+                currency_code: "USD",
+                value: taxAmount,
+              },
+            },
           },
+          items,
         },
       ],
     });
   };
+
+  // const onCreateOrder = (data, actions) => {
+  //   return actions.order.create({
+  //     purchase_units: [
+  //       {
+  //         amount: {
+  //           value: total,
+  //         },
+  //       },
+  //     ],
+  //   });
+  // };
 
   // const onApproveOrder = (data, actions) => {
   //   return actions.order.capture().then((details) => {
@@ -80,17 +124,22 @@ const Checkout = ({ onSuccess }) => {
           details.purchase_units?.[0]?.shipping?.address?.country_code || "N/A",
         state: details.purchase_units[0]?.shipping?.address?.admin_area_1,
         city: details.purchase_units[0]?.shipping?.address?.admin_area_2,
-        address: details.purchase_units[0]?.shipping?.address || null,
         street: details.purchase_units[0]?.shipping?.address?.address_line_1,
         transactionId: details.id,
         postalCode: details.purchase_units[0]?.shipping?.address?.postal_code,
         countryCode: details.purchase_units[0]?.shipping?.address?.country_code,
         phone: details.purchase_units[0]?.shipping?.address?.phone,
+        last4:
+          details.purchase_units[0]?.payments?.captures[0]?.card_last_digits ||
+          "****",
+        created: details.create_time || new Date().toISOString(),
         amount: details.purchase_units[0]?.amount?.value,
       };
 
       // You can save this to context, localStorage, or your backend
       cartShipping(clientData);
+      alert(`Transaction completed by ${fullName}`);
+
       onSuccess();
     });
   };

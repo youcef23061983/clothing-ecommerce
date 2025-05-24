@@ -63,6 +63,7 @@ function App() {
             checked: true,
           });
           setFormUser(user);
+          setFirebaseUser(user);
 
           sessionStorage.setItem("token", user.token);
         } else if (firebaseUser) {
