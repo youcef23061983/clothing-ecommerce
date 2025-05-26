@@ -67,7 +67,7 @@ const signinUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         error: "Invalid credentials",
-        message: "No account found with this email",
+        message: "No account found with this email you should create one",
       });
     }
 
