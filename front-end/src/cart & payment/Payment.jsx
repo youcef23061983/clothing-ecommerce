@@ -11,13 +11,13 @@ import CheckoutForm from "./CheckoutForm";
 import { useCallback } from "react";
 
 const Payment = () => {
-  const { cartPayment } = useContext(AppContext);
+  const { cartPayment, total } = useContext(AppContext);
+
   const [payment, setPayment] = useState({});
   const navigate = useNavigate();
   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
-  console.log(payment);
 
   useEffect(() => {
     document.title = "Payment";
@@ -37,7 +37,7 @@ const Payment = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ total }),
     })
       .then(async (r) => {
         if (!r.ok) {
@@ -53,25 +53,7 @@ const Payment = () => {
   useEffect(() => {
     document.title = "Payment";
   }, []);
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setPayment((prevPayment) => ({
-  //     ...prevPayment,
-  //     [name]: value,
-  //   }));
-  // };
 
-  // const paymentSubmit = (e) => {
-  //   e.preventDefault();
-  //   cartPayment(payment);
-  //   if (paymentSucceeded) {
-  //     navigate("/order");
-  //   }
-  //   // navigate("/payment");
-  // };
-  // const handleSuccess = () => {
-  //   setPaymentSucceeded(true);
-  // };
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setPayment((prevPayment) => ({
@@ -84,9 +66,9 @@ const Payment = () => {
     (e) => {
       e.preventDefault();
       cartPayment(payment);
-      if (paymentSucceeded) {
-        navigate("/order");
-      }
+      // if (paymentSucceeded) {
+      //   navigate("/order");
+      // }
       navigate("/order");
     },
     [payment, paymentSucceeded, cartPayment, navigate]

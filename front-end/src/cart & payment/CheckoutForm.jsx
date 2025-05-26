@@ -1,91 +1,15 @@
-// import React, { useState } from "react";
-// import {
-//   PaymentElement,
-//   useStripe,
-//   useElements,
-// } from "@stripe/react-stripe-js";
-
-// const CheckoutForm = ({ onSuccess }) => {
-//   const stripe = useStripe();
-//   const elements = useElements();
-
-//   const [errorMessage, setErrorMessage] = useState(null);
-//   const [isProcessing, setIsProcessing] = useState(false);
-//   const [message, setMessage] = useState(null);
-
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-
-//     if (!elements || !stripe) return;
-//     setIsProcessing(true);
-
-//     const { error: submitError } = await elements.submit();
-//     if (submitError) {
-//       setErrorMessage(submitError.message);
-//       setIsProcessing(false);
-//       return;
-//     }
-
-//     try {
-//       // const res = await fetch("http://localhost:3000/create-payment-intent", {
-//       //   method: "POST",
-//       //   headers: { "Content-Type": "application/json" },
-//       // });
-
-//       // const { clientSecret } = await res.json();
-
-//       const { error, paymentIntent } = await stripe.confirmPayment({
-//         elements,
-//         confirmParams: {
-//           // Return URL becomes you need it in postgresql:
-//           // return_url: `${origin}/order?order_id=${newOrder.rows[0].id}`,
-//           return_url: `${window.location.origin}/order`,
-//         },
-//         redirect: "if_required",
-//       });
-
-//       if (error) {
-//         setErrorMessage(error.message);
-//       } else if (paymentIntent?.status === "succeeded") {
-//         setMessage("Payment status: " + paymentIntent?.status + " 🎉");
-//         onSuccess();
-//       } else {
-//         setMessage("Unexpected payment status");
-//       }
-//     } catch (err) {
-//       setErrorMessage("An error occurred: " + err.message);
-//     }
-
-//     setIsProcessing(false);
-//   };
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <PaymentElement />
-//       <button
-//         type="submit"
-//         disabled={isProcessing}
-//         className="bg-blue-500 text-white p-2 rounded mt-4"
-//       >
-//         {isProcessing ? "Processing..." : "Pay now"}
-//       </button>
-
-//       {/* Show error message to your customers */}
-//       {errorMessage && <div>{errorMessage}</div>}
-//       {message && <div>{message}</div>}
-//     </form>
-//   );
-// };
-
-// export default CheckoutForm;
-
 import { useState } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { AppContext } from "../data managment/AppProvider";
+import { useContext } from "react";
 
 const CheckoutForm = ({ onSuccess }) => {
+  const { cart, shipping, formUser, firebaseUser } = useContext(AppContext);
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -129,7 +53,13 @@ const CheckoutForm = ({ onSuccess }) => {
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
+              body: JSON.stringify({
+                paymentIntentId: paymentIntent.id,
+                cart,
+                shipping,
+                formUser,
+                firebaseUser,
+              }),
             }
           );
 
@@ -147,6 +77,8 @@ const CheckoutForm = ({ onSuccess }) => {
 
     setIsProcessing(false);
   };
+  console.log("Customer Data:", customerData);
+
   //   {
   //     4000 0027 6000 3184 → Returns complete US address
 
@@ -183,116 +115,6 @@ const CheckoutForm = ({ onSuccess }) => {
         )}
         {message && <div className="text-green-500 mt-2">{message}</div>}
       </form>
-
-      {/* {customerData && (
-        <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-4">
-            <h3 className="text-xl font-bold text-white">Payment Receipt</h3>
-            <p className="text-purple-100 text-sm mt-1">
-              {new Date(customerData.created).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
-
-          <div className="p-6">
-            <div className="mb-6">
-              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
-                Customer Information
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-gray-600 text-sm">Full Name</p>
-                  <p className="font-medium">{customerData.fullName || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">Email</p>
-                  <p className="font-medium break-all">
-                    {customerData.email || "-"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">Phone</p>
-                  <p className="font-medium">{customerData.phone || "-"}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
-                Payment Details
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-gray-600 text-sm">Payment Method</p>
-                  <div className="flex items-center mt-1">
-                    <div className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium mr-2">
-                      {customerData.paymentMethod || "Card"}
-                    </div>
-                    <span className="font-mono">•••• {customerData.last4}</span>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">Amount</p>
-                  <p className="text-xl font-bold text-purple-600">
-                    {customerData.amount} {customerData.currency}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <p className="text-gray-600 text-sm">Transaction ID</p>
-                    <p className="font-mono text-sm text-gray-500">
-                      {customerData.transactionId}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600 text-sm">Status</p>
-                    <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Completed
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
-                Shipping Address
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-gray-600 text-sm">Street</p>
-                  <p className="font-medium">{customerData.street || "-"}</p>
-                  {customerData.address?.line2 && (
-                    <p className="font-medium">{customerData.address.line2}</p>
-                  )}
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">City/State/Zip</p>
-                  <p className="font-medium">
-                    {customerData.city || "-"}
-                    {customerData.state ? `, ${customerData.state}` : ""}{" "}
-                    {customerData.postalCode}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600 text-sm">Country</p>
-                  <p className="font-medium">{customerData.country || "-"}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-50 px-6 py-3 border-t">
-            <p className="text-xs text-gray-500 text-center">
-              Thank you for your purchase! A receipt has been sent to{" "}
-              {customerData.email || "your email"}
-            </p>
-          </div>
-        </div>
-      )} */}
 
       {customerData && (
         <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
@@ -352,11 +174,13 @@ const CheckoutForm = ({ onSuccess }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-gray-600 text-sm">Full Name</p>
-                  <p className="font-medium">{customerData.fullName || "-"}</p>
+                  <p className="font-medium break-all text-xl">
+                    {customerData.fullName || "-"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm">Email</p>
-                  <p className="font-medium break-all">
+                  <p className="font-medium break-all text-xl">
                     {customerData.email || "-"}
                   </p>
                 </div>
@@ -372,70 +196,68 @@ const CheckoutForm = ({ onSuccess }) => {
               <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
                 Order Summary
               </h4>
+
               <div className="border rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Item
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Quantity
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Price
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {customerData.items?.map((item, index) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-gray-50 transition-colors duration-150"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center">
-                              <span className="text-gray-500 text-xs">IMG</span>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {item.name}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {item.description}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.quantity}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.price} {customerData.currency}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          {item.price * item.quantity} {customerData.currency}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {/* Table Header */}
+                <div className="hidden sm:grid grid-cols-12 bg-gray-50 px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="col-span-6">Item</div>
+                  <div className="col-span-2 text-center">Qty</div>
+                  <div className="col-span-2 text-center">Unit Price</div>
+                  <div className="col-span-2 text-center">Total</div>
+                </div>
+
+                {/* Product Items */}
+                <div className="divide-y divide-gray-200">
+                  {customerData?.items?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-1 sm:grid-cols-12 p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      {/* Product Info */}
+                      <div className="col-span-6 flex items-center mb-2 sm:mb-0">
+                        <div className="flex-shrink-0 h-12 w-12 bg-gray-100 rounded-md overflow-hidden mr-3">
+                          <img
+                            src={
+                              item?.images?.[0] || "/placeholder-product.jpg"
+                            }
+                            alt={item?.product_name}
+                            loading="lazy"
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {item?.product_name}
+                          </p>
+                          <p className="text-xs text-gray-500 sm:hidden">
+                            ${item?.newPrice || item?.price} × {item?.amount}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Quantity - Centered */}
+                      <div className="col-span-2 flex items-center justify-center">
+                        <span className="text-sm text-gray-700">
+                          {item?.amount}
+                        </span>
+                      </div>
+
+                      {/* Unit Price - Centered */}
+                      <div className="col-span-2 flex items-center justify-center">
+                        <span className="text-sm text-gray-700">
+                          ${item?.newPrice || item?.price}
+                        </span>
+                      </div>
+
+                      {/* Total Price - Centered */}
+                      <div className="col-span-2 flex items-center justify-center">
+                        <span className="text-sm font-medium">
+                          ${(item?.newPrice || item?.price) * item?.amount}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 

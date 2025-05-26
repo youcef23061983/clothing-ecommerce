@@ -8,6 +8,7 @@ const Cart = () => {
   const { cart, clearCart, total, amount } = useContext(AppContext);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
+  console.log(cart);
 
   useEffect(() => {
     document.title = "Cart";
