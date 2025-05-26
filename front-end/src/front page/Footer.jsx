@@ -10,12 +10,12 @@ const Footer = () => {
         <div className="footerEmail">
           <h2>stay in the know</h2>
           <div className="footerInput">
-            <input type="text" />
+            <input type="text" placeholder="Search..." />
             <Link className="footerIcon">
               <GoArrowRight />
             </Link>
           </div>
-          <div>
+          <div className="footerInput">
             <Link className="footerIcon">
               <FaInstagram />
             </Link>

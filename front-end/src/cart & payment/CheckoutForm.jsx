@@ -78,7 +78,7 @@
 
 // export default CheckoutForm;
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   PaymentElement,
   useStripe,
@@ -92,6 +92,7 @@ const CheckoutForm = ({ onSuccess }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState(null);
+  const [customerData, setCustomerData] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -107,13 +108,6 @@ const CheckoutForm = ({ onSuccess }) => {
     }
 
     try {
-      // const res = await fetch("http://localhost:3000/create-payment-intent", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      // });
-
-      // const { clientSecret } = await res.json();
-
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -128,7 +122,22 @@ const CheckoutForm = ({ onSuccess }) => {
         setErrorMessage(error.message);
       } else if (paymentIntent?.status === "succeeded") {
         setMessage("Payment status: " + paymentIntent?.status + " 🎉");
-        onSuccess();
+        if (paymentIntent?.status === "succeeded") {
+          // Fetch complete customer data
+          const response = await fetch(
+            "http://localhost:3000/retrieve-customer-data",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
+            }
+          );
+
+          const fullCustomerData = await response.json();
+          setCustomerData(fullCustomerData);
+          onSuccess(); // Pass to parent component
+          console.log(fullCustomerData);
+        }
       } else {
         setMessage("Unexpected payment status");
       }
@@ -138,21 +147,384 @@ const CheckoutForm = ({ onSuccess }) => {
 
     setIsProcessing(false);
   };
-  return (
-    <form onSubmit={handleSubmit}>
-      <PaymentElement />
-      <button
-        type="submit"
-        disabled={isProcessing}
-        className="bg-blue-500 text-white p-2 rounded mt-4"
-      >
-        {isProcessing ? "Processing..." : "Pay now"}
-      </button>
+  //   {
+  //     4000 0027 6000 3184 → Returns complete US address
 
-      {/* Show error message to your customers */}
-      {errorMessage && <div>{errorMessage}</div>}
-      {message && <div>{message}</div>}
-    </form>
+  // 4000 0036 0000 0005 → Returns UK address format
+  //   4000 0025 0000 3155 - Requires full 3D Secure flow
+
+  // 4000 0000 0000 3220 - Triggers address verification
+
+  // 4000 0084 0000 1629 → Requires ZIP code verification
+  //   }
+  return (
+    <div className="max-w-md mx-auto p-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <PaymentElement
+          options={{
+            fields: {
+              billingDetails: "auto",
+            },
+          }}
+        />
+
+        <button
+          type="submit"
+          disabled={isProcessing}
+          className={`w-full py-2 px-4 rounded-md text-white font-medium ${
+            isProcessing ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {isProcessing ? "Processing..." : "Pay now"}
+        </button>
+
+        {errorMessage && (
+          <div className="text-red-500 mt-2">{errorMessage}</div>
+        )}
+        {message && <div className="text-green-500 mt-2">{message}</div>}
+      </form>
+
+      {/* {customerData && (
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-4">
+            <h3 className="text-xl font-bold text-white">Payment Receipt</h3>
+            <p className="text-purple-100 text-sm mt-1">
+              {new Date(customerData.created).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+
+          <div className="p-6">
+            <div className="mb-6">
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Customer Information
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Full Name</p>
+                  <p className="font-medium">{customerData.fullName || "-"}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Email</p>
+                  <p className="font-medium break-all">
+                    {customerData.email || "-"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Phone</p>
+                  <p className="font-medium">{customerData.phone || "-"}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Payment Details
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Payment Method</p>
+                  <div className="flex items-center mt-1">
+                    <div className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium mr-2">
+                      {customerData.paymentMethod || "Card"}
+                    </div>
+                    <span className="font-mono">•••• {customerData.last4}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Amount</p>
+                  <p className="text-xl font-bold text-purple-600">
+                    {customerData.amount} {customerData.currency}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2">
+                    <p className="text-gray-600 text-sm">Transaction ID</p>
+                    <p className="font-mono text-sm text-gray-500">
+                      {customerData.transactionId}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm">Status</p>
+                    <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Completed
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Shipping Address
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Street</p>
+                  <p className="font-medium">{customerData.street || "-"}</p>
+                  {customerData.address?.line2 && (
+                    <p className="font-medium">{customerData.address.line2}</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">City/State/Zip</p>
+                  <p className="font-medium">
+                    {customerData.city || "-"}
+                    {customerData.state ? `, ${customerData.state}` : ""}{" "}
+                    {customerData.postalCode}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Country</p>
+                  <p className="font-medium">{customerData.country || "-"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 px-6 py-3 border-t">
+            <p className="text-xs text-gray-500 text-center">
+              Thank you for your purchase! A receipt has been sent to{" "}
+              {customerData.email || "your email"}
+            </p>
+          </div>
+        </div>
+      )} */}
+
+      {customerData && (
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
+          {/* Header with company logo and Stripe-inspired gradient */}
+          <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-4 flex justify-between items-center">
+            <div className="flex items-center">
+              {/* Replace with your actual logo */}
+              <div className="mr-3 bg-white p-1 rounded">
+                <svg
+                  className="w-8 h-8 text-purple-600"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">
+                  Payment Receipt
+                </h3>
+                <p className="text-purple-100 text-sm mt-1">
+                  {new Date(customerData.created).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => window.print()}
+              className="bg-white hover:bg-gray-50 text-purple-600 font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                />
+              </svg>
+              Download PDF
+            </button>
+          </div>
+
+          <div className="p-6">
+            {/* Customer Info Section */}
+            <div className="mb-6">
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Customer Information
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Full Name</p>
+                  <p className="font-medium">{customerData.fullName || "-"}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Email</p>
+                  <p className="font-medium break-all">
+                    {customerData.email || "-"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Phone</p>
+                  <p className="font-medium">{customerData.phone || "-"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Order Summary Section */}
+            <div className="mb-6">
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Order Summary
+              </h4>
+              <div className="border rounded-lg overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Item
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Quantity
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Price
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {customerData.items?.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="hover:bg-gray-50 transition-colors duration-150"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center">
+                              <span className="text-gray-500 text-xs">IMG</span>
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {item.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {item.description}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.quantity}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.price} {customerData.currency}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {item.price * item.quantity} {customerData.currency}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Payment Details Section */}
+            <div className="mb-6">
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Payment Details
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Payment Method</p>
+                  <div className="flex items-center mt-1">
+                    <div className="bg-purple-100 hover:bg-purple-200 text-purple-800 px-2 py-1 rounded text-xs font-medium mr-2 transition-colors duration-200">
+                      {customerData.paymentMethod || "Card"}
+                    </div>
+                    <span className="font-mono">•••• {customerData.last4}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Amount</p>
+                  <p className="text-xl font-bold text-purple-600">
+                    {customerData.amount} {customerData.currency}
+                  </p>
+                </div>
+                <div className="break-all">
+                  <p className="text-gray-600 text-sm">Transaction ID</p>
+                  <p className="font-mono text-sm text-gray-500">
+                    {customerData.transactionId}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Status</p>
+                  <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 hover:bg-green-200 text-green-800 transition-colors duration-200">
+                    Completed
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Shipping Address Section */}
+            <div>
+              <h4 className="text-md font-semibold text-gray-700 mb-3 border-b pb-2">
+                Shipping Address
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm">Street</p>
+                  <p className="font-medium">{customerData.street || "-"}</p>
+                  {customerData.address?.line2 && (
+                    <p className="font-medium">{customerData.address.line2}</p>
+                  )}
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">City/State/Zip</p>
+                  <p className="font-medium">
+                    {customerData.city || "-"}
+                    {customerData.state ? `, ${customerData.state}` : ""}{" "}
+                    {customerData.postalCode}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Country</p>
+                  <p className="font-medium">{customerData.country || "-"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-gray-50 px-6 py-3 border-t">
+            <p className="text-xs text-gray-500 text-center">
+              Thank you for your purchase! A receipt has been sent to{" "}
+              {customerData.email || "your email"}
+            </p>
+            <div className="flex justify-center mt-2 space-x-4">
+              <button className="text-xs text-purple-600 hover:text-purple-800 hover:underline transition-colors duration-200">
+                Print Receipt
+              </button>
+              <button className="text-xs text-purple-600 hover:text-purple-800 hover:underline transition-colors duration-200">
+                Contact Support
+              </button>
+              <button className="text-xs text-purple-600 hover:text-purple-800 hover:underline transition-colors duration-200">
+                Order Details
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

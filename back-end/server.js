@@ -57,9 +57,14 @@ app.use("/auth", authRoutes);
 //   res.redirect(303, session.url);
 // });
 app.post("/create-payment-intent", async (req, res) => {
+  const { amount } = req.body;
+
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: "Invalid amount" });
+  }
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 10 * 100,
+      amount: amount * 100, // Convert to cents
       currency: "usd",
       automatic_payment_methods: { enabled: true },
     });
@@ -74,79 +79,92 @@ app.get("/config", (req, res) => {
     publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
   });
 });
-// app.post("/retrieve-customer-data", async (req, res) => {
-//   try {
-//     const { paymentIntentId } = req.body;
-//     const isTestMode = process.env.NODE_ENV === "development";
+app.post("/retrieve-customer-data", async (req, res) => {
+  try {
+    const { paymentIntentId } = req.body;
+    const isTestMode = process.env.NODE_ENV === "development";
 
-//     // Test mode mock data
-//     if (isTestMode) {
-//       return res.json({
-//         fullName: "John Doe",
-//         name: "John Doe",
-//         email: "testcustomer@example.com",
-//         country: "US",
-//         state: "CA",
-//         city: "Testville",
-//         street: "123 Test Street",
-//         transactionId: paymentIntentId || "pi_mock_123456789",
-//         postalCode: "12345",
-//         countryCode: "US",
-//         phone: "+15551234567",
-//         paymentMethod: "visa",
-//         last4: "4242",
-//         amount: "10.00",
-//         currency: "USD",
-//         created: new Date().toISOString(),
-//       });
-//     }
+    // Test mode mock data
+    if (isTestMode) {
+      return res.json({
+        fullName: "John Doe",
+        name: "John Doe",
+        email: "testcustomer@example.com",
+        country: "US",
+        state: "CA",
+        city: "Testville",
+        street: "123 Test Street",
+        transactionId: paymentIntentId || "pi_mock_123456789",
+        postalCode: "12345",
+        phone: "+15551234567",
+        paymentMethod: "visa",
+        last4: "4242",
+        amount: "10.00",
+        currency: "USD",
+        created: new Date().toISOString(),
+      });
+    }
 
-//     // Production mode - retrieve real Stripe data
-//     const paymentIntent = await stripe.paymentIntents.retrieve(
-//       paymentIntentId,
-//       {
-//         expand: ["payment_method"],
-//       }
-//     );
+    // Production mode - retrieve real Stripe data
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      paymentIntentId,
+      {
+        expand: ["payment_method"],
+      }
+    );
+    const formatAddress = (address) =>
+      [
+        address.line1,
+        address.line2,
+        `${address.city}, ${address.state} ${address.postal_code}`,
+        address.country,
+      ]
+        .filter(Boolean)
+        .join("\n");
 
-//     const customerData = {
-//       fullName:
-//         paymentIntent.payment_method?.billing_details?.name || "Not provided",
+    const customerData = {
+      fullName:
+        paymentIntent.payment_method?.billing_details?.name || "Not provided",
 
-//       email:
-//         paymentIntent.receipt_email ||
-//         paymentIntent.payment_method?.billing_details?.email ||
-//         "Not provided",
-//       country:
-//         paymentIntent.payment_method?.billing_details?.address?.country ||
-//         "N/A",
-//       state:
-//         paymentIntent.payment_method?.billing_details?.address?.state || "",
-//       city: paymentIntent.payment_method?.billing_details?.address?.city || "",
-//       street:
-//         paymentIntent.payment_method?.billing_details?.address?.line1 || "",
-//       transactionId: paymentIntent.id,
-//       postalCode:
-//         paymentIntent.payment_method?.billing_details?.address?.postal_code ||
-//         "",
-//       countryCode:
-//         paymentIntent.payment_method?.billing_details?.address?.country || "",
-//       phone: paymentIntent.payment_method?.billing_details?.phone || "",
-//       paymentMethod: paymentIntent.payment_method?.card?.brand || "Unknown",
-//       last4: paymentIntent.payment_method?.card?.last4 || "****",
-//       amount: (paymentIntent.amount / 100).toFixed(2),
-//       currency: paymentIntent.currency.toUpperCase(),
-//       created: new Date(paymentIntent.created * 1000).toISOString(),
-//     };
+      email:
+        paymentIntent.receipt_email ||
+        paymentIntent.payment_method?.billing_details?.email ||
+        "Not provided",
+      country:
+        paymentIntent.payment_method?.billing_details?.address?.country ||
+        "N/A",
+      state:
+        paymentIntent.payment_method?.billing_details?.address?.state || "",
+      address: paymentIntent.billing_details?.address
+        ? formatAddress(paymentIntent.billing_details.address)
+        : "No address provided",
+      city: paymentIntent.payment_method?.billing_details?.address?.city || "",
+      street:
+        paymentIntent.payment_method?.billing_details?.address?.line1 || "",
 
-//     res.json(customerData);
-//   } catch (err) {
-//     res.status(500).json({
-//       error: "Failed to retrieve customer data",
-//       details: err.message,
-//     });
-//   }
-// });
+      transactionId: paymentIntent.id,
+      postalCode:
+        paymentIntent.payment_method?.billing_details?.address?.postal_code ||
+        "",
+
+      phone: paymentIntent.payment_method?.billing_details?.phone || "",
+      paymentMethod: paymentIntent.payment_method?.card?.brand || "Unknown",
+      last4: paymentIntent.payment_method?.card?.last4 || "****",
+      amount: (paymentIntent.amount / 100).toFixed(2) || "0.00",
+      currency: paymentIntent.currency.toUpperCase() || "USD",
+      created:
+        new Date(paymentIntent.created * 1000).toISOString() ||
+        new Date().toISOString(),
+    };
+
+    res.json(customerData);
+  } catch (err) {
+    res.status(500).json({
+      error: "Failed to retrieve customer data",
+      details: err.message,
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);

@@ -59,11 +59,11 @@ const Order = () => {
             <h2 className="orderTitle">Shipping:</h2>
             <div className="orderDesc">
               <h4 className="orderName">Name:</h4>
-              {/* <p>{shipping.fullName}</p> */}
+              <p>{shipping.fullName}</p>
             </div>
             <div className="orderDesc">
               <h4 className="orderName">Address:</h4>
-              {/* <p>{shipping.address}</p> */}
+              <p>{shipping.address}</p>
             </div>
             <Link to="/shipping" className="addCart">
               edit

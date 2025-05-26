@@ -8,6 +8,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
 import CheckoutForm from "./CheckoutForm";
+import { useCallback } from "react";
 
 const Payment = () => {
   const { cartPayment } = useContext(AppContext);
@@ -49,29 +50,53 @@ const Payment = () => {
       .catch((error) => console.error("Error fetching client secret:", error));
   }, []);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    document.title = "Payment";
+  }, []);
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setPayment((prevPayment) => ({
+  //     ...prevPayment,
+  //     [name]: value,
+  //   }));
+  // };
+
+  // const paymentSubmit = (e) => {
+  //   e.preventDefault();
+  //   cartPayment(payment);
+  //   if (paymentSucceeded) {
+  //     navigate("/order");
+  //   }
+  //   // navigate("/payment");
+  // };
+  // const handleSuccess = () => {
+  //   setPaymentSucceeded(true);
+  // };
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setPayment((prevPayment) => ({
       ...prevPayment,
       [name]: value,
     }));
-  };
-
-  useEffect(() => {
-    document.title = "Payment";
   }, []);
 
-  const paymentSubmit = (e) => {
-    e.preventDefault();
-    cartPayment(payment);
-    if (paymentSucceeded) {
+  const paymentSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      cartPayment(payment);
+      if (paymentSucceeded) {
+        navigate("/order");
+      }
       navigate("/order");
-    }
-    // navigate("/payment");
-  };
-  const handleSuccess = () => {
+    },
+    [payment, paymentSucceeded, cartPayment, navigate]
+  );
+
+  const handleSuccess = useCallback(() => {
     setPaymentSucceeded(true);
-  };
+
+    // cartPayment(payment); // Move this here
+  }, []);
   const paypalClienId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
   const initialOptions = {
     "client-id": paypalClienId,
@@ -140,11 +165,11 @@ const Payment = () => {
             />
           </label>
           <br />
-          {paymentSucceeded && (
-            <button type="submit" className="addCart">
-              Continue
-            </button>
-          )}
+          {/* {paymentSucceeded && ( */}
+          <button type="submit" className="addCart">
+            Continue
+          </button>
+          {/* )} */}
         </form>
         {payment.payment === "paypal" && (
           <PayPalScriptProvider options={initialOptions}>

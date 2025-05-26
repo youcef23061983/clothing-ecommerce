@@ -40,8 +40,8 @@ const Cart = () => {
           <Link onClick={clearCart} className="addCart">
             clear all
           </Link>
-          {/* <Link className="addCart" to="/shipping"> */}
-          <Link className="addCart" to="/payment">
+          <Link className="addCart" to="/shipping">
+            {/* <Link className="addCart" to="/payment"> */}
             proceed to checkout
           </Link>
         </div>
