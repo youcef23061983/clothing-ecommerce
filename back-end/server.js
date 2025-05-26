@@ -57,11 +57,13 @@ app.use("/auth", authRoutes);
 //   res.redirect(303, session.url);
 // });
 app.post("/create-payment-intent", async (req, res) => {
-  const { total, formUser } = req.body;
+  const { total } = req.body;
+  console.log("total", total);
 
   if (!total || total <= 0) {
     return res.status(400).json({ error: "Invalid amount" });
   }
+
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: total * 100, // Convert to cents

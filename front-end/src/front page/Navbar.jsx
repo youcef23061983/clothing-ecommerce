@@ -23,7 +23,6 @@ const Navbar = () => {
     setFirebaseUser,
     setFormUser,
   } = useContext(AppContext);
-  console.log("Context User:", formUser.user.email);
 
   const [firebaseUser, loading] = useAuthState(auth);
 
