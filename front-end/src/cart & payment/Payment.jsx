@@ -66,10 +66,10 @@ const Payment = () => {
     (e) => {
       e.preventDefault();
       cartPayment(payment);
-      // if (paymentSucceeded) {
-      //   navigate("/order");
-      // }
-      navigate("/order");
+      if (paymentSucceeded) {
+        navigate("/order");
+      }
+      // navigate("/order");
     },
     [payment, paymentSucceeded, cartPayment, navigate]
   );
@@ -77,7 +77,7 @@ const Payment = () => {
   const handleSuccess = useCallback(() => {
     setPaymentSucceeded(true);
 
-    // cartPayment(payment); // Move this here
+    cartPayment(payment); // Move this here
   }, []);
   const paypalClienId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
   const initialOptions = {

@@ -18,6 +18,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [showLinks, setShowLinks] = useState(false);
+  const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const linksContainerRef = useRef(null);
   const linksRef = useRef(null);
@@ -42,6 +43,7 @@ const Navbar = () => {
         setData(data);
       } catch (error) {
         console.error("Error fetching Firebase user data:", error);
+        setError(error.message);
       }
     };
     firebasedata();
