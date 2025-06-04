@@ -2,7 +2,13 @@ import { FaAlignJustify } from "react-icons/fa";
 import { LuShoppingCart, LuUserCircle2, LuSearch } from "react-icons/lu";
 import { AppContext } from "../data managment/AppProvider";
 import { Link, useNavigate } from "react-router-dom";
-import { useLayoutEffect, useRef, useState, useContext } from "react";
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  useContext,
+  useEffect,
+} from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { motion } from "framer-motion";
 import { auth } from "../info & contact/Firebase";
@@ -12,22 +18,39 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [showLinks, setShowLinks] = useState(false);
+  const [data, setData] = useState(null);
   const linksContainerRef = useRef(null);
   const linksRef = useRef(null);
   const navCenter = useRef(null);
   const {
-    user: contextUser,
+    // user: contextUser,
     logout,
     amount,
     formUser,
     setFirebaseUser,
     setFormUser,
+    firebaseUser,
   } = useContext(AppContext);
+  useEffect(() => {
+    const firebasedata = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/auth/firebaseSignup");
+        if (!res.ok) {
+          throw new Error("the email exists with facebook account");
+        }
+        const data = await res.json();
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching Firebase user data:", error);
+      }
+    };
+    firebasedata();
+  }, []);
 
-  const [firebaseUser, loading] = useAuthState(auth);
+  // const [firebaseUser, loading] = useAuthState(auth);
 
   // Use either Firebase user or context user
-  const currentUser = firebaseUser || contextUser;
+  const currentUser = data && firebaseUser;
 
   useLayoutEffect(() => {
     let isMounted = true;
