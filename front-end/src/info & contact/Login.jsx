@@ -138,7 +138,7 @@ const Login = ({ onSubmit, setAuth }) => {
 
         setAuth({
           isAuthenticated: true,
-          user_role: date.user?.user_role || "customer",
+          user_role: data.user?.user_role || "customer",
         });
       } else {
         setAuth(null);

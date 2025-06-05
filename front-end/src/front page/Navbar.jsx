@@ -10,6 +10,7 @@ import {
   useEffect,
 } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+
 import { motion } from "framer-motion";
 import { auth } from "../info & contact/Firebase";
 import { signOut } from "firebase/auth";
@@ -18,41 +19,16 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const [showLinks, setShowLinks] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
+
   const linksContainerRef = useRef(null);
   const linksRef = useRef(null);
   const navCenter = useRef(null);
-  const {
-    // user: contextUser,
-    logout,
-    amount,
-    formUser,
-    setFirebaseUser,
-    setFormUser,
-    firebaseUser,
-  } = useContext(AppContext);
-  useEffect(() => {
-    const firebasedata = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/auth/firebaseSignup");
-        if (!res.ok) {
-          throw new Error("the email exists with facebook account");
-        }
-        const data = await res.json();
-        setData(data);
-      } catch (error) {
-        console.error("Error fetching Firebase user data:", error);
-        setError(error.message);
-      }
-    };
-    firebasedata();
-  }, []);
+  const { logout, amount, formUser, setFirebaseUser, setFormUser } =
+    useContext(AppContext);
+  const [firebaseUser, loading] = useAuthState(auth);
 
-  // const [firebaseUser, loading] = useAuthState(auth);
-
-  // Use either Firebase user or context user
-  const currentUser = data && firebaseUser;
+  console.log("firebaeuser", firebaseUser);
+  console.log("formUser", formUser);
 
   useLayoutEffect(() => {
     let isMounted = true;
@@ -169,10 +145,10 @@ const Navbar = () => {
           </div>
 
           <div className="cart">
-            {currentUser ? (
+            {firebaseUser ? (
               <div className="cart">
                 <p className="displayName">
-                  Welcome, {currentUser.displayName || currentUser.name}
+                  Welcome, {firebaseUser?.displayName}
                 </p>
 
                 <Link

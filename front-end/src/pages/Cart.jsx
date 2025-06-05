@@ -5,10 +5,12 @@ import CartItem from "./CartItem";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { cart, clearCart, total, amount } = useContext(AppContext);
+  const { cart, clearCart, total, amount, firebaseUser } =
+    useContext(AppContext);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
   console.log(cart);
+  console.log("logged firebaseuser:", firebaseUser);
 
   useEffect(() => {
     document.title = "Cart";
