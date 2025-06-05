@@ -104,6 +104,8 @@ const Login = ({ onSubmit, setAuth }) => {
       setGooglestatus("submitting");
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      console.log("Google user:", user);
+
       const token = await user.getIdToken();
 
       const payload = {
@@ -112,6 +114,8 @@ const Login = ({ onSubmit, setAuth }) => {
         username: user.displayName,
         provider: "google",
       };
+      console.log("Payload for server:", payload);
+
       const res = await fetch("http://localhost:3000/auth/firebaseSignup", {
         method: "POST",
         headers: {
