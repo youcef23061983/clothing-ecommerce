@@ -130,7 +130,6 @@ app.post("/retrieve-customer-data", async (req, res) => {
       phone: paymentIntent.payment_method?.billing_details?.phone || "",
       paymentMethod: paymentIntent.payment_method?.card?.brand || "Unknown",
       last4: paymentIntent.payment_method?.card?.last4 || "****",
-      amount: (paymentIntent.amount / 100).toFixed(2) || "0.00",
       currency: paymentIntent.currency.toUpperCase() || "USD",
       created:
         new Date(paymentIntent.created * 1000).toISOString() ||

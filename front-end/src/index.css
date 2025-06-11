@@ -64,6 +64,7 @@ h4 {
   opacity: 0.9;
   color: var(--clr-primary-header-color);
 }
+
 .linkIcon:hover {
   scale: 1.1;
   transition: all 0.5s linear;
