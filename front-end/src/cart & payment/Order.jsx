@@ -1,19 +1,18 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../data managment/AppProvider";
 import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
   const navigate = useNavigate();
-  useEffect(() => {
-    document.title = "Order";
 
+  useEffect(() => {
     if (!payment.payment) {
       navigate("/payment");
     }
+    document.title = "Order";
   }, [payment]);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
@@ -58,16 +57,25 @@ const Order = () => {
           <div className="orderItem">
             <h2 className="orderTitle">Shipping:</h2>
             <div className="orderDesc">
-              <h4 className="orderName">Name:</h4>
+              <h4 className="orderName"> Full Name:</h4>
               <p>{shipping.fullName}</p>
             </div>
             <div className="orderDesc">
               <h4 className="orderName">Address:</h4>
               <p>{shipping.address}</p>
             </div>
-            <Link to="/shipping" className="addCart">
-              edit
-            </Link>
+            <div className="orderDesc">
+              <h4 className="orderName">City:</h4>
+              <p>{shipping.city}</p>
+            </div>
+            <div className="orderDesc">
+              <h4 className="orderName"> Postal Code:</h4>
+              <p>{shipping.postalCode}</p>
+            </div>
+            <div className="orderDesc">
+              <h4 className="orderName"> Country:</h4>
+              <p>{shipping.country}</p>
+            </div>
           </div>
           <div className="orderItem">
             <h2 className="orderTitle">Payment:</h2>
@@ -75,9 +83,6 @@ const Order = () => {
               <h4 className="orderName">Type:</h4>
               <p>{payment.payment}</p>
             </div>
-            <Link to="/payment" className="addCart">
-              edit
-            </Link>
           </div>
         </div>
         <div className="y">

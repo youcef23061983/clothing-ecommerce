@@ -62,17 +62,10 @@ const Payment = () => {
     }));
   }, []);
 
-  const paymentSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      cartPayment(payment);
-      if (paymentSucceeded) {
-        navigate("/order");
-      }
-      // navigate("/order");
-    },
-    [payment, paymentSucceeded, cartPayment, navigate]
-  );
+  const paymentSubmit = useCallback(() => {
+    cartPayment(payment);
+    navigate("/order");
+  }, [payment, paymentSucceeded, cartPayment, navigate]);
 
   const handleSuccess = useCallback(() => {
     setPaymentSucceeded(true);
@@ -122,7 +115,7 @@ const Payment = () => {
       </motion.div>
       <motion.div className="loginContainer" variants={containerVariants}>
         <h3>Payment Method</h3>
-        <form onSubmit={paymentSubmit} className="login-form">
+        <form className="login-form">
           <label>
             Paypal:
             <input
@@ -147,11 +140,6 @@ const Payment = () => {
             />
           </label>
           <br />
-          {/* {paymentSucceeded && ( */}
-          <button type="submit" className="addCart">
-            Continue
-          </button>
-          {/* )} */}
         </form>
         {payment.payment === "paypal" && (
           <PayPalScriptProvider options={initialOptions}>
@@ -162,6 +150,11 @@ const Payment = () => {
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <CheckoutForm onSuccess={handleSuccess} />
           </Elements>
+        )}
+        {paymentSucceeded && (
+          <button onClick={paymentSubmit} className="addCart">
+            Continue
+          </button>
         )}
       </motion.div>
     </motion.div>

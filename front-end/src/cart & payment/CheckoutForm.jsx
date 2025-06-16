@@ -8,7 +8,8 @@ import { AppContext } from "../data managment/AppProvider";
 import { useContext } from "react";
 
 const CheckoutForm = ({ onSuccess }) => {
-  const { cart, shipping, formUser, firebaseUser } = useContext(AppContext);
+  const { cart, shipping, formUser, firebaseUser, total, amount } =
+    useContext(AppContext);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -17,6 +18,8 @@ const CheckoutForm = ({ onSuccess }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState(null);
   const [customerData, setCustomerData] = useState(null);
+  const tax = parseFloat((total * 0.1).toFixed(2));
+  const totalAll = parseFloat((total + tax).toFixed(2));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -278,8 +281,16 @@ const CheckoutForm = ({ onSuccess }) => {
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm">Amount</p>
+                  <p className="text-xl font-bold text-purple-600">{amount}</p>
+                </div>{" "}
+                <div>
+                  <p className="text-gray-600 text-sm">tax</p>
+                  <p className="text-xl font-bold text-purple-600">{tax} $</p>
+                </div>{" "}
+                <div>
+                  <p className="text-gray-600 text-sm">Total</p>
                   <p className="text-xl font-bold text-purple-600">
-                    {customerData.amount} {customerData.currency}
+                    {totalAll} $
                   </p>
                 </div>
                 <div className="break-all">
