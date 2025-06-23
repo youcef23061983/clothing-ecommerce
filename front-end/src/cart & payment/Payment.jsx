@@ -18,10 +18,11 @@ const Payment = () => {
   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
+  const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   useEffect(() => {
     document.title = "Payment";
-    fetch("http://localhost:3000/config") // Correct URL for the config
+    fetch(`${url}/config`) // Correct URL for the config
       .then(async (r) => {
         const { publishableKey } = await r.json();
         setStripePromise(loadStripe(publishableKey)); // Use publishableKey
@@ -31,7 +32,7 @@ const Payment = () => {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:3000/create-payment-intent", {
+    fetch(`${url}/create-payment-intent`, {
       // Correct URL for create-payment-intent
       method: "POST",
       headers: {

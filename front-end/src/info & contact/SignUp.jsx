@@ -13,6 +13,7 @@ const SignUp = ({ onSubmit }) => {
     confirmPassword: "",
   });
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +47,7 @@ const SignUp = ({ onSubmit }) => {
       const token = sessionStorage.getItem("token");
 
       const body = { username, email, password };
-      const response = await fetch("http://localhost:3000/auth/signup", {
+      const response = await fetch(`${url}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -64,7 +65,7 @@ const SignUp = ({ onSubmit }) => {
       console.log(parseRes.token);
 
       sessionStorage.setItem("token", parseRes.token);
-      navigate("/cart");
+      navigate("/login");
       setFormData({
         username: "",
         email: "",

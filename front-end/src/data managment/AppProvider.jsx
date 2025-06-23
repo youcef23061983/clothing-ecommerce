@@ -21,6 +21,7 @@ const AppProvider = ({ children }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/products`;
+  const verifyUrl = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   const productsFun = async () => {
     const res = await fetch(url);
@@ -275,7 +276,7 @@ const AppProvider = ({ children }) => {
       const token = sessionStorage.getItem("token");
       if (!token) return null;
 
-      const response = await fetch("http://localhost:3000/auth/verify", {
+      const response = await fetch(`${verifyUrl}/auth/verify`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

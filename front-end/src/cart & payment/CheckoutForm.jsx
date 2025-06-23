@@ -20,6 +20,7 @@ const CheckoutForm = ({ onSuccess }) => {
   const [customerData, setCustomerData] = useState(null);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
+  const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -51,20 +52,17 @@ const CheckoutForm = ({ onSuccess }) => {
         setMessage("Payment status: " + paymentIntent?.status + " 🎉");
         if (paymentIntent?.status === "succeeded") {
           // Fetch complete customer data
-          const response = await fetch(
-            "http://localhost:3000/retrieve-customer-data",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                paymentIntentId: paymentIntent.id,
-                cart,
-                shipping,
-                formUser,
-                firebaseUser,
-              }),
-            }
-          );
+          const response = await fetch(`${url}/retrieve-customer-data`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              paymentIntentId: paymentIntent.id,
+              cart,
+              shipping,
+              formUser,
+              firebaseUser,
+            }),
+          });
 
           const fullCustomerData = await response.json();
           setCustomerData(fullCustomerData);

@@ -16,8 +16,8 @@ CREATE TABLE products (
   type product_type NOT NULL,
   price NUMERIC(10, 2) NOT NULL,
   new_price NUMERIC(10, 2),
-  sizes TEXT[], -- array of 's', 'm', 'l', etc.
-  images TEXT[], -- array of image URLs
+  sizes TEXT[],
+  images TEXT[], 
   new_arrival BOOLEAN DEFAULT false,
   on_sale BOOLEAN DEFAULT false,
   best_seller BOOLEAN DEFAULT false,
@@ -32,7 +32,6 @@ INSERT INTO products (
   new_arrival, on_sale, best_seller, rating, preview, amount
 )
 VALUES
--- Product 1
 ( 'Men''s Classic Wool Overcoat 2023',
  'Latest 2023 Custom Latest Design Spring Winter Wool Men Overcoat Casual Slim Fit Long Woolen Coat High Quality Men''s wool coat',
  'jacket', 79.99, NULL, 
@@ -45,7 +44,6 @@ VALUES
  ],
  true, false, true, 4.0, 11, 1),
 
--- Product 2
 ( 'Men’s Classic Brown Leather Jacket',
  'Long Lasting Quality Popular Brown In Color Leather Jacket jackets For Men Fashionable Trending Cloths Accessories',
  'jacket', 59.99, 39.99,
@@ -58,7 +56,6 @@ VALUES
  ],
  false, true, false, 3.8, 12, 1),
 
--- Product 3
 ( 'Ultra Light Waterproof Down Puffer Jacket',
  'Ultra Light Outdoor Hiking Unisex Men Warm Insulated Duck Down Coat Waterproof Padded Quilted Puffer Jacket',
  'jacket', 59.99, 49.99,
@@ -71,7 +68,6 @@ VALUES
  ],
  false, true, true, 3.0, 11, 1),
 
--- Product 4
 ( 'Men''s Winter Fleece Jacket - Cotton-Padded Sports Coat',
  'Hot Selling Men''s Winter Fleece Jaket Coat Long Sleeve Solid Color Cotton-padded Shirt Jacket Mens Sports Jacket',
  'jacket', 79.99, 59.99,
@@ -84,7 +80,6 @@ VALUES
  ],
  true, false, false, 2.8, 10, 1),
 
--- Product 5
 ('Army Green Puffer Jacket with Removable Hood',
  'Army Green puffer jacket zip up inside and out side buttons with removable hood customize cheap price',
  'jacket', 29.99, 19.99,
@@ -235,7 +230,6 @@ VALUES
   '/images/men/sneakers5/image3.jpg',
   '/images/men/sneakers5/image4.jpg'
 ], false, true, true, 4.8, 12, 1),
--- from 16 to 20 :
 
 (
   

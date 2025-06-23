@@ -27,6 +27,7 @@ const Login = ({ onSubmit, setAuth }) => {
   const [error, setError] = useState("");
   const [googleError, setGoogleError] = useState("");
   const [facebookError, setFacebookError] = useState("");
+  const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   const handleSubmit = async (e) => {
     const { password, email } = loginFormData;
@@ -47,7 +48,7 @@ const Login = ({ onSubmit, setAuth }) => {
       }
       const token = sessionStorage.getItem("token");
       const body = { email, password };
-      const response = await fetch("http://localhost:3000/auth/signin", {
+      const response = await fetch(`${url}/auth/signin`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -116,7 +117,7 @@ const Login = ({ onSubmit, setAuth }) => {
       };
       console.log("Payload for server:", payload);
 
-      const res = await fetch("http://localhost:3000/auth/firebaseSignup", {
+      const res = await fetch(`${url}/auth/firebaseSignup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -196,7 +197,7 @@ const Login = ({ onSubmit, setAuth }) => {
       };
       console.log("Payload for server:", payload);
 
-      const res = await fetch("http://localhost:3000/auth/firebaseSignup", {
+      const res = await fetch(`${url}/auth/firebaseSignup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

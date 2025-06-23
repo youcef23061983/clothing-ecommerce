@@ -11,13 +11,20 @@ const stripe = require("stripe")(process.env.VITE_STRIPE_SECRET_KEY);
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend origin
+    origin: [
+      "http://localhost:5173",
+      "https://clothing-ecommerce-phi.vercel.app",
+    ],
     credentials: true, // Allow credentials (cookies)
     optionsSuccessStatus: 200, // Some legacy browsers choke on 204
   })
 );
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev")); // Colorful logs
+} else {
+  app.use(morgan("tiny")); // Minimal logs
+}
 app.use("/products", productsRoutes);
 app.use("/auth", authRoutes);
 
@@ -143,6 +150,9 @@ app.post("/retrieve-customer-data", async (req, res) => {
       details: err.message,
     });
   }
+});
+app.get("/", (req, res) => {
+  res.send("API is running ✅");
 });
 
 app.listen(PORT, () => {
