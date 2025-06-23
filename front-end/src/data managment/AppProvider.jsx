@@ -178,12 +178,12 @@ const AppProvider = ({ children }) => {
   };
 
   const cartShipping = (shipping) => {
-    localStorage.setItem("shipping", JSON.stringify(shipping));
+    sessionStorage.setItem("shipping", JSON.stringify(shipping));
     dispatch({ type: "SHIPPING", payload: shipping });
   };
 
   const cartPayment = (payment) => {
-    localStorage.setItem("payment", JSON.stringify(payment));
+    sessionStorage.setItem("payment", JSON.stringify(payment));
     dispatch({ type: "PAYMENT", payload: payment });
   };
 
@@ -193,7 +193,7 @@ const AppProvider = ({ children }) => {
   };
 
   const setFirebaseUser = (user) => {
-    localStorage.setItem("fireUser", JSON.stringify(user));
+    sessionStorage.setItem("fireUser", JSON.stringify(user));
 
     dispatch({ type: "SET_FIREBASE_USER", payload: user });
   };
@@ -217,12 +217,12 @@ const AppProvider = ({ children }) => {
     if (isInitialized) return;
 
     const initializeState = () => {
-      const storedCart = localStorage.getItem("cart");
+      const storedCart = sessionStorage.getItem("cart");
       if (storedCart) {
         dispatch({ type: "LOAD_CART", payload: JSON.parse(storedCart) });
       }
       try {
-        const savedFirebaseUser = localStorage.getItem("fireUser");
+        const savedFirebaseUser = sessionStorage.getItem("fireUser");
         if (savedFirebaseUser) {
           const user = JSON.parse(savedFirebaseUser);
           // Verify the user object has required fields
@@ -235,7 +235,7 @@ const AppProvider = ({ children }) => {
       }
 
       try {
-        const savedFormUser = localStorage.getItem("formUser");
+        const savedFormUser = sessionStorage.getItem("formUser");
         if (savedFormUser) {
           const user = JSON.parse(savedFormUser);
           // Verify the user object has required fields
@@ -248,13 +248,13 @@ const AppProvider = ({ children }) => {
       }
 
       // Load payment
-      const storedPayment = localStorage.getItem("payment");
+      const storedPayment = sessionStorage.getItem("payment");
       if (storedPayment) {
         dispatch({ type: "PAYMENT", payload: JSON.parse(storedPayment) });
       }
 
       // Load shipping
-      const storedShipping = localStorage.getItem("shipping");
+      const storedShipping = sessionStorage.getItem("shipping");
       if (storedShipping) {
         dispatch({ type: "SHIPPING", payload: JSON.parse(storedShipping) });
       }
@@ -267,7 +267,7 @@ const AppProvider = ({ children }) => {
   //   // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (!isInitialized) return;
-    localStorage.setItem("cart", JSON.stringify(state.cart));
+    sessionStorage.setItem("cart", JSON.stringify(state.cart));
     dispatch({ type: "GET_TOTAL" });
   }, [state.cart, isInitialized]);
   // Add this to your AppProvider or auth context
