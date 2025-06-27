@@ -356,3 +356,19 @@ CREATE TABLE tbluser (
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- //////////////CREATE ORDER TABLE:\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CREATE TABLE tblorder (
+    id SERIAL NOT NULL PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    order_status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (order_status IN ('pending', 'shipped', 'delivered', 'cancelled')),
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES tbluser(id),
+    FOREIGN KEY (product_id) REFERENCES tblproduct(id)
+);
