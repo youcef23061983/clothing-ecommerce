@@ -9,7 +9,7 @@ const Cart = () => {
     useContext(AppContext);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const totalAll = parseFloat((total + tax).toFixed(2));
-  console.log(cart);
+  console.log("cart", cart);
   console.log("logged firebaseuser:", firebaseUser);
 
   useEffect(() => {

@@ -9,15 +9,19 @@ import { Elements } from "@stripe/react-stripe-js";
 import { motion } from "framer-motion";
 import CheckoutForm from "./CheckoutForm";
 import { useCallback } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 const Payment = () => {
-  const { cartPayment, total } = useContext(AppContext);
+  const { cartPayment, total, shipping, cart, formUser, firebaseUser, amount } =
+    useContext(AppContext);
 
   const [payment, setPayment] = useState({});
   const navigate = useNavigate();
   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   useEffect(() => {
@@ -64,15 +68,65 @@ const Payment = () => {
   }, []);
 
   const paymentSubmit = useCallback(() => {
+    setIsSubmitting(true);
     cartPayment(payment);
     navigate("/order");
   }, [payment, paymentSucceeded, cartPayment, navigate]);
+  const tax = parseFloat((total * 0.1).toFixed(2));
+  const totalAll = parseFloat((total + tax).toFixed(2));
+  const sellingProduct = cart.map((item) => ({
+    id: item.id,
+    product_name: item.product_name,
+    amount: item.amount,
+    unitPrice: item?.newPrice || item?.price,
+    totalPrice: (item?.newPrice || item?.price) * item?.amount,
+  }));
+  console.log("my product", {
+    ...shipping,
+    sellingProduct,
+    subtotal: total,
+    tax,
+    total: totalAll,
+    payment: payment.payment,
+    tbluser_id: formUser?.user?.id || firebaseUser?.id,
+  });
 
-  const handleSuccess = useCallback(() => {
-    setPaymentSucceeded(true);
+  const sellingFun = async () => {
+    const res = await fetch(`${url}/sell`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...shipping,
+        sellingProduct,
+        subtotal: total,
+        tax,
+        amount,
+        total: totalAll,
+        payment: payment.payment,
+        tbluser_id: formUser?.user?.id || firebaseUser?.id,
+      }),
+    });
+  };
 
-    cartPayment(payment); // Move this here
-  }, []);
+  const { data: addBooking, mutate: sellingMutate } = useMutation({
+    mutationFn: sellingFun,
+  });
+
+  const handleSuccess = useCallback(async () => {
+    setIsSubmitting(true);
+    try {
+      await sellingMutate(); // wait for mutation to complete
+      setPaymentSucceeded(true);
+      cartPayment(payment);
+    } catch (err) {
+      console.error("Failed to save order:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [sellingMutate, payment, cartPayment]);
+
   const paypalClienId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
   const initialOptions = {
     "client-id": paypalClienId,
@@ -152,9 +206,14 @@ const Payment = () => {
             <CheckoutForm onSuccess={handleSuccess} />
           </Elements>
         )}
+
         {paymentSucceeded && (
-          <button onClick={paymentSubmit} className="addCart">
-            Continue
+          <button
+            onClick={paymentSubmit}
+            className="addCart"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing..." : "Continue"}
           </button>
         )}
       </motion.div>

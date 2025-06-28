@@ -6,6 +6,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const productsRoutes = require("./routes/products.js");
 const authRoutes = require("./routes/authUser.js");
+const sellingsRoutes = require("./routes/sellings.js");
 const stripe = require("stripe")(process.env.VITE_STRIPE_SECRET_KEY);
 
 app.use(express.json());
@@ -26,6 +27,8 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("tiny")); // Minimal logs
 }
 app.use("/products", productsRoutes);
+app.use("/sell", sellingsRoutes);
+
 app.use("/auth", authRoutes);
 
 app.post("/create-payment-intent", async (req, res) => {

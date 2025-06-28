@@ -83,7 +83,7 @@ const Product = ({ product, searchParams }) => {
         {on_sale && <p className="saleTag">On Sale</p>}
         {best_seller && <p className="newTag">Best Seller</p>}
         {new_arrival && (
-          <p className="newTag" style={{ top: best_seller ? "6rem" : "3rem" }}>
+          <p className="newTag" style={{ top: best_seller ? "7rem" : "3rem" }}>
             New Arrival
           </p>
         )}
