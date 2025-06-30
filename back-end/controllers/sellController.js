@@ -33,7 +33,7 @@ const postSellings = async (req, res) => {
   } = req.body;
 
   try {
-    const client = await pool.connect();
+    client = await pool.connect(); // ✅ no `const`
 
     // ✅ Start a transaction
     await client.query("BEGIN");
@@ -90,7 +90,7 @@ const postSellings = async (req, res) => {
     console.error("Transaction failed:", error.message);
     res.status(500).json({ error: "Transaction failed. Order not saved." });
   } finally {
-    client.release();
+    if (client) client.release(); // ✅ safe now
   }
 };
 

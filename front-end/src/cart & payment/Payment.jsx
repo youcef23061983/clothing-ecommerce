@@ -128,8 +128,8 @@ const Payment = () => {
     setIsSubmitting(true);
     try {
       await sellingMutate(); // wait for mutation to complete
-      setPaymentSucceeded(true);
       cartPayment(payment);
+      setPaymentSucceeded(true);
     } catch (err) {
       console.error("Failed to save order:", err);
     } finally {

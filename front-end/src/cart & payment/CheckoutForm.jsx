@@ -285,6 +285,10 @@ const CheckoutForm = ({ onSuccess }) => {
                   <p className="text-xl font-bold text-purple-600">{amount}</p>
                 </div>{" "}
                 <div>
+                  <p className="text-gray-600 text-sm">Subtotal</p>
+                  <p className="text-xl font-bold text-purple-600">{total} $</p>
+                </div>
+                <div>
                   <p className="text-gray-600 text-sm">tax</p>
                   <p className="text-xl font-bold text-purple-600">{tax} $</p>
                 </div>
