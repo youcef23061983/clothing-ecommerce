@@ -9,6 +9,9 @@ const Checkout = ({ onSuccess }) => {
 
   const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
   const [currency, setCurrency] = useState(options.currency);
+  const shippingPrice = parseFloat((total * 0.13).toFixed(2));
+  const tax = parseFloat((total * 0.1).toFixed(2));
+  const totalAll = parseFloat((total + shippingPrice + tax).toFixed(2));
 
   const onCurrencyChange = ({ target: { value } }) => {
     setCurrency(value);
@@ -26,7 +29,7 @@ const Checkout = ({ onSuccess }) => {
       purchase_units: [
         {
           amount: {
-            value: total,
+            value: totalAll,
           },
         },
       ],
@@ -347,16 +350,16 @@ const Checkout = ({ onSuccess }) => {
                     </div>
                     <div className="flex justify-between">
                       <span>Shipping:</span>
-                      <span>Free</span>
+                      <span>{shippingPrice} $</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Tax (10%):</span>
-                      <span>{parseFloat((total * 0.1).toFixed(2))} $</span>
+                      <span>{tax} $</span>
                     </div>
                     <div className="flex justify-between font-bold text-lg pt-2 border-t">
                       <span>Total:</span>
                       <span>
-                        {parseFloat((total * 1.1).toFixed(2))} {currency} $
+                        {totalAll} {currency} $
                       </span>
                     </div>
                   </div>

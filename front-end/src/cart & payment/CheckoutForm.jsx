@@ -19,7 +19,10 @@ const CheckoutForm = ({ onSuccess }) => {
   const [message, setMessage] = useState(null);
   const [customerData, setCustomerData] = useState(null);
   const tax = parseFloat((total * 0.1).toFixed(2));
-  const totalAll = parseFloat((total + tax).toFixed(2));
+  const shippingPrice = parseFloat((total * 0.13).toFixed(2));
+
+  const totalAll = parseFloat((total + shippingPrice + tax).toFixed(2));
+
   const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   const handleSubmit = async (event) => {
@@ -284,7 +287,13 @@ const CheckoutForm = ({ onSuccess }) => {
                 <div>
                   <p className="text-gray-600 text-sm">tax</p>
                   <p className="text-xl font-bold text-purple-600">{tax} $</p>
-                </div>{" "}
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm">Shipping</p>
+                  <p className="text-xl font-bold text-purple-600">
+                    {shippingPrice} $
+                  </p>
+                </div>
                 <div>
                   <p className="text-gray-600 text-sm">Total</p>
                   <p className="text-xl font-bold text-purple-600">

@@ -368,6 +368,7 @@ CREATE TABLE orders (
   payment TEXT, 
   subtotal NUMERIC(10, 2) NOT NULL,
   tax NUMERIC(10, 2) NOT NULL,
+  shipping NUMERIC(10, 2) NOT NULL,
   total NUMERIC(10, 2) NOT NULL,
   amount INTEGER NOT NULL,
   tbluser_id INTEGER REFERENCES tbluser(id), 

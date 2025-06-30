@@ -21,6 +21,16 @@ const Payment = () => {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const tax = parseFloat((total * 0.1).toFixed(2));
+  const shippingPrice = parseFloat((total * 0.13).toFixed(2));
+
+  const totalAll = parseFloat((total + shippingPrice + tax).toFixed(2));
+
+  const totalInCents = Math.round(totalAll * 100);
+
+  console.log("total", total, typeof total);
+  console.log("totalall", totalAll, typeof totalAll);
+  console.log("totalincent", totalInCents, typeof totalInCents);
 
   const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
@@ -42,7 +52,7 @@ const Payment = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ total }),
+      body: JSON.stringify({ totalInCents }),
     })
       .then(async (r) => {
         if (!r.ok) {
@@ -72,8 +82,7 @@ const Payment = () => {
     cartPayment(payment);
     navigate("/order");
   }, [payment, paymentSucceeded, cartPayment, navigate]);
-  const tax = parseFloat((total * 0.1).toFixed(2));
-  const totalAll = parseFloat((total + tax).toFixed(2));
+
   const sellingProduct = cart.map((item) => ({
     id: item.id,
     product_name: item.product_name,
@@ -102,6 +111,7 @@ const Payment = () => {
         sellingProduct,
         subtotal: total,
         tax,
+        shipping: shippingPrice,
         amount,
         total: totalAll,
         payment: payment.payment,
@@ -110,7 +120,7 @@ const Payment = () => {
     });
   };
 
-  const { data: addBooking, mutate: sellingMutate } = useMutation({
+  const { data: addSelling, mutate: sellingMutate } = useMutation({
     mutationFn: sellingFun,
   });
 
