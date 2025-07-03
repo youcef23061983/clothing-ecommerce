@@ -81,7 +81,7 @@ const Payment = () => {
     setIsSubmitting(true);
     cartPayment(payment);
     navigate("/order");
-  }, [payment, paymentSucceeded, cartPayment, navigate]);
+  }, [payment, cartPayment, navigate]);
 
   const sellingProduct = cart.map((item) => ({
     id: item.id,
