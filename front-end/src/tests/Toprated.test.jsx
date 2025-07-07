@@ -39,7 +39,7 @@ describe("group of testing Toprated component", () => {
   });
   it("should render to the detail page", async () => {
     const slugLink = screen.getByRole("link", {
-      name: "2023 Woolen Coat High Quality Men's wool coat...",
+      name: "2023 Woolen Coat High Quality Men's wool coat",
     });
     expect(slugLink).toBeInTheDocument();
     const user = userEvent.setup();

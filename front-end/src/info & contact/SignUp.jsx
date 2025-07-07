@@ -40,6 +40,7 @@ const SignUp = ({ onSubmit }) => {
 
     if (onSubmit) {
       onSubmit(formData);
+      navigate("/login");
       return;
     }
 

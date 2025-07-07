@@ -43,7 +43,7 @@ describe("group of Homepage component", () => {
     const user1 = userEvent.setup();
     await user1.selectOptions(type, "tshirt");
     expect(type.value).toBe("tshirt");
-    const productSlug = screen.getByRole("link", { name: "2023 tshirt2..." });
+    const productSlug = screen.getByRole("link", { name: "2023 tshirt2" });
     expect(productSlug).toBeInTheDocument();
     const productPrice = screen.getByRole("heading", { name: "9.99 $" });
     expect(productPrice).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("group of Homepage component", () => {
   });
   it("should render the right bestSeller product", async () => {
     const productName = screen.getByRole("link", {
-      name: "2023 tshirt...",
+      name: "2023 tshirt",
     });
     expect(productName).toBeInTheDocument();
 
@@ -67,7 +67,7 @@ describe("group of Homepage component", () => {
     expect(bestProducts).toBeEnabled();
     expect(bestProducts).toBeChecked();
     expect(bestTag).toBeInTheDocument();
-    const productSlug = screen.getByRole("link", { name: "2023 tshirt2..." });
+    const productSlug = screen.getByRole("link", { name: "2023 tshirt2" });
     expect(productSlug).toBeInTheDocument();
   });
 
@@ -76,7 +76,7 @@ describe("group of Homepage component", () => {
     const minPrice = "15";
 
     fireEvent.change(priceSlider, { target: { value: minPrice } });
-    const productSlug = screen.getByRole("link", { name: "2023 tshirt2..." });
+    const productSlug = screen.getByRole("link", { name: "2023 tshirt2" });
     expect(productSlug).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "19.99 $" })
@@ -84,7 +84,7 @@ describe("group of Homepage component", () => {
   });
 
   it("should render the Detail component when a product is clicked", async () => {
-    const productSlug = screen.getByRole("link", { name: "2023 tshirt2..." });
+    const productSlug = screen.getByRole("link", { name: "2023 tshirt2" });
     expect(productSlug).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "19.99 $" })

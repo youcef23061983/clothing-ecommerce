@@ -44,6 +44,8 @@ const Login = ({ onSubmit, setAuth }) => {
     try {
       if (onSubmit) {
         await onSubmit(loginFormData);
+        navigate("/cart");
+
         return;
       }
       const token = sessionStorage.getItem("token");
@@ -83,6 +85,7 @@ const Login = ({ onSubmit, setAuth }) => {
           user_role: parseRes.user?.user_role || "customer",
         });
         setFormUser(parseRes);
+        navigate("/cart", { replace: true });
       } else {
         setAuth(null);
         sessionStorage.removeItem("token");

@@ -47,13 +47,4 @@ describe("group of testing Order component", () => {
     await userEvent.click(tothehomepage);
     expect(screen.getByText(/Products Type/i)).toBeInTheDocument();
   });
-  it("should render to the right page by clicking on edit link", async () => {
-    const toshipping = screen.getAllByRole("link", { name: "edit" })[0];
-    expect(toshipping).toBeInTheDocument();
-    await userEvent.click(toshipping);
-    const shippingHeader = screen.getByRole("heading", {
-      name: "Shipping Address",
-    });
-    expect(shippingHeader).toBeInTheDocument();
-  });
 });

@@ -40,7 +40,7 @@ describe("group of testinf Sale component ", () => {
   });
   it("should render to the detail page", async () => {
     const slugLink = screen.getByRole("link", {
-      name: "Latest 2023 jeans...",
+      name: "Latest 2023 jeans",
     });
     expect(slugLink).toBeInTheDocument();
 
@@ -76,7 +76,9 @@ describe("group of testinf Sale component ", () => {
     const priceHeader = screen.getByRole("heading", {
       name: "SUBTOTAL: 69.99 $",
     });
-    const productName = screen.getByText("2023 Woole...");
+    const productName = screen.getByText(
+      "2023 Woolen Coat High Quality Men's wool coat"
+    );
     const proceedHeader = screen.getByRole("link", {
       name: "proceed to checkout",
     });

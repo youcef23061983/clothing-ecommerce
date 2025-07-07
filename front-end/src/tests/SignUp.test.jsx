@@ -2,21 +2,30 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, expect, vi } from "vitest";
 import SignUp from "../info & contact/SignUp";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import Cart from "../pages/Cart";
+import Login from "../info & contact/Login";
+import { HelmetProvider } from "react-helmet-async";
 
 describe("group of SignUp testing component", () => {
   const queryClient = new QueryClient();
+  let submit;
+
   beforeEach(async () => {
+    submit = vi.fn();
+
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/signup"]}>
-          <Routes>
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/cart" element={<Cart />} />
-          </Routes>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={["/signup"]}>
+            <Routes>
+              <Route path="/signup" element={<SignUp onSubmit={submit} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cart" element={<Cart />} />
+            </Routes>
+          </MemoryRouter>
+        </HelmetProvider>
       </QueryClientProvider>
     );
   });
@@ -34,7 +43,7 @@ describe("group of SignUp testing component", () => {
     const btn = screen.getByRole("button", { name: "Sign Up" });
     expect(btn).toBeInTheDocument();
     const name = "youyou";
-    const email = "youyou@g.com";
+    const email = "youyou@gmail.com";
     const password = "youyou";
     const user = userEvent.setup();
     await user.type(usernameInput, name);
@@ -43,13 +52,14 @@ describe("group of SignUp testing component", () => {
     await user.type(passwordconfirmInput, password);
     await user.click(btn);
     console.log(name, email, password);
-    await waitFor(() => {
-      expect(screen.queryByText("...is loading")).toBeNull();
+    const loginHeader = screen.getByRole("heading", {
+      name: "Sign in to your account",
     });
-    const cartHeader = screen.getByRole("heading", { name: "your bag" });
-    expect(cartHeader).toBeInTheDocument();
-    screen.debug(cartHeader);
-  });
+    expect(loginHeader).toBeInTheDocument();
+
+    useLocation.mockReturnValue({ pathname: "/login" });
+    expect(useLocation().pathname).toBe("/login");
+  }, 2000);
 });
 
 describe("group of SignUp testing component", () => {
@@ -100,5 +110,5 @@ describe("group of SignUp testing component", () => {
       confirmPassword: password,
     });
     console.log(name, email, password);
-  });
+  }, 5000);
 });

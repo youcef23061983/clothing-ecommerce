@@ -8,13 +8,13 @@ import userEvent from "@testing-library/user-event";
 import AppProvider from "../data managment/AppProvider";
 
 // Mock the Checkout component
-// vi.mock("../cart & payment/Checkout", () => ({
-//   default: ({ onSuccess }) => {
-//     // Simulate a successful payment
-//     setTimeout(() => onSuccess(), 100); // Simulate async behavior
-//     return <div>Mock Checkout Component</div>;
-//   },
-// }));
+vi.mock("../cart & payment/Checkout", () => ({
+  default: ({ onSuccess }) => {
+    // Simulate a successful payment
+    setTimeout(() => onSuccess(), 100); // Simulate async behavior
+    return <div>Mock Checkout Component</div>;
+  },
+}));
 
 describe("group of testing Payment component", () => {
   const queryClient = new QueryClient();
@@ -55,13 +55,13 @@ describe("group of testing Payment component", () => {
     await user.click(paypalRadioButton);
 
     // Wait for the mock Checkout component to render
-    // await waitFor(() => {
-    //   expect(screen.getByText("Mock Checkout Component")).toBeInTheDocument();
-    // });
+    await waitFor(() => {
+      expect(screen.getByText("Mock Checkout Component")).toBeInTheDocument();
+    });
 
     // Wait for the "Continue" button to appear (simulating payment success)
-    // const btn = await screen.findByRole("button", { name: "Continue" });
-    const btn = screen.getByRole("button", { name: "Continue" });
+    const btn = await screen.findByRole("button", { name: "Continue" });
+    // const btn = screen.getByRole("button", { name: "Continue" });
 
     expect(btn).toBeInTheDocument();
 
