@@ -39,7 +39,11 @@ const Payment = () => {
     fetch(`${url}/config`) // Correct URL for the config
       .then(async (r) => {
         const { publishableKey } = await r.json();
-        setStripePromise(loadStripe(publishableKey)); // Use publishableKey
+        setStripePromise(
+          loadStripe(publishableKey, {
+            locale: "en", // Force English
+          })
+        ); // Use publishableKey
         console.log("Publishable Key:", publishableKey);
       })
       .catch((error) => console.error("Error fetching config:", error));
