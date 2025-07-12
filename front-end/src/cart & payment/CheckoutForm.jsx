@@ -542,7 +542,18 @@ const CheckoutForm = ({ onSuccess }) => {
         />
         {showWallet && paymentRequest && (
           <div className="mb-4">
-            <PaymentRequestButtonElement options={{ paymentRequest }} />
+            <PaymentRequestButtonElement
+              options={{
+                paymentRequest,
+                style: {
+                  paymentRequestButton: {
+                    height: "50px", // Must specify!
+                    theme: "light", // or 'dark'
+                    type: "buy", // 'default', 'donate', 'buy'
+                  },
+                },
+              }}
+            />{" "}
           </div>
         )}
 
