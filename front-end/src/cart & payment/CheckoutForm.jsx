@@ -540,7 +540,7 @@ const CheckoutForm = ({ onSuccess }) => {
             },
           }}
         />
-        {/* {showWallet && paymentRequest && (
+        {showWallet && paymentRequest && (
           <div className="mb-4">
             <PaymentRequestButtonElement
               options={{
@@ -555,7 +555,7 @@ const CheckoutForm = ({ onSuccess }) => {
               }}
             />{" "}
           </div>
-        )} */}
+        )}
 
         <button
           type="submit"
