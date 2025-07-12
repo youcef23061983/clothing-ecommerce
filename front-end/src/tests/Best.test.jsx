@@ -73,22 +73,16 @@ describe("group of testing Best component", () => {
     const slugLink = screen.getByRole("link", {
       name: "2023 Woolen Coat High Quality Men's wool coat",
     });
-
     const user = userEvent.setup();
     await user.click(slugLink);
     await waitFor(() => {
       expect(screen.queryByText("...is loading")).toBeNull();
     }, 2000);
-    // await waitForElementToBeRemoved(() => screen.queryByText("...is loading"), {
-    //   timeout: 3000,
-    // });
-
     const detailHeader = screen.getByRole("heading", {
       name: "Product Detail",
     });
     expect(detailHeader).toBeInTheDocument();
     const priceHeader = screen.getByRole("heading", { name: "69.99 $" });
-
     const productName = screen.getByText(
       "2023 Woolen Coat High Quality Men's wool coat"
     );

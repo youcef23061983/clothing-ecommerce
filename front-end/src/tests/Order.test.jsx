@@ -8,7 +8,6 @@ import userEvent from "@testing-library/user-event";
 import Homepage from "../front page/Homepage";
 import Shipping from "../cart & payment/Shipping";
 import { HelmetProvider } from "react-helmet-async";
-
 describe("group of testing Order component", () => {
   const queryClient = new QueryClient();
   beforeEach(async () => {
