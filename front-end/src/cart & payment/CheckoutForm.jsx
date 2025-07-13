@@ -489,11 +489,16 @@ const CheckoutForm = ({ onSuccess }) => {
       });
 
       pr.canMakePayment().then((result) => {
+        console.log("Can make payment result:", result);
         if (result) {
           setPaymentRequest(pr);
           setShowWallet(true);
+        } else {
+          console.log("Payment request not available. Reasons:", {
+            applePay: result?.applePay,
+            googlePay: result?.googlePay,
+          });
         }
-        console.log("pr", pr);
       });
 
       pr.on("paymentmethod", async (event) => {
@@ -547,7 +552,7 @@ const CheckoutForm = ({ onSuccess }) => {
                 paymentRequest,
                 style: {
                   paymentRequestButton: {
-                    height: "50px", // Must specify!
+                    height: "44px", // Must specify!
                     theme: "light", // or 'dark'
                     type: "buy", // 'default', 'donate', 'buy'
                   },
