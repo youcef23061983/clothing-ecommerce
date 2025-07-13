@@ -312,16 +312,18 @@ app.post(
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    if (event.type === "checkout.session.completed") {
+    if (event.type === "payment_intent.succeeded") {
       const session = event.data.object;
       const clientEmail =
         session.customer_email ||
         session.receipt_email ||
+        session.metadata?.email ||
         "no-email@example.com";
       const clientName = session.customer_details?.name || "Valued Customer";
       const orderId = session.id;
       const amount = session.amount_total;
-      const clientPhone = session.customer_details?.phone;
+      const clientPhone =
+        session.customer_details?.phone || session.metadata?.phone;
       console.log("✅ Payment succeeded!");
       console.log("💳 Session ID:", session.id);
       console.log("📧 Email:", session.customer_email);
@@ -330,20 +332,33 @@ app.post(
       console.log("✅ PaymentIntent succeeded:", orderId);
 
       // Save to DB (dummy function for now)
+      // await saveOrderToDatabase({
+      //   fullName: session.customer_details.name,
+      //   address: session.customer_details.address.line1,
+      //   city: session.customer_details.address.city,
+      //   postalCode: session.customer_details.address.postal_code,
+      //   country: session.customer_details.address.country,
+      //   payment: "stripe",
+      //   amount: session.amount_total / 100,
+      //   tbluser_id: session.metadata.userId,
+
+      //   total: session.amount_total / 100,
+      //   sellingProduct: [], // if you stored items in metadata
+      // });
+
       await saveOrderToDatabase({
-        fullName: session.customer_details.name,
-        address: session.customer_details.address.line1,
-        city: session.customer_details.address.city,
-        postalCode: session.customer_details.address.postal_code,
-        country: session.customer_details.address.country,
+        fullName: intent.metadata?.fullName || "Unknown",
+        address: intent.metadata?.address || "Unknown",
+        city: intent.metadata?.city || "Unknown",
+        postalCode: intent.metadata?.postalCode || "00000",
+        country: intent.metadata?.country || "Unknown",
+        phone: intent.metadata?.phone || "0000000000", // ✅ Include phone
         payment: "stripe",
-        amount: session.amount_total / 100,
-        tbluser_id: session.metadata.userId,
-
-        total: session.amount_total / 100,
-        sellingProduct: [], // if you stored items in metadata
+        amount: amount / 100,
+        tbluser_id: intent.metadata?.userId || "guest",
+        total: amount / 100,
+        sellingProduct: [], // Optional: also pass cart JSON if needed
       });
-
       try {
         await sendEmail({
           to: clientEmail,
@@ -381,7 +396,7 @@ app.post(
 
 // ✅ Create Payment Intent
 app.post("/create-payment-intent", async (req, res) => {
-  const { totalInCents } = req.body;
+  const { totalInCents, shipping } = req.body;
 
   if (!totalInCents || totalInCents <= 0) {
     return res.status(400).json({ error: "Invalid amount" });
@@ -392,6 +407,16 @@ app.post("/create-payment-intent", async (req, res) => {
       amount: totalInCents,
       currency: "usd",
       automatic_payment_methods: { enabled: true },
+      metadata: {
+        fullName: shipping?.fullName,
+        address: shipping?.address,
+        city: shipping?.city,
+        postalCode: shipping?.postalCode,
+        country: shipping?.country,
+        email: formUser?.user?.email || firebaseUser?.email,
+        phone: shipping?.phone,
+        userId: firebaseUser?.id || formUser?.user?.id,
+      },
     });
 
     res.json({ clientSecret: paymentIntent.client_secret });

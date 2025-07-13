@@ -19,6 +19,7 @@ const Shipping = () => {
       !shipping.address ||
       !shipping.city ||
       !shipping.postalCode ||
+      !shipping.phone ||
       !shipping.country
     ) {
       alert("Please enter your information");
@@ -97,6 +98,17 @@ const Shipping = () => {
               type="text"
               name="city"
               value={shipping.city || ""}
+              onChange={handleChange}
+              className="input"
+            />
+          </label>{" "}
+          <br />
+          <label>
+            Phone:
+            <input
+              type="number"
+              name="phone"
+              value={shipping.phone || ""}
               onChange={handleChange}
               className="input"
             />
