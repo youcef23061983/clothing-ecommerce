@@ -489,8 +489,9 @@ const CheckoutForm = ({ onSuccess }) => {
       });
 
       pr.canMakePayment().then((result) => {
-        console.log("Can make payment result:", result);
         if (result) {
+          console.log("Can make payment result:", result);
+
           setPaymentRequest(pr);
           setShowWallet(true);
         } else {
@@ -552,7 +553,7 @@ const CheckoutForm = ({ onSuccess }) => {
                 paymentRequest,
                 style: {
                   paymentRequestButton: {
-                    height: "44px", // Must specify!
+                    height: "40px", // Must specify!
                     theme: "light", // or 'dark'
                     type: "buy", // 'default', 'donate', 'buy'
                   },
