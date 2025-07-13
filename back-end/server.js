@@ -396,7 +396,7 @@ app.post(
 
 // ✅ Create Payment Intent
 app.post("/create-payment-intent", async (req, res) => {
-  const { totalInCents, shipping } = req.body;
+  const { totalInCents } = req.body;
 
   if (!totalInCents || totalInCents <= 0) {
     return res.status(400).json({ error: "Invalid amount" });

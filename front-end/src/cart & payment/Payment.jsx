@@ -56,7 +56,7 @@ const Payment = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ totalInCents, shipping }),
+      body: JSON.stringify({ totalInCents }),
     })
       .then(async (r) => {
         if (!r.ok) {
