@@ -274,6 +274,14 @@ const Payment = () => {
       })
       .catch((error) => console.error("Error fetching config:", error));
   }, []);
+  const sellingProduct = cart.map((item) => ({
+    id: item.id,
+    product_name: item.product_name,
+    amount: item.amount,
+    unitPrice: item?.newPrice || item?.price,
+    totalPrice: (item?.newPrice || item?.price) * item?.amount,
+    image: item?.images?.[0] || "",
+  }));
 
   const handleStripeCheckout = async () => {
     setIsSubmitting(true);
@@ -287,15 +295,7 @@ const Payment = () => {
         country: shipping?.country || "Not provided",
         postalCode: shipping?.postalCode || "Not provided",
         userId: formUser?.user?.id || firebaseUser?.id || "guest",
-        cart: JSON.stringify(
-          cart.map((item) => ({
-            id: item.id,
-            name: item.product_name,
-            quantity: item.amount,
-            price: item?.newPrice || item?.price,
-            image: item?.images[0],
-          }))
-        ),
+        cart: sellingProduct,
       };
       const response = await fetch(`${url}/create-checkout-session`, {
         method: "POST",
@@ -342,14 +342,6 @@ const Payment = () => {
     cartPayment(payment);
     navigate("/order");
   }, [payment, cartPayment, navigate]);
-
-  const sellingProduct = cart.map((item) => ({
-    id: item.id,
-    product_name: item.product_name,
-    amount: item.amount,
-    unitPrice: item?.newPrice || item?.price,
-    totalPrice: (item?.newPrice || item?.price) * item?.amount,
-  }));
 
   const sellingFun = async () => {
     const res = await fetch(`${url}/sell`, {

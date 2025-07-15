@@ -307,6 +307,7 @@ app.post("/create-checkout-session", async (req, res) => {
         product_data: {
           name: item.name,
           // images: item.image?.startsWith('http') ? [item.image] : undefined,
+          images: item.image,
         },
         unit_amount: Math.round(item.price * 100),
       },
