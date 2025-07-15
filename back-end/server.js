@@ -327,8 +327,8 @@ app.post("/create-checkout-session", async (req, res) => {
         total: total || "0",
         amount: amount || "0",
       },
-      success_url: `${process.env.VITE_PUBLIC_PRODUCTS_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_URL}/cart`,
+      success_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/cart`,
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "FR", "DZ"],
       },
