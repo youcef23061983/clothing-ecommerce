@@ -260,38 +260,38 @@ app.use("/sell", sellingsRoutes);
 app.use("/auth", authRoutes);
 
 // Arcjet middleware
-// app.use(async (req, res, next) => {
-//   if (
-//     ["/", "/health", "/webhook"].includes(req.path) ||
-//     req.path.startsWith("/assets")
-//   ) {
-//     return next();
-//   }
+app.use(async (req, res, next) => {
+  if (
+    ["/", "/health", "/webhook"].includes(req.path) ||
+    req.path.startsWith("/assets")
+  ) {
+    return next();
+  }
 
-//   try {
-//     const ajPromise = await aj;
-//     const decision = await ajPromise.protect(req, { requested: 1 });
+  try {
+    const ajPromise = await aj;
+    const decision = await ajPromise.protect(req, { requested: 1 });
 
-//     if (decision.isDenied()) {
-//       return res
-//         .status(decision.reason.isRateLimit() ? 429 : 403)
-//         .json({ error: decision.reason.toString() });
-//     }
+    if (decision.isDenied()) {
+      return res
+        .status(decision.reason.isRateLimit() ? 429 : 403)
+        .json({ error: decision.reason.toString() });
+    }
 
-//     if (
-//       decision.results.some(
-//         (result) => result.reason.isBot() && result.reason.isSpoofed()
-//       )
-//     ) {
-//       return res.status(403).json({ error: "Spoofed bot detected" });
-//     }
+    if (
+      decision.results.some(
+        (result) => result.reason.isBot() && result.reason.isSpoofed()
+      )
+    ) {
+      return res.status(403).json({ error: "Spoofed bot detected" });
+    }
 
-//     next();
-//   } catch (error) {
-//     console.error("Arcjet error", error);
-//     next(error);
-//   }
-// });
+    next();
+  } catch (error) {
+    console.error("Arcjet error", error);
+    next(error);
+  }
+});
 
 // you specify the price of tax:
 app.post("/create-checkout-session", async (req, res) => {
