@@ -295,7 +295,7 @@ const Payment = () => {
         country: shipping?.country || "Not provided",
         postalCode: shipping?.postalCode || "Not provided",
         userId: formUser?.user?.id || firebaseUser?.id || "guest",
-        cart: sellingProduct,
+        cart: JSON.stringify(sellingProduct),
       };
       const response = await fetch(`${url}/create-checkout-session`, {
         method: "POST",

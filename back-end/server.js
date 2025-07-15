@@ -260,45 +260,47 @@ app.use("/sell", sellingsRoutes);
 app.use("/auth", authRoutes);
 
 // Arcjet middleware
-app.use(async (req, res, next) => {
-  if (
-    ["/", "/health", "/webhook"].includes(req.path) ||
-    req.path.startsWith("/assets")
-  ) {
-    return next();
-  }
-
-  try {
-    const ajPromise = await aj;
-    const decision = await ajPromise.protect(req, { requested: 1 });
-
-    if (decision.isDenied()) {
-      return res
-        .status(decision.reason.isRateLimit() ? 429 : 403)
-        .json({ error: decision.reason.toString() });
-    }
-
+if (process.env.NODE_ENV === "production") {
+  app.use(async (req, res, next) => {
     if (
-      decision.results.some(
-        (result) => result.reason.isBot() && result.reason.isSpoofed()
-      )
+      ["/", "/health", "/webhook"].includes(req.path) ||
+      req.path.startsWith("/assets")
     ) {
-      return res.status(403).json({ error: "Spoofed bot detected" });
+      return next();
     }
 
-    next();
-  } catch (error) {
-    console.error("Arcjet error", error);
-    next(error);
-  }
-});
+    try {
+      const ajPromise = await aj;
+      const decision = await ajPromise.protect(req, { requested: 1 });
+
+      if (decision.isDenied()) {
+        return res
+          .status(decision.reason.isRateLimit() ? 429 : 403)
+          .json({ error: decision.reason.toString() });
+      }
+
+      if (
+        decision.results.some(
+          (result) => result.reason.isBot() && result.reason.isSpoofed()
+        )
+      ) {
+        return res.status(403).json({ error: "Spoofed bot detected" });
+      }
+
+      next();
+    } catch (error) {
+      console.error("Arcjet error", error);
+      next(error);
+    }
+  });
+}
 
 // you specify the price of tax:
 app.post("/create-checkout-session", async (req, res) => {
   const { total, metadata, subtotal, tax, shipping, amount } = req.body;
 
   try {
-    const cartItems = JSON.parse(metadata.cart);
+    const cartItems = JSON.parse(metadata.cart || "[]"); // ✅ parse it
 
     // Create line items for products only
     const line_items = cartItems.map((item) => ({
@@ -306,8 +308,7 @@ app.post("/create-checkout-session", async (req, res) => {
         currency: "usd",
         product_data: {
           name: item.name,
-          // images: item.image?.startsWith('http') ? [item.image] : undefined,
-          images: item.image,
+          images: item.image?.startsWith("http") ? [item.image] : undefined,
         },
         unit_amount: Math.round(item.price * 100),
       },
