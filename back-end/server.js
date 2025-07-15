@@ -89,13 +89,13 @@
 //   }
 
 //   try {
-//     const paymentIntent = await stripe.paymentIntents.create({
+//     const session = await stripe.sessions.create({
 //       amount: totalInCents,
 //       currency: "usd",
 
 //       automatic_payment_methods: { enabled: true },
 //     });
-//     res.json({ clientSecret: paymentIntent.client_secret }); // Send back clientSecret
+//     res.json({ clientSecret: session.client_secret }); // Send back clientSecret
 //   } catch (error) {
 //     res.status(400).json({ error: error.message }); // Handle any errors
 //   }
@@ -108,7 +108,7 @@
 // });
 // app.post("/retrieve-customer-data", async (req, res) => {
 //   try {
-//     const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
+//     const { sessionId, total, cart, shipping, formUser, firebaseUser } =
 //       req.body;
 
 //     // const isTestMode = process.env.NODE_ENV === "development";
@@ -123,7 +123,7 @@
 //     //     state: "CA",
 //     //     city: "Testville",
 //     //     street: "123 Test Street",
-//     //     transactionId: paymentIntentId || "pi_mock_123456789",
+//     //     transactionId: sessionId || "pi_mock_123456789",
 //     //     postalCode: "12345",
 //     //     phone: "+15551234567",
 //     //     paymentMethod: "visa",
@@ -135,8 +135,8 @@
 //     // }
 
 //     // Production mode - retrieve real Stripe data
-//     const paymentIntent = await stripe.paymentIntents.retrieve(
-//       paymentIntentId,
+//     const session = await stripe.sessions.retrieve(
+//       sessionId,
 //       {
 //         expand: ["payment_method"],
 //       }
@@ -152,7 +152,7 @@
 //         .join("\n");
 
 //     const customerData = {
-//       amount: total || (paymentIntent.amount / 100).toFixed(2) || "0.00",
+//       amount: total || (session.amount / 100).toFixed(2) || "0.00",
 //       fullName: shipping?.fullName || "Not provided",
 //       street: shipping?.address || "",
 //       email: formUser.user.email || firebaseUser?.email || "Not provided",
@@ -161,35 +161,35 @@
 //       postalCode: shipping?.postalCode || "",
 //       items: cart,
 //       // fullName:
-//       //   paymentIntent.payment_method?.billing_details?.name || "Not provided",
+//       //   session.payment_method?.billing_details?.name || "Not provided",
 
 //       // email:
-//       //   paymentIntent.receipt_email ||
-//       //   paymentIntent.payment_method?.billing_details?.email ||
+//       //   session.receipt_email ||
+//       //   session.payment_method?.billing_details?.email ||
 //       //   "Not provided",
 //       // country:
-//       //   paymentIntent.payment_method?.billing_details?.address?.country ||
+//       //   session.payment_method?.billing_details?.address?.country ||
 //       //   "N/A",
 //       // state:
-//       //   paymentIntent.payment_method?.billing_details?.address?.state || "",
-//       // address: paymentIntent.billing_details?.address
-//       //   ? formatAddress(paymentIntent.billing_details.address)
+//       //   session.payment_method?.billing_details?.address?.state || "",
+//       // address: session.billing_details?.address
+//       //   ? formatAddress(session.billing_details.address)
 //       //   : "No address provided",
-//       // city: paymentIntent.payment_method?.billing_details?.address?.city || "",
+//       // city: session.payment_method?.billing_details?.address?.city || "",
 //       // street:
-//       //   paymentIntent.payment_method?.billing_details?.address?.line1 || "",
+//       //   session.payment_method?.billing_details?.address?.line1 || "",
 
-//       transactionId: paymentIntent.id,
+//       transactionId: session.id,
 //       postalCode:
-//         paymentIntent.payment_method?.billing_details?.address?.postal_code ||
+//         session.payment_method?.billing_details?.address?.postal_code ||
 //         "",
 
-//       phone: paymentIntent.payment_method?.billing_details?.phone || "",
-//       paymentMethod: paymentIntent.payment_method?.card?.brand || "Unknown",
-//       last4: paymentIntent.payment_method?.card?.last4 || "****",
-//       currency: paymentIntent.currency.toUpperCase() || "USD",
+//       phone: session.payment_method?.billing_details?.phone || "",
+//       paymentMethod: session.payment_method?.card?.brand || "Unknown",
+//       last4: session.payment_method?.card?.last4 || "****",
+//       currency: session.currency.toUpperCase() || "USD",
 //       created:
-//         new Date(paymentIntent.created * 1000).toISOString() ||
+//         new Date(session.created * 1000).toISOString() ||
 //         new Date().toISOString(),
 //     };
 
@@ -260,38 +260,211 @@ app.use("/sell", sellingsRoutes);
 app.use("/auth", authRoutes);
 
 // Arcjet middleware
-app.use(async (req, res, next) => {
-  if (
-    ["/", "/health", "/webhook"].includes(req.path) ||
-    req.path.startsWith("/assets")
-  ) {
-    return next();
-  }
+// app.use(async (req, res, next) => {
+//   if (
+//     ["/", "/health", "/webhook"].includes(req.path) ||
+//     req.path.startsWith("/assets")
+//   ) {
+//     return next();
+//   }
+
+//   try {
+//     const ajPromise = await aj;
+//     const decision = await ajPromise.protect(req, { requested: 1 });
+
+//     if (decision.isDenied()) {
+//       return res
+//         .status(decision.reason.isRateLimit() ? 429 : 403)
+//         .json({ error: decision.reason.toString() });
+//     }
+
+//     if (
+//       decision.results.some(
+//         (result) => result.reason.isBot() && result.reason.isSpoofed()
+//       )
+//     ) {
+//       return res.status(403).json({ error: "Spoofed bot detected" });
+//     }
+
+//     next();
+//   } catch (error) {
+//     console.error("Arcjet error", error);
+//     next(error);
+//   }
+// });
+
+// you specify the price of tax:
+app.post("/create-checkout-session", async (req, res) => {
+  const { total, metadata, subtotal, tax, shipping, amount } = req.body;
 
   try {
-    const ajPromise = await aj;
-    const decision = await ajPromise.protect(req, { requested: 1 });
+    const cartItems = JSON.parse(metadata.cart);
 
-    if (decision.isDenied()) {
-      return res
-        .status(decision.reason.isRateLimit() ? 429 : 403)
-        .json({ error: decision.reason.toString() });
+    // Create line items for products only
+    const line_items = cartItems.map((item) => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: item.name,
+          // images: item.image?.startsWith('http') ? [item.image] : undefined,
+        },
+        unit_amount: Math.round(item.price * 100),
+      },
+      quantity: item.quantity,
+    }));
+
+    const sessionParams = {
+      payment_method_types: ["card"],
+      line_items,
+      mode: "payment",
+      customer_email: metadata.email,
+      phone_number_collection: { enabled: true },
+      metadata: {
+        ...metadata,
+        subtotal: subtotal || "0",
+        tax: tax || "0",
+        shipping: shipping || "0",
+        total: total || "0",
+        amount: amount || "0",
+      },
+      success_url: `${process.env.VITE_PUBLIC_PRODUCTS_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_URL}/cart`,
+      shipping_address_collection: {
+        allowed_countries: ["US", "CA", "FR", "DZ"],
+      },
+      automatic_tax: {
+        enabled: false, // Set to true if you want Stripe to handle taxes
+      },
+    };
+
+    // Add shipping as a shipping option if it exists
+    if (shipping) {
+      sessionParams.shipping_options = [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: Math.round(shipping * 100),
+              currency: "usd",
+            },
+            display_name: "Shipping",
+          },
+        },
+      ];
     }
 
-    if (
-      decision.results.some(
-        (result) => result.reason.isBot() && result.reason.isSpoofed()
-      )
-    ) {
-      return res.status(403).json({ error: "Spoofed bot detected" });
+    // If not using automatic tax, add tax as a line item
+    if (tax && !sessionParams.automatic_tax.enabled) {
+      line_items.push({
+        price_data: {
+          currency: "usd",
+          product_data: { name: "Tax" },
+
+          unit_amount: Math.round(tax * 100),
+        },
+        quantity: 1,
+      });
     }
 
-    next();
-  } catch (error) {
-    console.error("Arcjet error", error);
-    next(error);
+    const session = await stripe.checkout.sessions.create(sessionParams);
+    res.json({ sessionId: session.id });
+  } catch (err) {
+    console.error("Stripe Session Error:", err);
+    res.status(400).json({
+      error: "Failed to create checkout session",
+      details: err.message,
+    });
   }
 });
+///////////////////////// you let the tax be calculated by stripe:
+
+// app.post("/create-checkout-session", async (req, res) => {
+//   const {
+//     totalInCents,
+//     metadata,
+//     subtotal,
+//     tax, // Optional (if you still want manual tax as fallback)
+//     shipping,
+//   } = req.body;
+
+//   try {
+//     const cartItems = JSON.parse(metadata.cart);
+
+//     const line_items = cartItems.map((item) => ({
+//       price_data: {
+//         currency: "usd",
+//         product_data: {
+//           name: item.name,
+//           // images: item.image?.startsWith('http') ? [item.image] : undefined,
+//           tax_code: "txcd_30000000", // Stripe tax category (e.g., "General Goods")
+//         },
+//         unit_amount: Math.round(item.price * 100),
+//       },
+//       quantity: item.quantity,
+//     }));
+
+//     const sessionParams = {
+//       payment_method_types: ["card"],
+//       line_items,
+//       mode: "payment",
+//       customer_email: metadata.email,
+//       phone_number_collection: { enabled: true },
+//       metadata: {
+//         ...metadata,
+//         subtotal: String(subtotal || "0"),
+//         tax: String(tax || "0"), // Still useful for reference
+//         shipping: String(shipping || "0"),
+//         total: String(totalInCents || "0"),
+//       },
+//       success_url: `${process.env.VITE_PUBLIC_PRODUCTS_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
+//       cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_URL}/cart`,
+//       shipping_address_collection: {
+//         allowed_countries: ["US", "CA", "FR", "DZ"], // Stripe needs this for tax calculation
+//       },
+//       automatic_tax: {
+//         enabled: true, // Enable automatic tax calculation
+//       },
+//     };
+
+//     // If shipping is provided, add it as a shipping option
+//     if (shipping) {
+//       sessionParams.shipping_options = [
+//         {
+//           shipping_rate_data: {
+//             type: "fixed_amount",
+//             fixed_amount: {
+//               amount: Math.round(shipping * 100),
+//               currency: "usd",
+//             },
+//             display_name: "Shipping",
+//           },
+//         },
+//       ];
+//     }
+
+//     const session = await stripe.checkout.sessions.create(sessionParams);
+//     res.json({ sessionId: session.id });
+//   } catch (err) {
+//     console.error("Stripe Session Error:", err);
+//     res.status(400).json({
+//       error: "Failed to create checkout session",
+//       details: err.message,
+//     });
+//   }
+// });
+
+//////////////////////////// retrieve the success data if we work on nextjs:
+//     expand: ["payment_intent.payment_method"]: to show you all the card details
+// app.post("/order", async (req, res) => {
+//   const session = await stripe.checkout.session.retrieve(req.query.session_id, {
+//     expand: ["payment_intent.payment_method"],
+//   });
+//   const items = await stripe.checkout.session.listLineItems(
+//     req.query.session_id
+//   );
+//   console.log("session", session);
+//   console.log("items", items);
+// });
 
 // ✅ Stripe Webhook
 app.post(
@@ -312,118 +485,90 @@ app.post(
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    if (event.type === "payment_intent.succeeded") {
-      const session = event.data.object;
-      const clientEmail =
-        session.customer_email ||
-        session.receipt_email ||
-        session.metadata?.email ||
-        "no-email@example.com";
-      const clientName = session.customer_details?.name || "Valued Customer";
-      const orderId = session.id;
-      const amount = session.amount_total;
-      const clientPhone =
-        session.customer_details?.phone || session.metadata?.phone;
-      console.log("✅ Payment succeeded!");
-      console.log("💳 Session ID:", session.id);
-      console.log("📧 Email:", session.customer_email);
-      console.log("💰 Amount:", (session.amount_total / 100).toFixed(2));
-      console.log("📦 Name:", session.customer_details?.name);
-      console.log("✅ PaymentIntent succeeded:", orderId);
-
-      // Save to DB (dummy function for now)
-      // await saveOrderToDatabase({
-      //   fullName: session.customer_details.name,
-      //   address: session.customer_details.address.line1,
-      //   city: session.customer_details.address.city,
-      //   postalCode: session.customer_details.address.postal_code,
-      //   country: session.customer_details.address.country,
-      //   payment: "stripe",
-      //   amount: session.amount_total / 100,
-      //   tbluser_id: session.metadata.userId,
-
-      //   total: session.amount_total / 100,
-      //   sellingProduct: [], // if you stored items in metadata
-      // });
-
-      await saveOrderToDatabase({
-        fullName: intent.metadata?.fullName || "Unknown",
-        address: intent.metadata?.address || "Unknown",
-        city: intent.metadata?.city || "Unknown",
-        postalCode: intent.metadata?.postalCode || "00000",
-        country: intent.metadata?.country || "Unknown",
-        phone: intent.metadata?.phone || "0000000000", // ✅ Include phone
-        payment: "stripe",
-        amount: amount / 100,
-        tbluser_id: intent.metadata?.userId || "guest",
-        total: amount / 100,
-        sellingProduct: [], // Optional: also pass cart JSON if needed
-      });
+    if (event.type === "checkout.session.completed") {
       try {
-        await sendEmail({
-          to: clientEmail,
-          subject: "🧾 Order Confirmation",
-          html: `<p>Hello ${clientName},</p>
-               <p>Thank you for your order <strong>${orderId}</strong>.</p>
-               <p>Total: <strong>$${(amount / 100).toFixed(2)}</strong></p>`,
+        // Retrieve the expanded session with line items if needed
+        const session = await stripe.checkout.sessions.retrieve(
+          event.data.object.id,
+          {
+            expand: ["line_items", "payment_intent.payment_method"],
+          }
+        );
+
+        // Extract customer details
+        const clientEmail =
+          session.customer_details?.email ||
+          session.metadata?.email ||
+          "no-email@example.com";
+        const clientName = session.customer_details?.name || "Valued Customer";
+        const clientPhone = session.customer_details?.phone || "Not provided";
+        const orderId = session.id;
+        const amount = session.amount_total;
+
+        console.log("✅ Payment succeeded!");
+        console.log("💳 Checkout Session ID:", session.id);
+        console.log("📧 Email:", clientEmail);
+        console.log("📞 Phone:", clientPhone || "Not provided");
+        console.log("💰 Amount:", (amount / 100).toFixed(2));
+
+        // Save to DB
+        await saveOrderToDatabase({
+          fullName: session.metadata?.fullName || clientName,
+          address: session.metadata?.address || "Not provided",
+          city: session.metadata?.city || "Not provided",
+          postalCode: session.metadata?.postalCode || "Not provided",
+          country: session.metadata?.country || "Not provided",
+          payment: "stripe",
+          amount: amount || session.metadata?.amount,
+          subtotal: session.metadata?.subtotal || "0",
+          tbluser_id: session.metadata?.userId || "guest",
+          total: session.metadata?.total || "0",
+          tax: session.metadata?.tax || "0",
+          shipping: session.metadata?.shipping,
+          sellingProduct: JSON.parse(session.metadata?.cart || "[]"),
+          payment_intent_id: session.payment_intent?.id || null,
         });
 
-        console.log("📧 Email sent to", clientEmail);
+        // Send notifications
+        try {
+          await sendEmail({
+            to: clientEmail,
+            subject: "🧾 Order Confirmation",
+            html: `<p>Hello ${clientName},</p>
+             <p>Thank you for your order <strong>${orderId}</strong>.</p>
+             <p>Total: <strong>$${(amount / 100).toFixed(2)}</strong></p>
+             <p>View your order details <a href="${yourDomain}/order/${orderId}">here</a>.</p>`,
+          });
+          console.log("📧 Email sent to", clientEmail);
 
-        if (clientPhone) {
-          await sendwhatsappSMS({
-            phone: clientPhone,
-            name: clientName,
-            orderId,
-            amount,
-          });
-          await sendSMS({
-            phone: clientPhone,
-            message: `Hi ${clientName}, your order ${orderId} of $${(
-              amount / 100
-            ).toFixed(2)} was received. Thank you!`,
-          });
-          console.log("📱 SMS sent to", clientPhone);
+          if (clientPhone) {
+            await sendwhatsappSMS({
+              phone: clientPhone,
+              name: clientName,
+              orderId,
+              amount,
+            });
+            await sendSMS({
+              phone: clientPhone,
+              message: `Hi ${clientName}, your order ${orderId} of $${(
+                amount / 100
+              ).toFixed(2)} was received. Thank you!`,
+            });
+            console.log("📱 SMS sent to", clientPhone);
+          }
+        } catch (error) {
+          console.error("❌ Notification error:", error.message);
+          // Consider sending this error to an error tracking service
         }
       } catch (error) {
-        console.error("❌ Notification error:", error.message);
+        console.error("❌ Webhook processing error:", error.message);
+        // Consider implementing retry logic or alerting your team
       }
     }
 
     res.status(200).send("✅ Webhook received");
   }
 );
-
-// ✅ Create Payment Intent
-app.post("/create-payment-intent", async (req, res) => {
-  const { totalInCents } = req.body;
-
-  if (!totalInCents || totalInCents <= 0) {
-    return res.status(400).json({ error: "Invalid amount" });
-  }
-
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalInCents,
-      currency: "usd",
-      automatic_payment_methods: { enabled: true },
-      metadata: {
-        fullName: shipping?.fullName,
-        address: shipping?.address,
-        city: shipping?.city,
-        postalCode: shipping?.postalCode,
-        country: shipping?.country,
-        email: formUser?.user?.email || firebaseUser?.email,
-        phone: shipping?.phone,
-        userId: firebaseUser?.id || formUser?.user?.id,
-      },
-    });
-
-    res.json({ clientSecret: paymentIntent.client_secret });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
 
 // ✅ Config
 app.get("/config", (req, res) => {
@@ -432,48 +577,103 @@ app.get("/config", (req, res) => {
   });
 });
 
-// ✅ Retrieve Customer Data
-app.post("/retrieve-customer-data", async (req, res) => {
-  const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
-    req.body;
+// ✅ Retrieve Customer Data: and this is for paymentIntents payment not session checkout:
 
-  try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(
-      paymentIntentId,
-      {
-        expand: ["payment_method"],
-      }
-    );
+// app.post("/retrieve-customer-data", async (req, res) => {
+//   try {
+//     const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
+//       req.body;
 
-    const customerData = {
-      amount: total || (paymentIntent.amount / 100).toFixed(2) || "0.00",
-      fullName: shipping?.fullName || "Not provided",
-      street: shipping?.address || "",
-      email: formUser?.user?.email || firebaseUser?.email || "Not provided",
-      country: shipping?.country || "N/A",
-      city: shipping?.city || "",
-      postalCode: shipping?.postalCode || "",
-      items: cart,
-      transactionId: paymentIntent.id,
-      postalCode:
-        paymentIntent.payment_method?.billing_details?.address?.postal_code ||
-        "",
-      phone: paymentIntent.payment_method?.billing_details?.phone || "",
-      paymentMethod: paymentIntent.payment_method?.card?.brand || "Unknown",
-      last4: paymentIntent.payment_method?.card?.last4 || "****",
-      currency: paymentIntent.currency.toUpperCase() || "USD",
-      created: new Date(paymentIntent.created * 1000).toISOString(),
-    };
+//     // const isTestMode = process.env.NODE_ENV === "development";
 
-    res.json(customerData);
-  } catch (err) {
-    res.status(500).json({
-      error: "Failed to retrieve customer data",
-      details: err.message,
-    });
-  }
-});
+//     // // Test mode mock data
+//     // if (isTestMode) {
+//     //   return res.json({
+//     //     fullName: "John Doe",
+//     //     name: "John Doe",
+//     //     email: "testcustomer@example.com",
+//     //     country: "US",
+//     //     state: "CA",
+//     //     city: "Testville",
+//     //     street: "123 Test Street",
+//     //     transactionId: paymentIntentId || "pi_mock_123456789",
+//     //     postalCode: "12345",
+//     //     phone: "+15551234567",
+//     //     paymentMethod: "visa",
+//     //     last4: "4242",
+//     //     amount: "10.00",
+//     //     currency: "USD",
+//     //     created: new Date().toISOString(),
+//     //   });
+//     // }
 
+//     // Production mode - retrieve real Stripe data
+//     const paymentIntent = await stripe.paymentIntents.retrieve(
+//       paymentIntentId,
+//       {
+//         expand: ["payment_method"],
+//       }
+//     );
+//     const formatAddress = (address) =>
+//       [
+//         address.line1,
+//         address.line2,
+//         `${address.city}, ${address.state} ${address.postal_code}`,
+//         address.country,
+//       ]
+//         .filter(Boolean)
+//         .join("\n");
+
+//     const customerData = {
+//       amout: total || (paymentIntent.amount / 100).toFixed(2) || "0.00",
+//       fullName: shipping?.fullName || "Not provided",
+//       street: shipping?.address || "",
+//       email: formUser.user.email || firebaseUser?.email || "Not provided",
+//       country: shipping?.country || "N/A",
+//       city: shipping?.city || "",
+//       postalCode: shipping?.postalCode || "",
+//       items: cart,
+//       // fullName:
+//       //   paymentIntent.payment_method?.billing_details?.name || "Not provided",
+
+//       // email:
+//       //   paymentIntent.receipt_email ||
+//       //   paymentIntent.payment_method?.billing_details?.email ||
+//       //   "Not provided",
+//       // country:
+//       //   paymentIntent.payment_method?.billing_details?.address?.country ||
+//       //   "N/A",
+//       // state:
+//       //   paymentIntent.payment_method?.billing_details?.address?.state || "",
+//       // address: paymentIntent.billing_details?.address
+//       //   ? formatAddress(paymentIntent.billing_details.address)
+//       //   : "No address provided",
+//       // city: paymentIntent.payment_method?.billing_details?.address?.city || "",
+//       // street:
+//       //   paymentIntent.payment_method?.billing_details?.address?.line1 || "",
+
+//       transactionId: paymentIntent.id,
+//       postalCode:
+//         paymentIntent.payment_method?.billing_details?.address?.postal_code ||
+//         "",
+
+//       phone: paymentIntent.payment_method?.billing_details?.phone || "",
+//       paymentMethod: paymentIntent.payment_method?.card?.brand || "Unknown",
+//       last4: paymentIntent.payment_method?.card?.last4 || "****",
+//       currency: paymentIntent.currency.toUpperCase() || "USD",
+//       created:
+//         new Date(paymentIntent.created * 1000).toISOString() ||
+//         new Date().toISOString(),
+//     };
+
+//     res.json(customerData);
+//   } catch (err) {
+//     res.status(500).json({
+//       error: "Failed to retrieve customer data",
+//       details: err.message,
+//     });
+//   }
+// });
 app.get("/", (req, res) => {
   res.send("✅ API is running");
 });

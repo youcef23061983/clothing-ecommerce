@@ -464,7 +464,6 @@ button {
   margin-top: 1rem; /* mt-4 = 16px */
   border-color: transparent;
 }
-
 @media screen and (min-width: 336px) {
   .nav-header {
     display: flex;
