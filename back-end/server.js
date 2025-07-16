@@ -734,6 +734,7 @@ app.post(
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const sig = req.headers["stripe-signature"];
+    console.log("Signature:", sig ? "Present" : "Missing"); // Verify headers
 
     if (!sig) {
       console.error("❌ Missing Stripe signature");
@@ -747,6 +748,7 @@ app.post(
         sig,
         process.env.STRIPE_WEBHOOK_SECRET
       );
+      console.log("🟢 Event type:", event.type); // Confirm event parsing
     } catch (err) {
       console.error("❌ Webhook signature verification failed:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -754,6 +756,8 @@ app.post(
 
     // Handle checkout.session.completed events
     if (event.type === "checkout.session.completed") {
+      console.log("🛒 Checkout session completed - starting processing"); // Entry point
+
       try {
         console.log("🔔 Handling checkout.session.completed event");
 
@@ -764,6 +768,7 @@ app.post(
             expand: ["line_items", "payment_intent.payment_method"],
           }
         );
+        console.log("📦 Raw session data:", JSON.stringify(session, null, 2));
 
         // Extract customer details with proper fallbacks
         const metadata = session.metadata || {};
