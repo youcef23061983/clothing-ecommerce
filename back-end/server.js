@@ -839,6 +839,7 @@ app.post(
 //     },
 //   })
 // );
+app.use(express.json());
 // 6. API routes
 
 app.use("/products", productsRoutes);
