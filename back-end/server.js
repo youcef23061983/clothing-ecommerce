@@ -208,6 +208,7 @@
 // app.listen(PORT, () => {
 //   console.log("Server is running on port", PORT);
 // });
+
 // require("dotenv").config();
 // const express = require("express");
 // const app = express();
@@ -702,7 +703,7 @@ const aj = require("./libs/arctjet.js");
 const stripe = require("stripe")(process.env.VITE_STRIPE_SECRET_KEY);
 const sendEmail = require("./utils/sendEmail");
 const sendwhatsappSMS = require("./utils/whatsappSMS.js");
-const sendSMS = require("./utils/sendSMS.js");
+const { sendSMS } = require("./utils/sendSMS.js");
 const saveOrderToDatabase = require("./utils/saveOrderToDb.js");
 
 // 1. Security middleware first
@@ -767,43 +768,66 @@ app.post(
         // Extract customer details with proper fallbacks
         const metadata = session.metadata || {};
         const customerDetails = session.customer_details || {};
-
-        const clientEmail =
+        const email =
           customerDetails.email || metadata.email || "no-email@example.com";
-        const clientName =
+
+        const fullName =
           customerDetails.name || metadata.fullName || "Valued Customer";
         const clientPhone = customerDetails.phone || metadata.phone || null;
         const orderId = session.id;
-        const amount = session.amount_total;
+        const amount = metadata.amount;
         const currency = session.currency.toUpperCase();
+        const country =
+          session.shipping_details?.address?.country ||
+          session.metadata?.country ||
+          "Not provided";
+        const postalCode =
+          session.shipping_details?.address?.postal_code ||
+          session.metadata?.postalCode ||
+          "Not provided";
+        const address =
+          session.shipping_details?.address?.line1 ||
+          session.metadata?.address ||
+          metadata.address ||
+          "no-email@example.com";
+        const city =
+          session.shipping_details?.address?.city ||
+          session.metadata?.city ||
+          "Not provided";
+        const subtotal = metadata.subtotal || "0";
+        const tax = metadata.tax || "0";
+        const total = session.amount_total / 100 || metadata.total || "0";
+
+        const tbluser_id = metadata.userId || "guest";
+        const shipping =
+          metadata.shipping || (session.shipping_cost?.amount_total || 0) / 100;
+        const sellingProduct = JSON.parse(metadata.cart || "[]");
+        const payment = "stripe" || "no method";
 
         // Log important details
         console.log("💰 Payment Details:", {
           orderId,
           amount: (amount / 100).toFixed(2),
           currency,
-          email: clientEmail,
+          email: email,
           phone: clientPhone ? "provided" : "not provided",
         });
 
         // Prepare order data for database
         const orderData = {
-          fullName: clientName,
-          address: metadata.address || "Not provided",
-          city: metadata.city || "Not provided",
-          postalCode: metadata.postalCode || "Not provided",
-          country: metadata.country || "Not provided",
-          payment: "stripe",
-          amount: amount,
-          subtotal: metadata.subtotal || session.amount_subtotal / 100,
-          tbluser_id: metadata.userId || "guest",
-          total: metadata.total || amount / 100,
-          tax: metadata.tax || 0,
-          shipping:
-            metadata.shipping ||
-            (session.shipping_cost?.amount_total || 0) / 100,
-          sellingProduct: JSON.parse(metadata.cart || "[]"),
-          payment_intent_id: session.payment_intent?.id || null,
+          fullName,
+          address,
+          city,
+          postalCode,
+          country,
+          payment,
+          amount,
+          subtotal,
+          tbluser_id,
+          total,
+          tax,
+          shipping,
+          sellingProduct,
         };
 
         // Save to database
@@ -813,10 +837,10 @@ app.post(
         // Send email notification
         try {
           await sendEmail({
-            to: clientEmail,
+            to: email,
             subject: `🧾 Order Confirmation #${orderId}`,
             html: `
-              <p>Hello ${clientName},</p>
+              <p>Hello ${fullName},</p>
               <p>Thank you for your order <strong>#${orderId}</strong>.</p>
               <p>Total: <strong>${currency} ${(amount / 100).toFixed(
               2
@@ -827,7 +851,7 @@ app.post(
               <p>If you have any questions, please contact our support team.</p>
             `,
           });
-          console.log("📧 Confirmation email sent to", clientEmail);
+          console.log("📧 Confirmation email sent to", fullName);
         } catch (emailError) {
           console.error("❌ Failed to send email:", emailError.message);
         }
@@ -837,14 +861,14 @@ app.post(
           try {
             await sendwhatsappSMS({
               phone: clientPhone,
-              name: clientName,
+              name: fullName,
               orderId,
               amount,
             });
 
             await sendSMS({
               phone: clientPhone,
-              message: `Hi ${clientName}, your order #${orderId} of ${currency} ${(
+              message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
                 amount / 100
               ).toFixed(2)} was received. Thank you!`,
             });
