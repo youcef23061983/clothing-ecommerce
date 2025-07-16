@@ -705,18 +705,11 @@ const sendwhatsappSMS = require("./utils/whatsappSMS.js");
 const sendSMS = require("./utils/sendSMS.js");
 const saveOrderToDatabase = require("./utils/saveOrderToDb.js");
 
-// Stripe needs raw body for webhook verification
-app.use(
-  express.json({
-    verify: (req, res, buf) => {
-      if (req.originalUrl.startsWith("/webhook")) {
-        req.rawBody = buf.toString();
-      }
-    },
-  })
-);
+// 1. Security middleware first
 
 app.use(helmet());
+// 2. CORS configuration
+
 app.use(
   cors({
     origin: [
@@ -727,145 +720,12 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
+// 3. Logging middleware
+
 app.use(
   process.env.NODE_ENV === "development" ? morgan("dev") : morgan("tiny")
 );
-
-app.use("/products", productsRoutes);
-app.use("/sell", sellingsRoutes);
-app.use("/auth", authRoutes);
-
-// Arcjet middleware
-// if (process.env.NODE_ENV === "production") {
-//   app.use(async (req, res, next) => {
-//     if (
-//       ["/", "/health", "/webhook"].includes(req.path) ||
-//       req.path.startsWith("/assets")
-//     ) {
-//       return next();
-//     }
-
-//     try {
-//       const ajPromise = await aj;
-//       const decision = await ajPromise.protect(req, { requested: 1 });
-
-//       if (decision.isDenied()) {
-//         return res
-//           .status(decision.reason.isRateLimit() ? 429 : 403)
-//           .json({ error: decision.reason.toString() });
-//       }
-
-//       if (
-//         decision.results.some(
-//           (result) => result.reason.isBot() && result.reason.isSpoofed()
-//         )
-//       ) {
-//         return res.status(403).json({ error: "Spoofed bot detected" });
-//       }
-
-//       next();
-//     } catch (error) {
-//       console.error("Arcjet error", error);
-//       next(error);
-//     }
-//   });
-// }
-
-// you specify the price of tax:
-app.post("/create-checkout-session", async (req, res) => {
-  const { total, metadata, subtotal, tax, shipping, amount, cart } = req.body;
-
-  try {
-    const cartItems = JSON.parse(metadata.cart || "[]"); // ✅ parse it
-
-    // Create line items for products only
-
-    const line_items = cartItems.map((item) => {
-      // const imageUrl =
-      //   item.image && item.image.startsWith("http")
-      //     ? item.image
-      //     : `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/${item.image}`;
-
-      return {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: item.product_name || "Unnamed Product",
-            // images: [imageUrl],
-            images: [
-              `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/${item.image}`,
-            ],
-          },
-          unit_amount: Math.round(Number(item.unitPrice || 0) * 100), // ✅ safe
-        },
-        quantity: item.amount || 1,
-      };
-    });
-
-    const sessionParams = {
-      payment_method_types: ["card"],
-      line_items,
-      mode: "payment",
-      customer_email: metadata.email,
-      phone_number_collection: { enabled: true },
-      metadata: {
-        ...metadata,
-        // subtotal: subtotal || "0",
-        // tax: tax || "0",
-        // shipping: shipping || "0",
-        // total: total || "0",
-      },
-      success_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/cart`,
-      shipping_address_collection: {
-        allowed_countries: ["US", "CA", "FR", "DZ"],
-      },
-      automatic_tax: {
-        enabled: false, // Set to true if you want Stripe to handle taxes
-      },
-    };
-
-    // Add shipping as a shipping option if it exists
-    if (shipping) {
-      sessionParams.shipping_options = [
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: {
-              amount: Math.round(Number(shipping || 0) * 100), // ✅ ensure number
-              currency: "usd",
-            },
-            display_name: "Shipping",
-          },
-        },
-      ];
-    }
-
-    // If not using automatic tax, add tax as a line item
-    if (tax && !sessionParams.automatic_tax.enabled) {
-      line_items.push({
-        price_data: {
-          currency: "usd",
-          product_data: { name: "Tax" },
-
-          unit_amount: Math.round(Number(tax || 0) * 100), // ✅ ensure number
-        },
-        quantity: 1,
-      });
-    }
-
-    const session = await stripe.checkout.sessions.create(sessionParams);
-    res.json({ sessionId: session.id });
-  } catch (err) {
-    console.error("Stripe Session Error:", err);
-    res.status(400).json({
-      error: "Failed to create checkout session",
-      details: err.message,
-    });
-  }
-});
-
-// ✅ Stripe Webhook
+// 4. Stripe Webhook - Must come before JSON body parsers
 app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
@@ -968,17 +828,158 @@ app.post(
     res.status(200).send("✅ Webhook received");
   }
 );
+// 5. Regular body parsers (AFTER webhook handler)
+// Stripe needs raw body for webhook verification
+// app.use(
+//   express.json({
+//     verify: (req, res, buf) => {
+//       if (req.originalUrl.startsWith("/webhook")) {
+//         req.rawBody = buf.toString();
+//       }
+//     },
+//   })
+// );
+// 6. API routes
 
-// ✅ Config
+app.use("/products", productsRoutes);
+app.use("/sell", sellingsRoutes);
+app.use("/auth", authRoutes);
+// 7. Stripe checkout session endpoint
+app.post("/create-checkout-session", async (req, res) => {
+  const { total, metadata, subtotal, tax, shipping, amount, cart } = req.body;
+
+  try {
+    const cartItems = JSON.parse(metadata.cart || "[]"); // ✅ parse it
+
+    const line_items = cartItems.map((item) => {
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item.product_name || "Unnamed Product",
+            // images: [imageUrl],
+            images: [
+              `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/${item.image}`,
+            ],
+          },
+          unit_amount: Math.round(Number(item.unitPrice || 0) * 100), // ✅ safe
+        },
+        quantity: item.amount || 1,
+      };
+    });
+
+    const sessionParams = {
+      payment_method_types: ["card"],
+      line_items,
+      mode: "payment",
+      customer_email: metadata.email,
+      phone_number_collection: { enabled: true },
+      metadata: {
+        ...metadata,
+        subtotal: subtotal || "0",
+        tax: tax || "0",
+        shipping: shipping || "0",
+        total: total || "0",
+      },
+      success_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/cart`,
+      shipping_address_collection: {
+        allowed_countries: ["US", "CA", "FR", "DZ"],
+      },
+      automatic_tax: {
+        enabled: false, // Set to true if you want Stripe to handle taxes
+      },
+    };
+
+    // Add shipping as a shipping option if it exists
+    if (shipping) {
+      sessionParams.shipping_options = [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: {
+              amount: Math.round(Number(shipping || 0) * 100), // ✅ ensure number
+              currency: "usd",
+            },
+            display_name: "Shipping",
+          },
+        },
+      ];
+    }
+
+    // If not using automatic tax, add tax as a line item
+    if (tax && !sessionParams.automatic_tax.enabled) {
+      line_items.push({
+        price_data: {
+          currency: "usd",
+          product_data: { name: "Tax" },
+
+          unit_amount: Math.round(Number(tax || 0) * 100), // ✅ ensure number
+        },
+        quantity: 1,
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
+    res.json({ sessionId: session.id });
+  } catch (err) {
+    console.error("Stripe Session Error:", err);
+    res.status(400).json({
+      error: "Failed to create checkout session",
+      details: err.message,
+    });
+  }
+});
+// 8. Config endpoint
+
 app.get("/config", (req, res) => {
   res.json({
     publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY,
   });
 });
+// 9. Health check endpoint
 
 app.get("/", (req, res) => {
   res.send("✅ API is running");
 });
+// 10. Arcjet middleware (commented out as in original)
+
+// if (process.env.NODE_ENV === "production") {
+//   app.use(async (req, res, next) => {
+//     if (
+//       ["/", "/health", "/webhook"].includes(req.path) ||
+//       req.path.startsWith("/assets")
+//     ) {
+//       return next();
+//     }
+
+//     try {
+//       const ajPromise = await aj;
+//       const decision = await ajPromise.protect(req, { requested: 1 });
+
+//       if (decision.isDenied()) {
+//         return res
+//           .status(decision.reason.isRateLimit() ? 429 : 403)
+//           .json({ error: decision.reason.toString() });
+//       }
+
+//       if (
+//         decision.results.some(
+//           (result) => result.reason.isBot() && result.reason.isSpoofed()
+//         )
+//       ) {
+//         return res.status(403).json({ error: "Spoofed bot detected" });
+//       }
+
+//       next();
+//     } catch (error) {
+//       console.error("Arcjet error", error);
+//       next(error);
+//     }
+//   });
+// }
+
+// Start server
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

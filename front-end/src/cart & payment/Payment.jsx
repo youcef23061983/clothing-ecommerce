@@ -314,7 +314,7 @@ const Payment = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          total: totalInCents,
+          total: totalAll,
           subtotal: total, // subtotal before tax + shipping
           tax,
           shipping: shippingPrice,
