@@ -788,16 +788,15 @@ app.post(
           "Not provided";
         const postalCode =
           session.shipping_details?.address?.postal_code ||
-          session.metadata?.postalCode ||
+          metadata?.postalCode ||
           "Not provided";
         const address =
           session.shipping_details?.address?.line1 ||
-          session.metadata?.address ||
-          metadata.address ||
+          metadata?.address ||
           "no-email@example.com";
         const city =
           session.shipping_details?.address?.city ||
-          session.metadata?.city ||
+          metadata?.city ||
           "Not provided";
         const subtotal = metadata.subtotal || "0";
         const tax = metadata.tax || "0";
@@ -950,6 +949,7 @@ app.post("/create-checkout-session", async (req, res) => {
         tax: tax || "0",
         shipping: shipping || "0",
         total: total || "0",
+        amount: amount || "0",
       },
       success_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/cart`,
