@@ -726,27 +726,37 @@ app.use(
   process.env.NODE_ENV === "development" ? morgan("dev") : morgan("tiny")
 );
 // 4. Stripe Webhook - Must come before JSON body parsers
+// Webhook handler must be registered BEFORE any body parsers
 app.post(
   "/webhook",
+  // Use express.raw middleware to get raw body for signature verification
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const sig = req.headers["stripe-signature"];
-    let event;
 
+    if (!sig) {
+      console.error("❌ Missing Stripe signature");
+      return res.status(400).send("Missing Stripe signature");
+    }
+
+    let event;
     try {
       event = stripe.webhooks.constructEvent(
-        req.body,
+        req.body, // Use raw body directly
         sig,
         process.env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
-      console.error("❌ Webhook Error:", err.message);
+      console.error("❌ Webhook signature verification failed:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
+    // Handle checkout.session.completed events
     if (event.type === "checkout.session.completed") {
       try {
-        // Retrieve the expanded session with line items if needed
+        console.log("🔔 Handling checkout.session.completed event");
+
+        // Retrieve the expanded session
         const session = await stripe.checkout.sessions.retrieve(
           event.data.object.id,
           {
@@ -754,80 +764,111 @@ app.post(
           }
         );
 
-        // Extract customer details
+        // Extract customer details with proper fallbacks
+        const metadata = session.metadata || {};
+        const customerDetails = session.customer_details || {};
+
         const clientEmail =
-          session.customer_details?.email ||
-          session.metadata?.email ||
-          "no-email@example.com";
-        const clientName = session.customer_details?.name || "Valued Customer";
-        const clientPhone = session.customer_details?.phone || "Not provided";
+          customerDetails.email || metadata.email || "no-email@example.com";
+        const clientName =
+          customerDetails.name || metadata.fullName || "Valued Customer";
+        const clientPhone = customerDetails.phone || metadata.phone || null;
         const orderId = session.id;
         const amount = session.amount_total;
+        const currency = session.currency.toUpperCase();
 
-        console.log("✅ Payment succeeded!");
-        console.log("💳 Checkout Session ID:", session.id);
-        console.log("📧 Email:", clientEmail);
-        console.log("📞 Phone:", clientPhone || "Not provided");
-        console.log("💰 Amount:", (amount / 100).toFixed(2));
-
-        // Save to DB
-        await saveOrderToDatabase({
-          fullName: session.metadata?.fullName || clientName,
-          address: session.metadata?.address || "Not provided",
-          city: session.metadata?.city || "Not provided",
-          postalCode: session.metadata?.postalCode || "Not provided",
-          country: session.metadata?.country || "Not provided",
-          payment: "stripe",
-          amount: amount || session.metadata?.amount,
-          subtotal: session.metadata?.subtotal || "0",
-          tbluser_id: session.metadata?.userId || "guest",
-          total: session.metadata?.total || "0",
-          tax: session.metadata?.tax || "0",
-          shipping: session.metadata?.shipping,
-          sellingProduct: JSON.parse(session.metadata?.cart || "[]"),
-          payment_intent_id: session.payment_intent?.id || null,
+        // Log important details
+        console.log("💰 Payment Details:", {
+          orderId,
+          amount: (amount / 100).toFixed(2),
+          currency,
+          email: clientEmail,
+          phone: clientPhone ? "provided" : "not provided",
         });
 
-        // Send notifications
+        // Prepare order data for database
+        const orderData = {
+          fullName: clientName,
+          address: metadata.address || "Not provided",
+          city: metadata.city || "Not provided",
+          postalCode: metadata.postalCode || "Not provided",
+          country: metadata.country || "Not provided",
+          payment: "stripe",
+          amount: amount,
+          subtotal: metadata.subtotal || session.amount_subtotal / 100,
+          tbluser_id: metadata.userId || "guest",
+          total: metadata.total || amount / 100,
+          tax: metadata.tax || 0,
+          shipping:
+            metadata.shipping ||
+            (session.shipping_cost?.amount_total || 0) / 100,
+          sellingProduct: JSON.parse(metadata.cart || "[]"),
+          payment_intent_id: session.payment_intent?.id || null,
+        };
+
+        // Save to database
+        await saveOrderToDatabase(orderData);
+        console.log("💾 Order saved to database");
+
+        // Send email notification
         try {
           await sendEmail({
             to: clientEmail,
-            subject: "🧾 Order Confirmation",
-            html: `<p>Hello ${clientName},</p>
-             <p>Thank you for your order <strong>${orderId}</strong>.</p>
-             <p>Total: <strong>$${(amount / 100).toFixed(2)}</strong></p>
-             <p>View your order details <a href="${yourDomain}/order/${orderId}">here</a>.</p>`,
+            subject: `🧾 Order Confirmation #${orderId}`,
+            html: `
+              <p>Hello ${clientName},</p>
+              <p>Thank you for your order <strong>#${orderId}</strong>.</p>
+              <p>Total: <strong>${currency} ${(amount / 100).toFixed(
+              2
+            )}</strong></p>
+              <p>View your order details <a href="${
+                process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL
+              }/order/${orderId}">here</a>.</p>
+              <p>If you have any questions, please contact our support team.</p>
+            `,
           });
-          console.log("📧 Email sent to", clientEmail);
+          console.log("📧 Confirmation email sent to", clientEmail);
+        } catch (emailError) {
+          console.error("❌ Failed to send email:", emailError.message);
+        }
 
-          if (clientPhone) {
+        // Send SMS notifications if phone number exists
+        if (clientPhone) {
+          try {
             await sendwhatsappSMS({
               phone: clientPhone,
               name: clientName,
               orderId,
               amount,
             });
+
             await sendSMS({
               phone: clientPhone,
-              message: `Hi ${clientName}, your order ${orderId} of $${(
+              message: `Hi ${clientName}, your order #${orderId} of ${currency} ${(
                 amount / 100
               ).toFixed(2)} was received. Thank you!`,
             });
-            console.log("📱 SMS sent to", clientPhone);
+            console.log("📱 SMS notifications sent to", clientPhone);
+          } catch (smsError) {
+            console.error("❌ Failed to send SMS:", smsError.message);
           }
-        } catch (error) {
-          console.error("❌ Notification error:", error.message);
-          // Consider sending this error to an error tracking service
         }
-      } catch (error) {
-        console.error("❌ Webhook processing error:", error.message);
-        // Consider implementing retry logic or alerting your team
+      } catch (processingError) {
+        console.error("❌ Order processing failed:", processingError);
+        // Here you should implement your error handling logic:
+        // - Log to error tracking service
+        // - Retry mechanism
+        // - Alert your team
       }
     }
 
-    res.status(200).send("✅ Webhook received");
+    // Return a response to Stripe to prevent retries
+    res.status(200).json({ received: true });
   }
 );
+
+// IMPORTANT: Regular body parsers must come AFTER the webhook handler
+app.use(express.json());
 // 5. Regular body parsers (AFTER webhook handler)
 // Stripe needs raw body for webhook verification
 // app.use(
@@ -839,7 +880,6 @@ app.post(
 //     },
 //   })
 // );
-app.use(express.json());
 // 6. API routes
 
 app.use("/products", productsRoutes);
