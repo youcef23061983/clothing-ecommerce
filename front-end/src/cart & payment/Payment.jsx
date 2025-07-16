@@ -274,14 +274,27 @@ const Payment = () => {
       })
       .catch((error) => console.error("Error fetching config:", error));
   }, []);
+
   const sellingProduct = cart.map((item) => ({
     id: item.id,
     product_name: item.product_name,
     amount: item.amount,
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
-    image: item?.images?.[0] || "",
+    image: item?.images?.[0],
   }));
+  // const baseURL = window.location.origin;
+
+  // const sellingProduct = cart.map((item) => ({
+  //   id: item.id,
+  //   product_name: item.product_name,
+  //   amount: item.amount,
+  //   unitPrice: item?.newPrice || item?.price,
+  //   totalPrice: (item?.newPrice || item?.price) * item?.amount,
+  //   image: `${baseURL}/${item?.images?.[0] || "default.jpg"}`,
+  // }));
+
+  console.log("sellingProduct", sellingProduct);
 
   const handleStripeCheckout = async () => {
     setIsSubmitting(true);
@@ -307,6 +320,7 @@ const Payment = () => {
           shipping: shippingPrice,
           metadata,
           amount,
+          // cart: JSON.stringify(sellingProduct),
           successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/cart`,
         }),
