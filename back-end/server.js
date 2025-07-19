@@ -887,13 +887,15 @@ app.post(
                 total / 100
               ).toFixed(2)} $ was received. Thank you!`,
             });
+            console.log("twilio SMS notifications sent to", phone);
+
             // await sendTwilioCall({
             //   phone: phone,
             //   message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
             //     total / 100
             //   ).toFixed(2)} $ was received. Thank you!`,
             // });
-            console.log("📱 SMS notifications sent to", clientPhone);
+            // console.log("📱 SMS notifications sent to", phone);
           } catch (smsError) {
             console.error("❌ Failed to send SMS:", smsError.message);
           }
