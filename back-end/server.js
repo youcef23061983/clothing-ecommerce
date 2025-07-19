@@ -882,6 +882,8 @@ app.post(
               message: `Hi ${fullName}, your order #${orderId} of ${currency} ${total} $ was received. Thank you!`,
             });
             console.log("📱 twilio SMS notifications sent to", phone);
+            console.log("🆔 SID:", process.env.TWILIO_SID);
+            console.log("🔑 AUTH:", process.env.TWILIO_AUTH);
 
             // await sendTwilioCall({
             //   phone: phone,
