@@ -30,6 +30,7 @@ const postSellings = async (req, res) => {
     shipping,
     total,
     sellingProduct,
+    phone,
   } = req.body;
 
   try {
@@ -42,8 +43,8 @@ const postSellings = async (req, res) => {
     const orderRes = await client.query(
       `INSERT INTO orders (
         full_name, address, city, postal_code, country,
-        payment, tbluser_id, subtotal, tax, total,amount,shipping
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12)
+        payment, tbluser_id, subtotal, tax, total,amount,shipping,phone
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12,$13)
       RETURNING id`,
       [
         fullName,
@@ -58,6 +59,7 @@ const postSellings = async (req, res) => {
         total,
         amount,
         shipping,
+        phone,
       ]
     );
 

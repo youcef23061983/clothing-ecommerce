@@ -1,8 +1,8 @@
 const axios = require("axios");
 
-const sendSMS = async ({ phone, name, orderId, amount }) => {
+const sendSMS = async ({ phone, name, orderId, total }) => {
   const message = `Hi ${name}, your order ${orderId} of $${(
-    amount / 100
+    total / 100
   ).toFixed(2)} was received. Thank you!`;
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(
     message

@@ -705,6 +705,7 @@ const sendEmail = require("./utils/sendEmail");
 const sendwhatsappSMS = require("./utils/whatsappSMS.js");
 const { sendSMS } = require("./utils/sendSMS.js");
 const saveOrderToDatabase = require("./utils/saveOrderToDb.js");
+const { sendtwilioSMS } = require("./utils/sendtwilioSMS.js");
 
 // 1. Security middleware first
 
@@ -772,8 +773,6 @@ app.post(
 
         // Extract customer details with proper fallbacks
         const metadata = session.metadata || {};
-        console.log("📱 My Phone Number:", metadata?.phone);
-        console.log("🛡️ My Session:", session);
 
         const customerDetails = session.customer_details || {};
         const email =
@@ -841,6 +840,8 @@ app.post(
           email: email,
           phone: phone ? "provided" : "not provided",
         });
+        console.log("📱 My Phone Number:", metadata?.phone);
+        console.log("🛡️ My Session:", session);
 
         // Send email notification
         try {
@@ -864,41 +865,33 @@ app.post(
           console.error("❌ Failed to send email:", emailError.message);
         }
 
-        // Send SMS notifications if phone number exists
-        // if (phone) {
-        //   try {
-        //     await sendwhatsappSMS({
-        //       phone: phone,
-        //       name: fullName,
-        //       orderId,
-        //       amount,
-        //     });
+        // Send SMS notifications if phone number exists and textbelt accept the country:
+        if (phone) {
+          try {
+            await sendwhatsappSMS({
+              phone: phone,
+              name: fullName,
+              orderId,
+              total,
+            });
 
-        //     await sendSMS({
-        //       phone: phone,
-        //       message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
-        //         amount / 100
-        //       ).toFixed(2)} was received. Thank you!`,
-        //     });
-        //     console.log("📱 SMS notifications sent to", clientPhone);
-        //   } catch (smsError) {
-        //     console.error("❌ Failed to send SMS:", smsError.message);
-        //   }
-        // }
-        await sendSMS({
-          phone: "0540016247", // Will become +213540016247
-          message: "Hello from your Node app!",
-        });
-
-        await sendSMS({
-          phone: "+213540016247", // Already formatted
-          message: "Already in E.164 format.",
-        });
-
-        await sendSMS({
-          phone: "00213540016247", // Will be converted to +213540016247
-          message: "Handled with 00 prefix.",
-        });
+            // await sendSMS({
+            //   phone: phone,
+            //   message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
+            //     total / 100
+            //   ).toFixed(2)} was received. Thank you!`,
+            // });
+            await sendtwilioSMS({
+              phone: phone,
+              message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
+                total / 100
+              ).toFixed(2)} $ was received. Thank you!`,
+            });
+            console.log("📱 SMS notifications sent to", clientPhone);
+          } catch (smsError) {
+            console.error("❌ Failed to send SMS:", smsError.message);
+          }
+        }
       } catch (processingError) {
         console.error("❌ Order processing failed:", processingError);
         // Here you should implement your error handling logic:
