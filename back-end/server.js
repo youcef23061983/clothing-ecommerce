@@ -778,7 +778,7 @@ app.post(
 
         const fullName =
           customerDetails.name || metadata.fullName || "Valued Customer";
-        const clientPhone = customerDetails.phone || metadata.phone || null;
+        const phone = customerDetails.phone || metadata.phone || null;
         const orderId = session.id;
         const amount = metadata.amount;
         const currency = session.currency.toUpperCase();
@@ -811,10 +811,10 @@ app.post(
         // Log important details
         console.log("💰 Payment Details:", {
           orderId,
-          amount: (amount / 100).toFixed(2),
+          total: (total / 100).toFixed(2),
           currency,
           email: email,
-          phone: clientPhone ? "provided" : "not provided",
+          phone: phone ? "provided" : "not provided",
         });
 
         // Prepare order data for database
@@ -825,6 +825,7 @@ app.post(
           postalCode,
           country,
           payment,
+          phone,
           amount,
           subtotal,
           tbluser_id,
@@ -846,9 +847,9 @@ app.post(
             html: `
               <p>Hello ${fullName},</p>
               <p>Thank you for your order <strong>#${orderId}</strong>.</p>
-              <p>Total: <strong>${currency} ${(amount / 100).toFixed(
-              2
-            )}</strong></p>
+              <p>Total: <strong> ${(total / 100).toFixed(
+                2
+              )} ${currency}</strong></p>
               <p>View your order details <a href="${
                 process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL
               }/order/${orderId}">here</a>.</p>
@@ -861,17 +862,17 @@ app.post(
         }
 
         // Send SMS notifications if phone number exists
-        if (clientPhone) {
+        if (phone) {
           try {
             await sendwhatsappSMS({
-              phone: clientPhone,
+              phone: phone,
               name: fullName,
               orderId,
               amount,
             });
 
             await sendSMS({
-              phone: clientPhone,
+              phone: phone,
               message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
                 amount / 100
               ).toFixed(2)} was received. Thank you!`,
