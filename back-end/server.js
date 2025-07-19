@@ -835,7 +835,7 @@ app.post(
         console.log("💾 Order saved to database");
         console.log("💰 Payment Details:", {
           orderId,
-          total: (total / 100).toFixed(2),
+          total: total.toFixed(2),
           currency,
           email: email,
           phone: phone ? "provided" : "not provided",
@@ -851,12 +851,8 @@ app.post(
             html: `
               <p>Hello ${fullName},</p>
               <p>Thank you for your order <strong>#${orderId}</strong>.</p>
-              <p>Total: <strong> ${(total / 100).toFixed(
-                2
-              )} ${currency}</strong></p>
-              <p>View your order details <a href="${
-                process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL
-              }/order/${orderId}">here</a>.</p>
+              <p>Total: <strong> ${total} ${currency}</strong></p>
+              <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
               <p>If you have any questions, please contact our support team.</p>
             `,
           });
@@ -883,11 +879,9 @@ app.post(
             // });
             await sendtwilioSMS({
               phone: phone,
-              message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
-                total / 100
-              ).toFixed(2)} $ was received. Thank you!`,
+              message: `Hi ${fullName}, your order #${orderId} of ${currency} ${total} $ was received. Thank you!`,
             });
-            console.log("twilio SMS notifications sent to", phone);
+            console.log("📱 twilio SMS notifications sent to", phone);
 
             // await sendTwilioCall({
             //   phone: phone,
