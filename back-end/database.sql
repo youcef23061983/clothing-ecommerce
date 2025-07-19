@@ -374,6 +374,8 @@ CREATE TABLE orders (
   tbluser_id INTEGER REFERENCES tbluser(id), 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE orders 
+ADD COLUMN phone VARCHAR(16) CHECK (phone ~ '^\+[1-9]\d{1,14}$')
 
 CREATE TABLE order_items (
   id SERIAL PRIMARY KEY,

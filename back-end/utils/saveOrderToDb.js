@@ -12,6 +12,7 @@ const saveOrderToDatabase = async (orderData) => {
     payment,
     amount,
     tbluser_id,
+    phone,
     subtotal,
     tax,
     shipping,
@@ -29,8 +30,8 @@ const saveOrderToDatabase = async (orderData) => {
     const orderRes = await client.query(
       `INSERT INTO orders (
         full_name, address, city, postal_code, country,
-        payment, tbluser_id, subtotal, tax, total,amount,shipping
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12)
+        payment, tbluser_id, subtotal, tax, total,amount,shipping,phone
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12,$13)
       RETURNING id`,
       [
         fullName,
@@ -45,6 +46,7 @@ const saveOrderToDatabase = async (orderData) => {
         total,
         amount,
         shipping,
+        phone,
       ]
     );
 
