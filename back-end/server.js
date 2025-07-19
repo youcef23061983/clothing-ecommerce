@@ -868,12 +868,12 @@ app.post(
         // Send SMS notifications if phone number exists and textbelt accept the country:
         if (phone) {
           try {
-            await sendwhatsappSMS({
-              phone: phone,
-              name: fullName,
-              orderId,
-              total,
-            });
+            // await sendwhatsappSMS({
+            //   phone: phone,
+            //   name: fullName,
+            //   orderId,
+            //   total,
+            // });
 
             // await sendSMS({
             //   phone: phone,
@@ -887,6 +887,12 @@ app.post(
                 total / 100
               ).toFixed(2)} $ was received. Thank you!`,
             });
+            // await sendTwilioCall({
+            //   phone: phone,
+            //   message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
+            //     total / 100
+            //   ).toFixed(2)} $ was received. Thank you!`,
+            // });
             console.log("📱 SMS notifications sent to", clientPhone);
           } catch (smsError) {
             console.error("❌ Failed to send SMS:", smsError.message);
