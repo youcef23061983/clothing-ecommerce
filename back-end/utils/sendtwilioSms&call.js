@@ -10,7 +10,7 @@ const sendtwilioSMS = async ({ phone, message }) => {
       body: message,
       from: process.env.TWILIO_PHONE_NUMBER,
       to: phone,
-      mediaUrl: ["https://www.google.com"],
+      // mediaUrl: ["https://www.google.com"],
     });
     console.log("✅ SMS sent", result.sid);
   } catch (err) {
