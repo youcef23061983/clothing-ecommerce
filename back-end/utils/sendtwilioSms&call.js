@@ -4,13 +4,16 @@ const client = require("twilio")(
   process.env.TWILIO_AUTH
 );
 
-const sendtwilioSMS = async ({ phone, message }) => {
+const sendtwilioSMS = async ({ phone, message, pdfUrl }) => {
   try {
     const result = await client.messages.create({
       body: message,
       from: process.env.TWILIO_PHONE_NUMBER,
       to: phone,
-      // mediaUrl: ["https://www.google.com"],
+      mediaUrl: [
+        "https://clothing-ecommerce-phi.vercel.app/images/dashboard.jpg",
+        pdfUrl,
+      ],
     });
     console.log("✅ SMS sent", result.sid);
   } catch (err) {
@@ -20,7 +23,10 @@ const sendtwilioSMS = async ({ phone, message }) => {
 const sendTwilioCall = async ({ phone, message }) => {
   try {
     const result = await client.calls.create({
-      //   twiml: `<Response><Play>https://your-site.com/payment-success.mp3</Play></Response>`,
+      // url: "https://your site.com/audio.mp3",
+
+      // twiml: `<Response><Play>https://your-site.com/payment-success.mp3</Play></Response>`,
+      method: "post",
 
       twiml: `<Response><Say voice='man' language='en-gb' >${message}</Say></Response>`,
       //       twiml: `<Response>

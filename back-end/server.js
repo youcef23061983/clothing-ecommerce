@@ -706,6 +706,8 @@ const sendwhatsappSMS = require("./utils/whatsappSMS.js");
 const { sendSMS } = require("./utils/sendSMS.js");
 const saveOrderToDatabase = require("./utils/saveOrderToDb.js");
 const { sendtwilioSMS } = require("./utils/sendtwilioSms&call.js");
+const generateInvoicePDF = require("./utils/generateInvoicePDF .js");
+const { uploadInvoice } = require("./utils/uploadInvoiceToStorage .js");
 
 // 1. Security middleware first
 
@@ -766,7 +768,11 @@ app.post(
         const session = await stripe.checkout.sessions.retrieve(
           event.data.object.id,
           {
-            expand: ["line_items", "payment_intent.payment_method"],
+            expand: [
+              "line_items",
+              "payment_intent.payment_method",
+              "shipping_details",
+            ],
           }
         );
         console.log("📦 Raw session data:", JSON.stringify(session, null, 2));
@@ -852,7 +858,7 @@ app.post(
               <p>Hello ${fullName},</p>
               <p>Thank you for your order <strong>#${orderId}</strong>.</p>
               <p>Total: <strong> ${total} ${currency}</strong></p>
-              <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
+              // <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
               <p>If you have any questions, please contact our support team.</p>
             `,
           });
@@ -877,10 +883,19 @@ app.post(
             //     total / 100
             //   ).toFixed(2)} was received. Thank you!`,
             // });
+
+            // const pdfBuffer = await generateInvoicePDF(metadata, orderId);
+            // const pdfUrl = await uploadInvoice(session.id, pdfBuffer);
+
+            // await sendtwilioSMS({
+            //   phone: phone,
+            //   // message: `Hi ${fullName}, your order #${orderId} of ${currency} ${total} $ was received. Thank you!`,
+            //   message: "hi i am youcef here, it works",
+            //   pdfUrl,
+            // });
             await sendtwilioSMS({
               phone: phone,
-              // message: `Hi ${fullName}, your order #${orderId} of ${currency} ${total} $ was received. Thank you!`,
-              message: "hi i am youcef here, it works",
+              message: `Hi ${fullName}, your order #${orderId} of ${total} ${currency} was received. Thank you!`,
             });
             console.log("📱 twilio SMS notifications sent to", phone);
             console.log("🆔 SID:", process.env.TWILIO_SID);
@@ -942,7 +957,6 @@ app.post("/create-checkout-session", async (req, res) => {
           currency: "usd",
           product_data: {
             name: item.product_name || "Unnamed Product",
-            // images: [imageUrl],
             images: [
               `${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/${item.image}`,
             ],

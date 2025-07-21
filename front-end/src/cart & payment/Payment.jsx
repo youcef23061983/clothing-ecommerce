@@ -541,6 +541,7 @@ const Payment = () => {
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
     image: item?.images?.[0],
+    description,
   }));
   // const baseURL = window.location.origin;
 
@@ -568,6 +569,13 @@ const Payment = () => {
         postalCode: shipping?.postalCode || "Not provided",
         userId: formUser?.user?.id || firebaseUser?.id || "guest",
         cart: JSON.stringify(sellingProduct),
+        companyName: "DESIRE",
+        companyLogoPath: `${window.location.href}/images/desire.png`,
+        companyAddress: "123 ain naaja street",
+        companyPhoneNumber: "+123540016247",
+        companyCity: "Algiers",
+        companyPostalCode: "16000",
+        companyState: "Algeria",
       };
       const response = await fetch(`${url}/create-checkout-session`, {
         method: "POST",
