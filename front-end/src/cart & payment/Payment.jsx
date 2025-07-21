@@ -541,7 +541,7 @@ const Payment = () => {
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
     image: item?.images?.[0],
-    description,
+    description: item?.description,
   }));
   // const baseURL = window.location.origin;
 
