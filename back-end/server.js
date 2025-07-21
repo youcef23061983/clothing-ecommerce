@@ -768,11 +768,7 @@ app.post(
         const session = await stripe.checkout.sessions.retrieve(
           event.data.object.id,
           {
-            expand: [
-              "line_items",
-              "payment_intent.payment_method",
-              "shipping_details",
-            ],
+            expand: ["line_items", "payment_intent.payment_method"],
           }
         );
         console.log("📦 Raw session data:", JSON.stringify(session, null, 2));
