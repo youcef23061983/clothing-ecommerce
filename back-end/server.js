@@ -889,10 +889,10 @@ app.post(
             //   message: "hi i am youcef here, it works",
             //   pdfUrl,
             // });
-            // await sendtwilioSMS({
-            //   phone: phone,
-            //   message: `Hi ${fullName}, your order #${orderId} of ${total} ${currency} was received. Thank you!`,
-            // });
+            await sendtwilioSMS({
+              phone: phone,
+              message: `Hi ${fullName}, your order #${orderId} of ${total} ${currency} was received. Thank you!`,
+            });
             console.log("📱 twilio SMS notifications sent to", phone);
             console.log("🆔 SID:", process.env.TWILIO_SID);
             console.log("🔑 AUTH:", process.env.TWILIO_AUTH);
