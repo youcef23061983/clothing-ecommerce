@@ -1040,42 +1040,40 @@ app.get("/", (req, res) => {
 });
 // 10. Arcjet middleware (commented out as in original)
 
-// if (process.env.NODE_ENV === "production") {
-//   app.use(async (req, res, next) => {
-//     if (
-//       ["/", "/health", "/webhook"].includes(req.path) ||
-//       req.path.startsWith("/assets")
-//     ) {
-//       return next();
-//     }
+if (process.env.NODE_ENV === "production") {
+  app.use(async (req, res, next) => {
+    if (
+      ["/", "/health", "/webhook"].includes(req.path) ||
+      req.path.startsWith("/assets")
+    ) {
+      return next();
+    }
 
-//     try {
-//       const ajPromise = await aj;
-//       const decision = await ajPromise.protect(req, { requested: 1 });
+    try {
+      const ajPromise = await aj;
+      const decision = await ajPromise.protect(req, { requested: 1 });
 
-//       if (decision.isDenied()) {
-//         return res
-//           .status(decision.reason.isRateLimit() ? 429 : 403)
-//           .json({ error: decision.reason.toString() });
-//       }
+      if (decision.isDenied()) {
+        return res
+          .status(decision.reason.isRateLimit() ? 429 : 403)
+          .json({ error: decision.reason.toString() });
+      }
 
-//       if (
-//         decision.results.some(
-//           (result) => result.reason.isBot() && result.reason.isSpoofed()
-//         )
-//       ) {
-//         return res.status(403).json({ error: "Spoofed bot detected" });
-//       }
+      if (
+        decision.results.some(
+          (result) => result.reason.isBot() && result.reason.isSpoofed()
+        )
+      ) {
+        return res.status(403).json({ error: "Spoofed bot detected" });
+      }
 
-//       next();
-//     } catch (error) {
-//       console.error("Arcjet error", error);
-//       next(error);
-//     }
-//   });
-// }
-
-// Start server
+      next();
+    } catch (error) {
+      console.error("Arcjet error", error);
+      next(error);
+    }
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
