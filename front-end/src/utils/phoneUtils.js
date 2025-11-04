@@ -4,12 +4,12 @@ export const isValidPhone = (phone) => {
   return /^\+[1-9]\d{1,14}$/.test(phone);
 };
 
-// export const formatPhone = (phoneCode, localNumber) => {
-//   const cleaned = localNumber.replace(/\D/g, "");
-//   return `+${phoneCode}${cleaned.replace(/^0/, "")}`; // Remove leading 0 if present
-// };
-
 export const formatPhone = (phoneCode, localNumber) => {
+  // Add null/undefined check
+  if (!localNumber || !phoneCode) {
+    return "";
+  }
+
   // Remove all non-digit characters except leading "+"
   const cleaned = localNumber.replace(/[^\d+]/g, "");
 

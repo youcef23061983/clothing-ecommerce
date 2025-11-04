@@ -16,12 +16,15 @@ global.ResizeObserver = class {
   unobserve() {}
   disconnect() {}
 };
+
 global.IntersectionObserver = class {
   constructor() {}
   observe() {}
   unobserve() {}
   disconnect() {}
 };
+global.alert = vi.fn();
+
 const mockMatchMedia = (matches) => ({
   matches,
   addListener: () => {},
@@ -217,126 +220,6 @@ export const mockData = [
     amount: 1,
   },
 ];
-// export const bestMockData = [
-//   {
-//     id: 1,
-//     productName: "jacket1",
-//     slug: "2023 Woolen Coat High Quality Men's wool coat",
-//     type: "jacket",
-//     price: 69.99,
-//     size: ["s", "m", "l", "xl"],
-//     newPrice: "",
-//     images: [
-//       "src/images/men/jacket1/image1.jpg",
-//       "src/images/men/jacket1/image2.jpg",
-//     ],
-//     newArrival: true,
-//     onSale: false,
-//      best_seller: true,
-//     rating: 4,
-//     preview: 11,
-//     amount: 1,
-//   },
-
-//   // {
-//   //   id: 2,
-//   //   productName: "shirt1",
-//   //   slug: "shirt 2023",
-//   //   type: "shirt",
-//   //   price: 19.99,
-//   //   size: ["s", "m", "l", "xl"],
-//   //   newPrice: "",
-//   //   images: [
-//   //     "src/images/men/jacket1/image1.jpg",
-//   //     "src/images/men/jacket1/image2.jpg",
-//   //   ],
-//   //   newArrival: true,
-//   //   onSale: false,
-//   //   bestSeller: true,
-//   //   rating: 4,
-//   //   preview: 9,
-//   //   amount: 1,
-//   // },
-
-//   // {
-//   //   id: 3,
-//   //   productName: "tshirt2",
-//   //   slug: "2023 tshirt2",
-//   //   type: "tshirt",
-//   //   price: 19.99,
-//   //   size: ["s", "m", "l", "xl"],
-//   //   newPrice: "",
-//   //   images: [
-//   //     "src/images/men/cket2/image1.jpg",
-//   //     "src/images/men/cket2/image2.jpg",
-//   //   ],
-//   //   newArrival: true,
-//   //   onSale: false,
-//   //   bestSeller: true,
-//   //   rating: 4,
-//   //   preview: 7,
-//   //   amount: 1,
-//   // },
-
-//   // {
-//   //   id: 4,
-//   //   productName: "sneakers",
-//   //   slug: "Latest 2023 sneakers",
-//   //   type: "sneakers",
-//   //   price: 49.99,
-//   //   size: ["s", "m", "l", "xl"],
-//   //   newPrice: "",
-//   //   images: [
-//   //     "src/images/men/jacet1/image1.jpg",
-//   //     "src/images/men/jacet1/image2.jpg",
-//   //   ],
-//   //   newArrival: true,
-//   //   onSale: false,
-//   //   bestSeller: true,
-//   //   rating: 4,
-//   //   preview: 6,
-//   //   amount: 1,
-//   // },
-
-//   // {
-//   //   id: 5,
-//   //   productName: "trousers",
-//   //   slug: "2023 Wooleneen Coat ",
-//   //   type: "trousers",
-//   //   price: 39.99,
-//   //   size: ["s", "m", "l", "xl"],
-//   //   newPrice: "",
-//   //   images: [
-//   //     "src/images/men/jet1/image1.jpg",
-//   //     "src/images/men/jet1/image2.jpg",
-//   //   ],
-//   //   newArrival: true,
-//   //   onSale: false,
-//   //   bestSeller: true,
-//   //   rating: 4,
-//   //   preview: 4,
-//   //   amount: 1,
-//   // },
-//   // {
-//   //   id: 6,
-//   //   productName: "tshirt",
-//   //   slug: "2023 tshirt",
-//   //   type: "tshirt",
-//   //   price: 9.99,
-//   //   size: ["s", "m", "l", "xl"],
-//   //   newPrice: "",
-//   //   images: [
-//   //     "src/images/men/jact1/image1.jpg",
-//   //     "src/images/men/jact1/image2.jpg",
-//   //   ],
-//   //   newArrival: false,
-//   //   onSale: true,
-//   //   bestSeller: true,
-//   //   rating: 4,
-//   //   preview: 7,
-//   //   amount: 1,
-//   // },
-// ];
 export const mockData2 = {
   id: 1,
   product_name: "2023 Woolen Coat High Quality Men's wool coat",
