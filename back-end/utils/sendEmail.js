@@ -7,6 +7,10 @@ const sendEmail = async ({ to, subject, html }) => {
       user: process.env.GMAIL_USER, // your Gmail address
       pass: process.env.GMAIL_PASS, // app password (NOT your Gmail password)
     },
+    connectionTimeout: 60000, // 60 seconds
+    greetingTimeout: 30000,
+    socketTimeout: 60000,
+    dnsTimeout: 30000,
   });
 
   const mailOptions = {
