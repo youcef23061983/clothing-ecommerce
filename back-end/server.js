@@ -395,6 +395,19 @@ app.post(
           //     } catch (emailError) {
           //       console.error("❌ Failed to send email:", emailError.message);
           //     }
+          console.log("🔧 Debug - Environment variables check:");
+          console.log(
+            "SENDGRID_API_KEY exists:",
+            !!process.env.SENDGRID_API_KEY
+          );
+          console.log(
+            "SENDGRID_API_KEY length:",
+            process.env.SENDGRID_API_KEY?.length
+          );
+          console.log(
+            "SENDGRID_VERIFIED_SENDER:",
+            process.env.SENDGRID_VERIFIED_SENDER
+          );
           const emailSent = await sendGridEmail({
             to: email,
             subject: `🧾 Order Confirmation #${orderId}`,
