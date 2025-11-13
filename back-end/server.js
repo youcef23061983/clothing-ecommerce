@@ -370,19 +370,41 @@ app.post(
         console.log("🛡️ My Session:", session);
 
         // Send email notification
+        // try {
+        //   await sendEmail({
+        //     to: email,
+        //     subject: `🧾 Order Confirmation #${orderId}`,
+        //     html: `
+        //       <p>Hello ${fullName},</p>
+        //       <p>Thank you for your order <strong>#${orderId}</strong>.</p>
+        //       <p>Total: <strong> ${total} ${currency}</strong></p>
+        //       // <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
+        //       <p>If you have any questions, please contact our support team.</p>
+        //     `,
+        //   });
+        //   console.log("📧 Confirmation email sent to", fullName);
+        // } catch (emailError) {
+        //   console.error("❌ Failed to send email:", emailError.message);
+        // }
         try {
-          await sendEmail({
+          const emailSent = await sendEmail({
             to: email,
             subject: `🧾 Order Confirmation #${orderId}`,
             html: `
-              <p>Hello ${fullName},</p>
-              <p>Thank you for your order <strong>#${orderId}</strong>.</p>
-              <p>Total: <strong> ${total} ${currency}</strong></p>
-              // <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
-              <p>If you have any questions, please contact our support team.</p>
-            `,
+      <p>Hello ${fullName},</p>
+      <p>Thank you for your order <strong>#${orderId}</strong>.</p>
+      <p>Total: <strong>${total} ${currency}</strong></p>
+      <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
+      <p>If you have any questions, please contact our support team.</p>
+    `,
           });
-          console.log("📧 Confirmation email sent to", fullName);
+
+          if (emailSent) {
+            console.log("📧 Confirmation email sent to", fullName);
+          } else {
+            console.log("❌ Email failed to send for", fullName);
+            // You might want to handle this case - maybe retry or log to database
+          }
         } catch (emailError) {
           console.error("❌ Failed to send email:", emailError.message);
         }
