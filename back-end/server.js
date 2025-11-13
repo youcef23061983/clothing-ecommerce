@@ -368,6 +368,7 @@ app.post(
         });
         console.log("📱 My Phone Number:", metadata?.phone);
         console.log("🛡️ My Session:", session);
+        console.log(" 📧 Email:", email);
 
         // Send email notification
         // try {
