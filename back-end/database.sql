@@ -377,7 +377,7 @@ CREATE TABLE orders (
 ALTER TABLE orders 
 ADD COLUMN phone VARCHAR(16) CHECK (phone ~ '^\+[1-9]\d{1,14}$')
 ALTER TABLE orders ADD COLUMN invoice_url TEXT;
-ALTER TABLE orders ADD COLUMN orderId TEXT;
+ALTER TABLE orders ADD COLUMN stripe_payment_intent_id TEXT;
 
 CREATE TABLE order_items (
   id SERIAL PRIMARY KEY,
