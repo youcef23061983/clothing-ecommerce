@@ -149,8 +149,8 @@ const Order = () => {
   const { data, isPending, error } = UseFetch(url, key1);
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
-  const paymentId = data.filter(
-    (item) => item.stripe_payment_intent_id === sessionId
+  const paymentId = data?.filter(
+    (item) => item.stripe_checkout_session_id === sessionId
   );
 
   useEffect(() => {
