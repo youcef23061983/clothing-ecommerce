@@ -308,7 +308,7 @@ app.post(
         const fullName =
           customerDetails.name || metadata.fullName || "Valued Customer";
         const phone = customerDetails.phone || metadata.phone || null;
-        const stripe_payment_intent_id = session.id;
+        const orderId = session.id;
         const amount = metadata.amount;
         const currency = session.currency.toUpperCase();
         const country =
@@ -355,14 +355,13 @@ app.post(
           tax,
           shipping,
           sellingProduct,
-          stripe_payment_intent_id,
         };
 
         // Save to database
         await saveOrderToDatabase(orderData);
         console.log("💾 Order saved to database");
         console.log("💰 Payment Details:", {
-          stripe_payment_intent_id,
+          orderId,
           total: total.toFixed(2),
           currency,
           email: email,
@@ -377,12 +376,12 @@ app.post(
         try {
           //       const emailSent = await sendEmail({
           //         to: email,
-          //         subject: `🧾 Order Confirmation #${stripe_payment_intent_id}`,
+          //         subject: `🧾 Order Confirmation #${orderId}`,
           //         html: `
           //   <p>Hello ${fullName},</p>
-          //   <p>Thank you for your order <strong>#${stripe_payment_intent_id}</strong>.</p>
+          //   <p>Thank you for your order <strong>#${orderId}</strong>.</p>
           //   <p>Total: <strong>${total} ${currency}</strong></p>
-          //   <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${stripe_payment_intent_id}">here</a>.</p>
+          //   <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
           //   <p>If you have any questions, please contact our support team.</p>
           // `,
           //       });
@@ -411,8 +410,14 @@ app.post(
           );
           const emailSent = await sendGridEmail({
             to: email,
-            subject: `🧾 Order Confirmation #${stripe_payment_intent_id}`,
-            orderData,
+            subject: `🧾 Order Confirmation #${orderId}`,
+            html: `
+      <p>Hello ${fullName},</p>
+      <p>Thank you for your order <strong>#${orderId}</strong>.</p>
+      <p>Total: <strong>${total} ${currency}</strong></p>
+      <p>View your order details <a href="${process.env.VITE_PUBLIC_PRODUCTS_FRONTEND_URL}/order/${orderId}">here</a>.</p>
+      <p>If you have any questions, please contact our support team.</p>
+    `,
           });
 
           if (emailSent) {
@@ -431,29 +436,29 @@ app.post(
             // await sendwhatsappSMS({
             //   phone: phone,
             //   name: fullName,
-            //   stripe_payment_intent_id,
+            //   orderId,
             //   total,
             // });
 
             // await sendSMS({
             //   phone: phone,
-            //   message: `Hi ${fullName}, your order #${stripe_payment_intent_id} of ${currency} ${(
+            //   message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
             //     total / 100
             //   ).toFixed(2)} was received. Thank you!`,
             // });
 
-            // const pdfBuffer = await generateInvoicePDF(metadata, stripe_payment_intent_id);
+            // const pdfBuffer = await generateInvoicePDF(metadata, orderId);
             // const pdfUrl = await uploadInvoice(session.id, pdfBuffer);
 
             // await sendtwilioSMS({
             //   phone: phone,
-            //   // message: `Hi ${fullName}, your order #${stripe_payment_intent_id} of ${currency} ${total} $ was received. Thank you!`,
+            //   // message: `Hi ${fullName}, your order #${orderId} of ${currency} ${total} $ was received. Thank you!`,
             //   message: "hi i am youcef here, it works",
             //   pdfUrl,
             // });
             await sendtwilioSMS({
               phone: phone,
-              message: `Hi ${fullName}, your order #${stripe_payment_intent_id} of ${total} ${currency} was received. Thank you!`,
+              message: `Hi ${fullName}, your order #${orderId} of ${total} ${currency} was received. Thank you!`,
             });
             console.log("📱 twilio SMS notifications sent to", phone);
             console.log("🆔 SID:", process.env.TWILIO_SID);
@@ -461,7 +466,7 @@ app.post(
 
             // await sendTwilioCall({
             //   phone: phone,
-            //   message: `Hi ${fullName}, your order #${stripe_payment_intent_id} of ${currency} ${(
+            //   message: `Hi ${fullName}, your order #${orderId} of ${currency} ${(
             //     total / 100
             //   ).toFixed(2)} $ was received. Thank you!`,
             // });
