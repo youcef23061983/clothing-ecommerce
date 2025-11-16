@@ -18,6 +18,7 @@ const saveOrderToDatabase = async (orderData) => {
     shipping,
     total,
     sellingProduct,
+    stripe_payment_intent_id,
   } = orderData;
 
   try {
@@ -30,8 +31,8 @@ const saveOrderToDatabase = async (orderData) => {
     const orderRes = await client.query(
       `INSERT INTO orders (
         full_name, address, city, postal_code, country,
-        payment, tbluser_id, subtotal, tax, total,amount,shipping,phone
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12,$13)
+        payment, tbluser_id, subtotal, tax, total,amount,shipping,phone,stripe_payment_intent_id
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12,$13, $14)
       RETURNING id`,
       [
         fullName,
@@ -47,6 +48,7 @@ const saveOrderToDatabase = async (orderData) => {
         amount,
         shipping,
         phone,
+        stripe_payment_intent_id,
       ]
     );
 
