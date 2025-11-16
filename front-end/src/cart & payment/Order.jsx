@@ -137,10 +137,20 @@ import { AppContext } from "../data managment/AppProvider";
 import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import UseFetch from "../data managment/UseFetch";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
   const navigate = useNavigate();
+  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/sell`;
+
+  const key1 = "products";
+  const { data, isPending, error } = UseFetch(url, key1);
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get("session_id");
+  const paymentId = data.filter(
+    (item) => item.stripe_payment_intent_id === sessionId
+  );
 
   useEffect(() => {
     if (!payment.payment) {
@@ -152,8 +162,7 @@ const Order = () => {
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
   const totalAll = parseFloat((total + tax + shippingPrice).toFixed(2));
 
-  const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+  c;
   const containerVariants = {
     hidden: { x: "100vw", opacity: 0 },
     visible: {
@@ -191,16 +200,6 @@ const Order = () => {
       </motion.h2>
 
       <motion.div className="x" variants={containerVariants}>
-        {sessionId && (
-          <div className="orderReference">
-            <p>
-              <strong>Order Reference:</strong> {sessionId}
-            </p>
-            <p>
-              <strong>Short Code:</strong> {sessionId.substring(0, 12)}
-            </p>
-          </div>
-        )}
         <div className="orderContainer">
           <div className="orderItem">
             <h2 className="orderTitle">Shipping:</h2>
@@ -237,6 +236,16 @@ const Order = () => {
           <div className="orderItem">
             <h2 className="orderTitle">Your Payment Has Been Succeeded</h2>
           </div>
+          {paymentId && (
+            <div className="orderReference">
+              <p>
+                <strong>Order Payment ID :</strong> {paymentId}
+              </p>
+              <p>
+                <strong>Short session ID :</strong> {sessionId.substring(0, 12)}
+              </p>
+            </div>
+          )}
           <div className="cartContainer">
             {cart.map((item) => {
               let itemsPrice = (item?.newPrice || item?.price) * item?.amount;

@@ -372,6 +372,7 @@ CREATE TABLE orders (
   total NUMERIC(10, 2) NOT NULL,
   amount INTEGER NOT NULL,
   tbluser_id INTEGER REFERENCES tbluser(id), 
+  stripe_checkout_session_id TEXT ,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE orders 

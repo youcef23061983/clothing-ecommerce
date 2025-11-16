@@ -309,6 +309,8 @@ app.post(
           customerDetails.name || metadata.fullName || "Valued Customer";
         const phone = customerDetails.phone || metadata.phone || null;
         const stripe_payment_intent_id = session.payment_intent.id;
+        const stripe_checkout_session_id = session.id; // cs_test_...
+
         const amount = metadata.amount;
         const currency = session.currency.toUpperCase();
         const country =
@@ -356,6 +358,7 @@ app.post(
           shipping,
           sellingProduct,
           stripe_payment_intent_id,
+          stripe_checkout_session_id,
         };
 
         // Save to database
