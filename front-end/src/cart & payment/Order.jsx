@@ -229,7 +229,7 @@ const Order = () => {
           <div className="orderItem">
             <h2 className="orderTitle">Your Payment Has Been Succeeded</h2>
           </div>
-          {paymentId && (
+          {sessionId && (
             <motion.div className="orderItem" variants={childVariants}>
               <div className="orderDesc">
                 <h2 className="orderTitle">Order Confirmation</h2>
