@@ -138,13 +138,14 @@ import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import UseFetch from "../data managment/UseFetch";
+import { FcCheckmark } from "react-icons/fc";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
   const navigate = useNavigate();
   const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/sell`;
 
-  const key1 = "products";
+  const key1 = "orders";
   const { data, isPending, error } = UseFetch(url, key1);
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
@@ -237,7 +238,11 @@ const Order = () => {
           </div>
           {paymentId && (
             <motion.div className="orderItem" variants={childVariants}>
-              <h2 className="orderTitle">Order Confirmation</h2>
+              <div className="orderDesc">
+                <h2 className="orderTitle">Order Confirmation</h2>
+                <FcCheckmark />
+              </div>
+
               <div className="orderDesc">
                 <h4 className="orderName">Order ID:</h4>
                 <p>{paymentId}</p>
