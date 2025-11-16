@@ -336,6 +336,7 @@ const Payment = () => {
       });
 
       const { sessionId } = await response.json();
+      console.log("front end sessionId", sessionId);
       cartPayment(payment);
 
       const stripe = await stripePromise;
