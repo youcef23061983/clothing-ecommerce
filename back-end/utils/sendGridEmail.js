@@ -68,7 +68,7 @@ const sendGridEmail = async ({ to, subject, orderData }) => {
       <div class="container">
         <div class="header">
           <h1 style="margin: 0; font-size: 28px;">🎉 Thank You for Your Order!</h1>
-          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your coffee journey is about to begin</p>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Your purchase journey is about to begin</p>
         </div>
         <div class="content">
           <h2 style="color: #1f2937; margin-bottom: 10px;">Hello ${
@@ -79,7 +79,7 @@ const sendGridEmail = async ({ to, subject, orderData }) => {
           <div class="order-details">
             <h3 style="color: #1f2937; margin-top: 0; margin-bottom: 20px;">Order Details</h3>
             <p style="margin: 10px 0;"><strong>Order ID:</strong> ${
-              orderData.orderId
+              orderData.stripe_payment_intent_id
             }</p>
             
             <h4 style="color: #374151; margin: 20px 0 15px 0;">Items Ordered:</h4>
@@ -96,11 +96,11 @@ const sendGridEmail = async ({ to, subject, orderData }) => {
                   .map(
                     (item) => `
                 <tr>
-                  <td class="item-name">${item.name}</td>
-                  <td class="item-quantity">${item.quantity}</td>
-                  <td class="item-price">${(item.price * item.quantity).toFixed(
-                    2
-                  )} $</td>
+                  <td class="item-name">${item.product_name}</td>
+                  <td class="item-quantity">${item.amount}</td>
+                  <td class="item-price">${(
+                    (item?.newPrice || item?.price) * item.amount
+                  ).toFixed(2)} $</td>
                 </tr>
                 `
                   )
@@ -147,18 +147,18 @@ const sendGridEmail = async ({ to, subject, orderData }) => {
               <li style="margin-bottom: 8px;">We'll send you a confirmation when your order ships</li>
               <li style="margin-bottom: 8px;">Expected delivery: 3-5 business days</li>
               <li style="margin-bottom: 8px;">Track your order with your order ID: <strong>${
-                orderData.orderId
+                orderData.stripe_payment_intent_id
               }</strong></li>
             </ul>
           </div>
           
           <p style="color: #6b7280; text-align: center; margin: 25px 0 15px 0;">
-            If you have any questions, reply to this email or call us at <strong>1-800-COFFEE</strong>
+            If you have any questions, reply to this email or call us at <strong>1-800-DESIRE</strong>
           </p>
         </div>
         <div class="footer">
-          <p style="margin: 0 0 10px 0;">© 2024 Your Coffee Shop. All rights reserved.</p>
-          <p style="margin: 0; font-style: italic;">Brewing happiness, one cup at a time ☕</p>
+          <p style="margin: 0 0 10px 0;">© 2024 Desire All Rights Reserved</p>
+          <p style="margin: 0; font-style: italic;">DESIRED to make happiness, one purchase at a time 🛍️</p>
         </div>
       </div>
     </body>

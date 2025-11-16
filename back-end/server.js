@@ -89,13 +89,13 @@
 //   }
 
 //   try {
-//     const session = await stripe.sessions.create({
+//     const paymentIntents = await stripe.paymentIntents.create({
 //       amount: totalInCents,
 //       currency: "usd",
 
 //       automatic_payment_methods: { enabled: true },
 //     });
-//     res.json({ clientSecret: session.client_secret }); // Send back clientSecret
+//     res.json({ clientSecret: paymentIntents.client_secret,paymentIntentId: paymentIntents.id }); // Send back clientSecret
 //   } catch (error) {
 //     res.status(400).json({ error: error.message }); // Handle any errors
 //   }
@@ -308,7 +308,7 @@ app.post(
         const fullName =
           customerDetails.name || metadata.fullName || "Valued Customer";
         const phone = customerDetails.phone || metadata.phone || null;
-        const stripe_payment_intent_id = session.id;
+        const stripe_payment_intent_id = session.payment_intent.id;
         const amount = metadata.amount;
         const currency = session.currency.toUpperCase();
         const country =
@@ -570,7 +570,7 @@ app.use("/auth", authRoutes);
 // //     }
 
 // //     const session = await stripe.checkout.sessions.create(sessionParams);
-// //     res.json({ sessionId: session.id });
+// //     res.json({ sessionId: session.id,      paymentIntentId: paymentIntent.id, });
 // //   } catch (err) {
 // //     console.error("Stripe Session Error:", err);
 // //     res.status(400).json({
