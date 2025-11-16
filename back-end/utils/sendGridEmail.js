@@ -98,16 +98,21 @@ const sendGridEmail = async ({ to, subject, orderData }) => {
                 <tr>
                   <td class="item-name">${item.product_name}</td>
                   <td class="item-quantity">${item.amount}</td>
-                  <td class="item-price">${(
-                    (item?.newPrice || item?.price) * item.amount
-                  ).toFixed(2)} $</td>
+                  <td class="item-price">${item.totalPrice.toFixed(2)} $</td>
                 </tr>
                 `
                   )
                   .join("")}
+                   <tr class="total-row">
+                  <td colspan="2" style="text-align: right; font-weight: bold;">Tax:</td>
+                  <td class="total-amount">${orderData.tax} $</td>
+                </tr> <tr class="total-row">
+                  <td colspan="2" style="text-align: right; font-weight: bold;">Shipping:</td>
+                  <td class="total-amount">${orderData.shipping} $</td>
+                </tr>
                 <tr class="total-row">
                   <td colspan="2" style="text-align: right; font-weight: bold;">Total:</td>
-                  <td class="total-amount">${orderData.total.toFixed(2)} $</td>
+                  <td class="total-amount">${orderData.total} $</td>
                 </tr>
               </tbody>
             </table>
