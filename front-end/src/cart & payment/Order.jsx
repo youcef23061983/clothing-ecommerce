@@ -162,7 +162,6 @@ const Order = () => {
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
   const totalAll = parseFloat((total + tax + shippingPrice).toFixed(2));
 
-  c;
   const containerVariants = {
     hidden: { x: "100vw", opacity: 0 },
     visible: {
@@ -237,14 +236,17 @@ const Order = () => {
             <h2 className="orderTitle">Your Payment Has Been Succeeded</h2>
           </div>
           {paymentId && (
-            <div className="orderReference">
-              <p>
-                <strong>Order Payment ID :</strong> {paymentId}
-              </p>
-              <p>
-                <strong>Short session ID :</strong> {sessionId.substring(0, 12)}
-              </p>
-            </div>
+            <motion.div className="orderItem" variants={childVariants}>
+              <h2 className="orderTitle">Order Confirmation</h2>
+              <div className="orderDesc">
+                <h4 className="orderName">Order ID:</h4>
+                <p>{paymentId}</p>
+              </div>
+              <div className="orderDesc">
+                <h4 className="orderName">Short Session Checkout ID:</h4>
+                <p>{sessionId.substring(0, 12)}...</p>
+              </div>
+            </motion.div>
           )}
           <div className="cartContainer">
             {cart.map((item) => {

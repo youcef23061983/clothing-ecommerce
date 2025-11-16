@@ -464,6 +464,23 @@ button {
   margin-top: 1rem; /* mt-4 = 16px */
   border-color: transparent;
 }
+.orderReference {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+  margin: 15px 0;
+}
+
+.orderReference p {
+  margin: 5px 0;
+}
+
+.orderSuccess {
+  color: #28a745;
+  font-weight: bold;
+  margin-top: 10px;
+}
 @media screen and (min-width: 336px) {
   .nav-header {
     display: flex;
