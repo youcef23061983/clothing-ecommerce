@@ -137,21 +137,14 @@ import { AppContext } from "../data managment/AppProvider";
 import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import UseFetch from "../data managment/UseFetch";
 import { FcCheckmark } from "react-icons/fc";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
   const navigate = useNavigate();
-  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/sell`;
 
-  const key1 = "orders";
-  const { data, isPending, error } = UseFetch(url, key1);
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
-  const paymentId = data?.filter(
-    (item) => item.stripe_checkout_session_id === sessionId
-  );
 
   useEffect(() => {
     if (!payment.payment) {
@@ -244,12 +237,8 @@ const Order = () => {
               </div>
 
               <div className="orderDesc">
-                <h4 className="orderName">Order ID:</h4>
-                <p>{paymentId}</p>
-              </div>
-              <div className="orderDesc">
-                <h4 className="orderName">Short Session Checkout ID:</h4>
-                <p>{sessionId.substring(0, 12)}...</p>
+                <h4 className="orderName"> Session Checkout ID:</h4>
+                <p>{sessionId}</p>
               </div>
             </motion.div>
           )}
