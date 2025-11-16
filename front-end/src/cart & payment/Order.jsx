@@ -1,22 +1,163 @@
+// import { useContext, useEffect } from "react";
+// import { AppContext } from "../data managment/AppProvider";
+// import img from "/images/men/banner/order.jpg";
+// import { motion } from "framer-motion";
+// import { Link, useNavigate } from "react-router-dom";
+
+// const Order = () => {
+//   const { payment, shipping, cart, total, amount } = useContext(AppContext);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     if (!payment.payment) {
+//       navigate("/payment");
+//     }
+//     document.title = "Order";
+//   }, [payment]);
+//   const tax = parseFloat((total * 0.1).toFixed(2));
+//   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
+//   const totalAll = parseFloat((total + tax + shippingPrice).toFixed(2));
+//   const containerVariants = {
+//     hidden: { x: "100vw", opacity: 0 },
+//     visible: {
+//       x: 0,
+//       opacity: 1,
+//       transition: {
+//         duration: 2,
+//         type: "spring",
+//         stiffness: 50,
+//         when: "beforeChildren",
+//         staggerChildren: 1,
+//       },
+//     },
+//     exit: {
+//       x: "-100vw",
+//       transition: { ease: "easeInOut" },
+//     },
+//   };
+//   const childVariants = {
+//     hidden: { opacity: 0 },
+//     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
+//   };
+//   return (
+//     <motion.div
+//       variants={containerVariants}
+//       initial="hidden"
+//       animate="visible"
+//       exit="exit"
+//     >
+//       <motion.div className="headerimages" variants={childVariants}>
+//         <img src={img} alt="order" loading="lazy" className="detailImg" />
+//       </motion.div>
+//       <motion.h2 className="orderTitle" variants={containerVariants}>
+//         Your order
+//       </motion.h2>
+//       <motion.div className="x" variants={containerVariants}>
+//         <div className="orderContainer">
+//           <div className="orderItem">
+//             <h2 className="orderTitle">Shipping:</h2>
+//             <div className="orderDesc">
+//               <h4 className="orderName"> Full Name:</h4>
+//               <p>{shipping.fullName}</p>
+//             </div>
+//             <div className="orderDesc">
+//               <h4 className="orderName">Address:</h4>
+//               <p>{shipping.address}</p>
+//             </div>
+//             <div className="orderDesc">
+//               <h4 className="orderName">City:</h4>
+//               <p>{shipping.city}</p>
+//             </div>
+//             <div className="orderDesc">
+//               <h4 className="orderName"> Postal Code:</h4>
+//               <p>{shipping.postalCode}</p>
+//             </div>
+//             <div className="orderDesc">
+//               <h4 className="orderName"> Country:</h4>
+//               <p>{shipping.country}</p>
+//             </div>
+//           </div>
+//           <div className="orderItem">
+//             <h2 className="orderTitle">Payment:</h2>
+//             <div className="orderDesc">
+//               <h4 className="orderName">Type:</h4>
+//               <p>{payment.payment}</p>
+//             </div>
+//           </div>
+//         </div>
+//         <div className="y">
+//           <div className="orderItem">
+//             <h2 className="orderTitle">Your Payment Has Been Succeeded</h2>
+//           </div>
+//           <div className="cartContainer">
+//             {cart.map((item) => {
+//               let itemsPrice = (item?.newPrice || item?.price) * item?.amount;
+//               itemsPrice = parseFloat(itemsPrice.toFixed(2));
+//               return (
+//                 <div className="cartDiv" key={item.id}>
+//                   <div className="cartImg">
+//                     <img
+//                       src={item?.images[0]}
+//                       alt="cart"
+//                       loading="lazy"
+//                       className="img"
+//                     />
+//                   </div>
+//                   <h3 className="cartName">{item?.product_name}</h3>
+//                   <div>
+//                     <h3>{item?.newPrice || item?.price} $</h3>
+//                     <h3>{itemsPrice} $</h3>
+//                   </div>
+//                 </div>
+//               );
+//             })}
+//           </div>
+//           <div className="cartResult">
+//             <h3>amount: {amount} </h3>
+//             <h3>SUBTOTAL: {total} $</h3>
+//             <h3>TAX: {tax} $</h3>
+//             <h3>SHPPING: {shippingPrice} $</h3>
+//             <h3>TOTAL: {totalAll} $</h3>
+//             <div className="cartCheck">
+//               <Link className="addCart" to="/">
+//                 Place Order{" "}
+//               </Link>
+//             </div>
+//           </div>
+//         </div>
+//       </motion.div>
+//     </motion.div>
+//   );
+// };
+
+// export default Order;
+
 import { useContext, useEffect } from "react";
 import { AppContext } from "../data managment/AppProvider";
 import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ Get location to access state
+
+  // ✅ Extract stripe_payment_intent_id from navigation state
+  const stripePaymentIntentId = location.state?.stripePaymentIntentId;
+  const orderId = location.state?.orderId; // This might be the same as above
 
   useEffect(() => {
     if (!payment.payment) {
       navigate("/payment");
     }
     document.title = "Order";
-  }, [payment]);
+  }, [payment, navigate]);
+
   const tax = parseFloat((total * 0.1).toFixed(2));
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
   const totalAll = parseFloat((total + tax + shippingPrice).toFixed(2));
+
   const containerVariants = {
     hidden: { x: "100vw", opacity: 0 },
     visible: {
@@ -35,10 +176,12 @@ const Order = () => {
       transition: { ease: "easeInOut" },
     },
   };
+
   const childVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
   };
+
   return (
     <motion.div
       variants={containerVariants}
@@ -49,15 +192,32 @@ const Order = () => {
       <motion.div className="headerimages" variants={childVariants}>
         <img src={img} alt="order" loading="lazy" className="detailImg" />
       </motion.div>
+
       <motion.h2 className="orderTitle" variants={containerVariants}>
         Your order
       </motion.h2>
+
+      {/* ✅ Display Order ID / Payment Intent ID */}
+      {stripePaymentIntentId && (
+        <motion.div className="orderItem" variants={childVariants}>
+          <h2 className="orderTitle">Order Confirmation</h2>
+          <div className="orderDesc">
+            <h4 className="orderName">Order ID:</h4>
+            <p>{stripePaymentIntentId}</p>
+          </div>
+          <div className="orderDesc">
+            <h4 className="orderName">Reference Number:</h4>
+            <p>{stripePaymentIntentId.substring(0, 12)}...</p>
+          </div>
+        </motion.div>
+      )}
+
       <motion.div className="x" variants={containerVariants}>
         <div className="orderContainer">
           <div className="orderItem">
             <h2 className="orderTitle">Shipping:</h2>
             <div className="orderDesc">
-              <h4 className="orderName"> Full Name:</h4>
+              <h4 className="orderName">Full Name:</h4>
               <p>{shipping.fullName}</p>
             </div>
             <div className="orderDesc">
@@ -69,26 +229,43 @@ const Order = () => {
               <p>{shipping.city}</p>
             </div>
             <div className="orderDesc">
-              <h4 className="orderName"> Postal Code:</h4>
+              <h4 className="orderName">Postal Code:</h4>
               <p>{shipping.postalCode}</p>
             </div>
             <div className="orderDesc">
-              <h4 className="orderName"> Country:</h4>
+              <h4 className="orderName">Country:</h4>
               <p>{shipping.country}</p>
             </div>
           </div>
+
           <div className="orderItem">
             <h2 className="orderTitle">Payment:</h2>
             <div className="orderDesc">
               <h4 className="orderName">Type:</h4>
               <p>{payment.payment}</p>
             </div>
+            {/* ✅ Add Payment Reference */}
+            {stripePaymentIntentId && (
+              <div className="orderDesc">
+                <h4 className="orderName">Payment Reference:</h4>
+                <p>{stripePaymentIntentId}</p>
+              </div>
+            )}
           </div>
         </div>
+
         <div className="y">
           <div className="orderItem">
             <h2 className="orderTitle">Your Payment Has Been Succeeded</h2>
+            {/* ✅ Show confirmation with order ID */}
+            {stripePaymentIntentId && (
+              <p className="orderSuccess">
+                Your order has been confirmed! Reference:{" "}
+                {stripePaymentIntentId}
+              </p>
+            )}
           </div>
+
           <div className="cartContainer">
             {cart.map((item) => {
               let itemsPrice = (item?.newPrice || item?.price) * item?.amount;
@@ -112,15 +289,29 @@ const Order = () => {
               );
             })}
           </div>
+
           <div className="cartResult">
-            <h3>amount: {amount} </h3>
+            <h3>Amount: {amount}</h3>
             <h3>SUBTOTAL: {total} $</h3>
             <h3>TAX: {tax} $</h3>
-            <h3>SHPPING: {shippingPrice} $</h3>
+            <h3>SHIPPING: {shippingPrice} $</h3>
             <h3>TOTAL: {totalAll} $</h3>
+
+            {/* ✅ Add order reference to success message */}
+            {stripePaymentIntentId && (
+              <div className="orderReference">
+                <p>
+                  <strong>Order Reference:</strong> {stripePaymentIntentId}
+                </p>
+                <p>
+                  <em>Please save this reference for your records</em>
+                </p>
+              </div>
+            )}
+
             <div className="cartCheck">
               <Link className="addCart" to="/">
-                Place Order{" "}
+                Continue Shopping
               </Link>
             </div>
           </div>

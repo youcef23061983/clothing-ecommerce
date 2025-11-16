@@ -363,7 +363,17 @@ const Payment = () => {
   const paymentSubmit = useCallback(() => {
     setIsSubmitting(true);
     cartPayment(payment);
-    navigate("/order");
+    // After successful payment
+    navigate("/order", {
+      state: {
+        orderId: paymentIntent.id, // This is your stripe_payment_intent_id
+        amount: total,
+        items: amount,
+        shipping: shipping,
+        stripePaymentIntentId: paymentIntent.id, // ✅ Add this
+      },
+      replace: true,
+    });
   }, [payment, cartPayment, navigate]);
 
   const sellingFun = async () => {
