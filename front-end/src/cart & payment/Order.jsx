@@ -137,7 +137,6 @@ import { AppContext } from "../data managment/AppProvider";
 import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { FcCheckmark } from "react-icons/fc";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
@@ -233,7 +232,6 @@ const Order = () => {
             <motion.div className="orderItem" variants={childVariants}>
               <div className="orderDesc">
                 <h2 className="orderTitle">Order Confirmation</h2>
-                <FcCheckmark />
               </div>
 
               <div className="orderDesc">
