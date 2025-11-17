@@ -239,45 +239,45 @@ const sendGridEmail = require("./utils/sendGridEmail.js");
 // In your server.js
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "https://js.stripe.com",
-          "https://m.stripe.network",
-          "'unsafe-inline'", // Only if absolutely necessary
-        ],
-        styleSrc: [
-          "'self'",
-          "https://m.stripe.network",
-          "'unsafe-inline'", // Stripe often needs this
-          "https://fonts.googleapis.com", // If using Google Fonts
-        ],
-        frameSrc: [
-          "'self'",
-          "https://js.stripe.com",
-          "https://hooks.stripe.com",
-        ],
-        connectSrc: [
-          "'self'",
-          "https://api.stripe.com",
-          "https://m.stripe.network",
-        ],
-        imgSrc: [
-          "'self'",
-          "data:",
-          "https://*.stripe.com",
-          "https://*.stripe.network",
-        ],
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com", // If using Google Fonts
-          "data:",
-        ],
-      },
-    },
-    crossOriginEmbedderPolicy: false, // Often needed for Stripe
+    // contentSecurityPolicy: {
+    //   directives: {
+    //     defaultSrc: ["'self'"],
+    //     scriptSrc: [
+    //       "'self'",
+    //       "https://js.stripe.com",
+    //       "https://m.stripe.network",
+    //       "'unsafe-inline'", // Only if absolutely necessary
+    //     ],
+    //     styleSrc: [
+    //       "'self'",
+    //       "https://m.stripe.network",
+    //       "'unsafe-inline'", // Stripe often needs this
+    //       "https://fonts.googleapis.com", // If using Google Fonts
+    //     ],
+    //     frameSrc: [
+    //       "'self'",
+    //       "https://js.stripe.com",
+    //       "https://hooks.stripe.com",
+    //     ],
+    //     connectSrc: [
+    //       "'self'",
+    //       "https://api.stripe.com",
+    //       "https://m.stripe.network",
+    //     ],
+    //     imgSrc: [
+    //       "'self'",
+    //       "data:",
+    //       "https://*.stripe.com",
+    //       "https://*.stripe.network",
+    //     ],
+    //     fontSrc: [
+    //       "'self'",
+    //       "https://fonts.gstatic.com", // If using Google Fonts
+    //       "data:",
+    //     ],
+    //   },
+    // },
+    // crossOriginEmbedderPolicy: false, // Often needed for Stripe
   })
 );
 
@@ -653,6 +653,10 @@ app.post("/create-checkout-session", async (req, res) => {
     const cartItems = JSON.parse(metadata.cart || "[]"); // ✅ parse it
 
     const line_items = cartItems.map((item) => {
+      if (!item.product_name || !item.unitPrice || !item.amount) {
+        throw new Error(`Invalid cart item: ${JSON.stringify(item)}`);
+      }
+
       return {
         price_data: {
           currency: "usd",
@@ -667,6 +671,17 @@ app.post("/create-checkout-session", async (req, res) => {
         quantity: item.amount || 1,
       };
     });
+    const shortenedCart = cartItems.map((item) => ({
+      id: item.id,
+      name: item.product_name.substring(0, 50), // Shorten name
+      qty: item.amount,
+      price: item.unitPrice,
+    }));
+
+    const safeMetadata = {
+      ...metadata,
+      cart: JSON.stringify(shortenedCart), // Shorter cart data
+    };
 
     const sessionParams = {
       payment_method_types: ["card"],
@@ -675,7 +690,7 @@ app.post("/create-checkout-session", async (req, res) => {
       customer_email: metadata.email,
       phone_number_collection: { enabled: true },
       metadata: {
-        ...metadata,
+        ...safeMetadata,
         subtotal: subtotal || "0",
         tax: tax || "0",
         shipping: shipping || "0",
