@@ -285,71 +285,9 @@ const Payment = () => {
     image: item?.images?.[0],
     description: item?.description,
   }));
-  // const baseURL = window.location.origin;
-
-  // const sellingProduct = cart.map((item) => ({
-  //   id: item.id,
-  //   product_name: item.product_name,
-  //   amount: item.amount,
-  //   unitPrice: item?.newPrice || item?.price,
-  //   totalPrice: (item?.newPrice || item?.price) * item?.amount,
-  //   image: `${baseURL}/${item?.images?.[0] || "default.jpg"}`,
-  // }));
 
   console.log("sellingProduct", sellingProduct);
 
-  // const handleStripeCheckout = async () => {
-  //   setIsSubmitting(true);
-  //   try {
-  //     const metadata = {
-  //       fullName: shipping?.fullName || "Not provided",
-  //       email: formUser?.user?.email || firebaseUser?.email || "Not provided",
-  //       phone: shipping?.fullPhone || "Not provided",
-  //       address: shipping?.address || "Not provided",
-  //       city: shipping?.city || "Not provided",
-  //       country: shipping?.country || "Not provided",
-  //       postalCode: shipping?.postalCode || "Not provided",
-  //       userId: formUser?.user?.id || firebaseUser?.id || "guest",
-  //       cart: JSON.stringify(sellingProduct),
-  //       companyName: "DESIRE",
-  //       companyLogoPath: `${window.location.href}/images/desire.png`,
-  //       companyAddress: "123 ain naaja street",
-  //       companyPhoneNumber: "+123540016247",
-  //       companyCity: "Algiers",
-  //       companyPostalCode: "16000",
-  //       companyState: "Algeria",
-  //     };
-  //     const response = await fetch(`${url}/create-checkout-session`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         total: totalAll,
-  //         subtotal: total, // subtotal before tax + shipping
-  //         tax,
-  //         shipping: shippingPrice,
-  //         metadata,
-  //         amount,
-  //         // cart: JSON.stringify(sellingProduct),
-  //         successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
-  //         cancelUrl: `${window.location.origin}/cart`,
-  //       }),
-  //     });
-
-  //     const { sessionId } = await response.json();
-  //     cartPayment(payment);
-
-  //     const stripe = await stripePromise;
-  //     const { error } = await stripe.redirectToCheckout({ sessionId });
-
-  //     if (error) {
-  //       throw error;
-  //     }
-  //   } catch (error) {
-  //     console.error("Stripe checkout error:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
   const handleStripeCheckout = async () => {
     setIsSubmitting(true);
     try {

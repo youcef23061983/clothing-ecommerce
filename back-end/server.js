@@ -239,46 +239,45 @@ const sendGridEmail = require("./utils/sendGridEmail.js");
 // In your server.js
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "https://js.stripe.com",
-          "https://m.stripe.network",
-          "'unsafe-inline'", // Only if absolutely necessary
-        ],
-        styleSrc: [
-          "'self'",
-          "https://m.stripe.network",
-          "'unsafe-inline'", // Stripe often needs this
-          "https://fonts.googleapis.com", // If using Google Fonts
-        ],
-        frameSrc: [
-          "'self'",
-          "https://js.stripe.com",
-          "https://hooks.stripe.com",
-        ],
-        connectSrc: [
-          "'self'",
-          "https://api.stripe.com",
-          "https://m.stripe.network",
-        ],
-        imgSrc: [
-          "'self'",
-          "data:",
-          "https://*.stripe.com",
-          "https://*.stripe.network",
-        ],
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com", // If using Google Fonts
-          "data:",
-        ],
-      },
-    },
-    // Keep your other helmet settings
-    crossOriginEmbedderPolicy: false, // Often needed for Stripe
+    // contentSecurityPolicy: {
+    //   directives: {
+    //     defaultSrc: ["'self'"],
+    //     scriptSrc: [
+    //       "'self'",
+    //       "https://js.stripe.com",
+    //       "https://m.stripe.network",
+    //       "'unsafe-inline'", // Only if absolutely necessary
+    //     ],
+    //     styleSrc: [
+    //       "'self'",
+    //       "https://m.stripe.network",
+    //       "'unsafe-inline'", // Stripe often needs this
+    //       "https://fonts.googleapis.com", // If using Google Fonts
+    //     ],
+    //     frameSrc: [
+    //       "'self'",
+    //       "https://js.stripe.com",
+    //       "https://hooks.stripe.com",
+    //     ],
+    //     connectSrc: [
+    //       "'self'",
+    //       "https://api.stripe.com",
+    //       "https://m.stripe.network",
+    //     ],
+    //     imgSrc: [
+    //       "'self'",
+    //       "data:",
+    //       "https://*.stripe.com",
+    //       "https://*.stripe.network",
+    //     ],
+    //     fontSrc: [
+    //       "'self'",
+    //       "https://fonts.gstatic.com", // If using Google Fonts
+    //       "data:",
+    //     ],
+    //   },
+    // },
+    // crossOriginEmbedderPolicy: false, // Often needed for Stripe
   })
 );
 
