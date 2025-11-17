@@ -288,78 +288,119 @@ const Payment = () => {
 
   console.log("sellingProduct", sellingProduct);
 
+  // const handleStripeCheckout = async () => {
+  //   setIsSubmitting(true);
+  //   try {
+  //     const metadata = {
+  //       fullName: shipping?.fullName || "Not provided",
+  //       email: formUser?.user?.email || firebaseUser?.email || "Not provided",
+  //       phone: shipping?.fullPhone || "Not provided",
+  //       address: shipping?.address || "Not provided",
+  //       city: shipping?.city || "Not provided",
+  //       country: shipping?.country || "Not provided",
+  //       postalCode: shipping?.postalCode || "Not provided",
+  //       userId: formUser?.user?.id || firebaseUser?.id || "guest",
+  //       cart: JSON.stringify(sellingProduct),
+  //       companyName: "DESIRE",
+  //       companyLogoPath: `${window.location.href}/images/desire.png`,
+  //       companyAddress: "123 ain naaja street",
+  //       companyPhoneNumber: "+123540016247",
+  //       companyCity: "Algiers",
+  //       companyPostalCode: "16000",
+  //       companyState: "Algeria",
+  //     };
+
+  //     const response = await fetch(`${url}/create-checkout-session`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         total: totalAll,
+  //         subtotal: total,
+  //         tax,
+  //         shipping: shippingPrice,
+  //         metadata,
+  //         amount,
+  //         successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
+  //         cancelUrl: `${window.location.origin}/cart`,
+  //       }),
+  //     });
+  //     console.log("📡 Response status:", response.status);
+
+  //     // ✅ Add response validation
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(
+  //         errorData.error || `HTTP error! status: ${response.status}`
+  //       );
+  //     }
+
+  //     const data = await response.json();
+
+  //     // ✅ Validate sessionId exists
+  //     if (!data.sessionId) {
+  //       throw new Error("No sessionId received from server");
+  //     }
+
+  //     console.log("Session ID received:", data.sessionId);
+
+  //     // ✅ Make sure stripePromise is properly initialized
+  //     const stripe = await stripePromise;
+  //     if (!stripe) {
+  //       throw new Error("Stripe not initialized");
+  //     }
+
+  //     // ✅ Redirect to checkout
+  //     const { error } = await stripe.redirectToCheckout({
+  //       sessionId: data.sessionId,
+  //     });
+
+  //     if (error) {
+  //       throw error;
+  //     }
+  //   } catch (error) {
+  //     console.error("Stripe checkout error:", error);
+  //     // ✅ Add user-friendly error message
+  //     alert(`Checkout failed: ${error.message}`);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
+  // Rest of your existing code remains the same...
   const handleStripeCheckout = async () => {
     setIsSubmitting(true);
     try {
-      // const metadata = {
-      //   fullName: shipping?.fullName || "Not provided",
-      //   email: formUser?.user?.email || firebaseUser?.email || "Not provided",
-      //   phone: shipping?.fullPhone || "Not provided",
-      //   address: shipping?.address || "Not provided",
-      //   city: shipping?.city || "Not provided",
-      //   country: shipping?.country || "Not provided",
-      //   postalCode: shipping?.postalCode || "Not provided",
-      //   userId: formUser?.user?.id || firebaseUser?.id || "guest",
-      //   cart: JSON.stringify(sellingProduct),
-      //   companyName: "DESIRE",
-      //   companyLogoPath: `${window.location.href}/images/desire.png`,
-      //   companyAddress: "123 ain naaja street",
-      //   companyPhoneNumber: "+123540016247",
-      //   companyCity: "Algiers",
-      //   companyPostalCode: "16000",
-      //   companyState: "Algeria",
-      // };
+      const metadata = {
+        fullName: shipping?.fullName || "Not provided",
+        email: formUser?.user?.email || firebaseUser?.email || "Not provided",
+        phone: shipping?.fullPhone || "Not provided",
+        address: shipping?.address || "Not provided",
+        city: shipping?.city || "Not provided",
+        country: shipping?.country || "Not provided",
+        postalCode: shipping?.postalCode || "Not provided",
+        userId: formUser?.user?.id || firebaseUser?.id || "guest",
+        cart: JSON.stringify(sellingProduct),
+      };
 
-      // const response = await fetch(`${url}/create-checkout-session`, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     total: totalAll,
-      //     subtotal: total,
-      //     tax,
-      //     shipping: shippingPrice,
-      //     metadata,
-      //     amount,
-      //     successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
-      //     cancelUrl: `${window.location.origin}/cart`,
-      //   }),
-      // });
       const response = await fetch(`${url}/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // ✅ ONLY essential data for Stripe metadata
-          metadata: {
-            email: formUser?.user?.email || firebaseUser?.email,
-            userId: formUser?.user?.id || firebaseUser?.id || "guest",
-
-            // That's it! Under 100 characters
-          },
-          // ✅ Everything else stays as regular fields for YOUR backend
           total: totalAll,
           subtotal: total,
           tax,
           shipping: shippingPrice,
+          metadata,
           amount,
+          companyName: "DESIRE",
+          companyLogoPath: `${window.location.href}/images/desire.png`,
+          companyAddress: "123 ain naaja street",
+          companyPhoneNumber: "+123540016247",
+          companyCity: "Algiers",
+          companyPostalCode: "16000",
+          companyState: "Algeria",
           successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/cart`,
-          // ✅ Full customer data for your database
-          customerData: {
-            fullName: shipping?.fullName,
-            email: formUser?.user?.email || firebaseUser?.email,
-            phone: shipping?.fullPhone,
-            address: shipping?.address,
-            city: shipping?.city,
-            country: shipping?.country,
-            postalCode: shipping?.postalCode,
-            cart: JSON.stringify(sellingProduct),
-            companyName: "DESIRE",
-            companyAddress: "123 ain naaja street",
-            companyPhoneNumber: "+123540016247",
-            companyCity: "Algiers",
-            companyPostalCode: "16000",
-            companyState: "Algeria",
-          },
         }),
       });
       console.log("📡 Response status:", response.status);
@@ -403,8 +444,6 @@ const Payment = () => {
       setIsSubmitting(false);
     }
   };
-
-  // Rest of your existing code remains the same...
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setPayment((prevPayment) => ({

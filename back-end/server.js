@@ -732,11 +732,10 @@ app.use("/auth", authRoutes);
 //   }
 // });
 p.post("/create-checkout-session", async (req, res) => {
-  const { metadata, customerData, total, subtotal, tax, shipping, amount } =
-    req.body;
+  const { total, metadata, subtotal, tax, shipping, amount, cart } = req.body;
 
   try {
-    const cartItems = JSON.parse(customerData?.cart || "[]"); // ✅ parse it
+    const cartItems = JSON.parse(metadata.cart || "[]"); // ✅ parse it
 
     const line_items = cartItems.map((item) => {
       return {
