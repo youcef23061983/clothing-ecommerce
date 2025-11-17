@@ -283,7 +283,7 @@ const Payment = () => {
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
     image: item?.images?.[0],
-    description: item?.description,
+    // description: item?.description,
   }));
 
   console.log("sellingProduct", sellingProduct);
@@ -291,39 +291,78 @@ const Payment = () => {
   const handleStripeCheckout = async () => {
     setIsSubmitting(true);
     try {
-      const metadata = {
-        fullName: shipping?.fullName || "Not provided",
-        email: formUser?.user?.email || firebaseUser?.email || "Not provided",
-        phone: shipping?.fullPhone || "Not provided",
-        address: shipping?.address || "Not provided",
-        city: shipping?.city || "Not provided",
-        country: shipping?.country || "Not provided",
-        postalCode: shipping?.postalCode || "Not provided",
-        userId: formUser?.user?.id || firebaseUser?.id || "guest",
-        cart: JSON.stringify(sellingProduct),
-        companyName: "DESIRE",
-        companyLogoPath: `${window.location.href}/images/desire.png`,
-        companyAddress: "123 ain naaja street",
-        companyPhoneNumber: "+123540016247",
-        companyCity: "Algiers",
-        companyPostalCode: "16000",
-        companyState: "Algeria",
-      };
+      // const metadata = {
+      //   fullName: shipping?.fullName || "Not provided",
+      //   email: formUser?.user?.email || firebaseUser?.email || "Not provided",
+      //   phone: shipping?.fullPhone || "Not provided",
+      //   address: shipping?.address || "Not provided",
+      //   city: shipping?.city || "Not provided",
+      //   country: shipping?.country || "Not provided",
+      //   postalCode: shipping?.postalCode || "Not provided",
+      //   userId: formUser?.user?.id || firebaseUser?.id || "guest",
+      //   cart: JSON.stringify(sellingProduct),
+      //   companyName: "DESIRE",
+      //   companyLogoPath: `${window.location.href}/images/desire.png`,
+      //   companyAddress: "123 ain naaja street",
+      //   companyPhoneNumber: "+123540016247",
+      //   companyCity: "Algiers",
+      //   companyPostalCode: "16000",
+      //   companyState: "Algeria",
+      // };
 
+      // const response = await fetch(`${url}/create-checkout-session`, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     total: totalAll,
+      //     subtotal: total,
+      //     tax,
+      //     shipping: shippingPrice,
+      //     metadata,
+      //     amount,
+      //     successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
+      //     cancelUrl: `${window.location.origin}/cart`,
+      //   }),
+      // });
       const response = await fetch(`${url}/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // ✅ ONLY essential data for Stripe metadata
+          metadata: {
+            email: formUser?.user?.email || firebaseUser?.email,
+            userId: formUser?.user?.id || firebaseUser?.id || "guest",
+
+            // That's it! Under 100 characters
+          },
+          // ✅ Everything else stays as regular fields for YOUR backend
           total: totalAll,
           subtotal: total,
           tax,
           shipping: shippingPrice,
-          metadata,
           amount,
           successUrl: `${window.location.origin}/order?session_id={CHECKOUT_SESSION_ID}`,
           cancelUrl: `${window.location.origin}/cart`,
+          // ✅ Full customer data for your database
+          customerData: {
+            fullName: shipping?.fullName,
+            email: formUser?.user?.email || firebaseUser?.email,
+            phone: shipping?.fullPhone,
+            address: shipping?.address,
+            city: shipping?.city,
+            country: shipping?.country,
+            postalCode: shipping?.postalCode,
+            cart: JSON.stringify(sellingProduct),
+            companyName: "DESIRE",
+            companyAddress: "123 ain naaja street",
+            companyPhoneNumber: "+123540016247",
+            companyCity: "Algiers",
+            companyPostalCode: "16000",
+            companyState: "Algeria",
+          },
         }),
       });
+      console.log("📡 Response status:", response.status);
 
       // ✅ Add response validation
       if (!response.ok) {
