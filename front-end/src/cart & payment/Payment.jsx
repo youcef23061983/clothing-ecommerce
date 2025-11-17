@@ -278,12 +278,19 @@ const Payment = () => {
 
   const sellingProduct = cart.map((item) => ({
     id: item.id,
+    product_name: item.product_name,
+    amount: item.amount,
+    unitPrice: item?.newPrice || item?.price,
+    totalPrice: (item?.newPrice || item?.price) * item?.amount,
+    image: item?.images?.[0],
+  }));
+  const metadatatProducts = cart.map((item) => ({
+    id: item.id,
     product_name: item.product_name?.substring(0, 25),
     amount: item.amount,
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
     image: item?.images?.[0],
-    // description: item?.description,
   }));
 
   console.log("sellingProduct", sellingProduct);
@@ -300,7 +307,7 @@ const Payment = () => {
         country: shipping?.country || "Not provided",
         postalCode: shipping?.postalCode || "Not provided",
         userId: formUser?.user?.id || firebaseUser?.id || "guest",
-        cart: JSON.stringify(sellingProduct),
+        cart: JSON.stringify(metadatatProducts),
         // companyName: "DESIRE",
         // companyLogoPath: `${window.location.href}/images/desire.png`,
         // companyAddress: "123 ain naaja street",
