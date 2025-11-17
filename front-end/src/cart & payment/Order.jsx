@@ -146,9 +146,9 @@ const Order = () => {
   const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
-    if (!payment.payment) {
-      navigate("/payment");
-    }
+    // if (!payment.payment) {
+    //   navigate("/payment");
+    // }
     document.title = "Order";
   }, [payment]);
   const tax = parseFloat((total * 0.1).toFixed(2));
