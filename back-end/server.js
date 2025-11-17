@@ -353,7 +353,9 @@ app.post(
         const fullName =
           customerDetails.name || metadata.fullName || "Valued Customer";
         const phone = customerDetails.phone || metadata.phone || null;
-        const stripe_payment_intent_id = session.payment_intent.id;
+        const stripe_payment_intent_id = session.payment_intent
+          ? session.payment_intent.id
+          : session.payment_intent;
         const stripe_checkout_session_id = session.id; // cs_test_...
 
         const amount = metadata.amount;
@@ -383,6 +385,11 @@ app.post(
           metadata.shipping || (session.shipping_cost?.amount_total || 0) / 100;
         const sellingProduct = JSON.parse(metadata.cart || "[]");
         const payment = "stripe" || "no method";
+        console.log("💰 Payment References:", {
+          sessionId: stripe_checkout_session_id,
+          paymentIntentId: stripe_payment_intent_id,
+          paymentIntentType: typeof session.payment_intent,
+        });
 
         // Log important details
 
