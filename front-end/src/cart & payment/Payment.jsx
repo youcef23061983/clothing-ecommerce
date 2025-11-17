@@ -278,7 +278,7 @@ const Payment = () => {
 
   const sellingProduct = cart.map((item) => ({
     id: item.id,
-    product_name: item.product_name,
+    product_name: item.product_name?.substring(0, 25),
     amount: item.amount,
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
