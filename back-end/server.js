@@ -81,34 +81,34 @@ app.use(async (req, res, next) => {
   }
 });
 
-// app.post("/create-payment-intent", async (req, res) => {
-//   const { totalInCents } = req.body;
+app.post("/create-payment-intent", async (req, res) => {
+  const { totalInCents } = req.body;
 
-//   if (!totalInCents || totalInCents <= 0) {
-//     return res.status(400).json({ error: "Invalid amount" });
-//   }
+  if (!totalInCents || totalInCents <= 0) {
+    return res.status(400).json({ error: "Invalid amount" });
+  }
 
-//   try {
-//     const paymentIntents = await stripe.paymentIntents.create({
-//       amount: totalInCents,
-//       currency: "usd",
+  try {
+    const paymentIntents = await stripe.paymentIntents.create({
+      amount: totalInCents,
+      currency: "usd",
 
-//       automatic_payment_methods: { enabled: true },
-//     });
-//     res.json({
-//       clientSecret: paymentIntents.client_secret,
-//       // paymentIntentId: paymentIntents.id,
-//     }); // Send back clientSecret
-//   } catch (error) {
-//     res.status(400).json({ error: error.message }); // Handle any errors
-//   }
-// });
+      automatic_payment_methods: { enabled: true },
+    });
+    res.json({
+      clientSecret: paymentIntents.client_secret,
+      // paymentIntentId: paymentIntents.id,
+    }); // Send back clientSecret
+  } catch (error) {
+    res.status(400).json({ error: error.message }); // Handle any errors
+  }
+});
 
-// app.get("/config", (req, res) => {
-//   res.json({
-//     publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
-//   });
-// });
+app.get("/config", (req, res) => {
+  res.json({
+    publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
+  });
+});
 // app.post("/retrieve-customer-data", async (req, res) => {
 //   try {
 //     const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
