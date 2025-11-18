@@ -384,7 +384,7 @@ const Payment = () => {
 
         // Auto-navigate after 2 seconds
         // setTimeout(() => {
-        navigate("/order");
+        // navigate("/order");
         // }, 2000);
       } catch (err) {
         console.error("Failed to save order:", err);
