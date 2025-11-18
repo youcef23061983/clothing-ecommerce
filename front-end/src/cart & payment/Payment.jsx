@@ -49,25 +49,25 @@
 //       .catch((error) => console.error("Error fetching config:", error));
 //   }, []);
 
-//   useEffect(() => {
-//     fetch(`${url}/create-payment-intent`, {
-//       // Correct URL for create-payment-intent
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ totalInCents }),
+// useEffect(() => {
+//   fetch(`${url}/create-payment-intent`, {
+//     // Correct URL for create-payment-intent
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({ totalInCents }),
+//   })
+//     .then(async (r) => {
+//       if (!r.ok) {
+//         throw new Error("Failed to fetch client secret");
+//       }
+//       const { clientSecret } = await r.json();
+//       console.log("Client Secret:", clientSecret);
+//       setClientSecret(clientSecret);
 //     })
-//       .then(async (r) => {
-//         if (!r.ok) {
-//           throw new Error("Failed to fetch client secret");
-//         }
-//         const { clientSecret } = await r.json();
-//         console.log("Client Secret:", clientSecret);
-//         setClientSecret(clientSecret);
-//       })
-//       .catch((error) => console.error("Error fetching client secret:", error));
-//   }, []);
+//     .catch((error) => console.error("Error fetching client secret:", error));
+// }, []);
 
 //   useEffect(() => {
 //     document.title = "Payment";
