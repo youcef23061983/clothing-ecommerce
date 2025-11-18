@@ -109,91 +109,182 @@ app.get("/config", (req, res) => {
     publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
   });
 });
+// app.post("/retrieve-customer-data", async (req, res) => {
+//   try {
+//     const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
+//       req.body;
+
+//     // const isTestMode = process.env.NODE_ENV === "development";
+
+//     // // Test mode mock data
+//     // if (isTestMode) {
+//     //   return res.json({
+//     //     fullName: "John Doe",
+//     //     name: "John Doe",
+//     //     email: "testcustomer@example.com",
+//     //     country: "US",
+//     //     state: "CA",
+//     //     city: "Testville",
+//     //     street: "123 Test Street",
+//     //     transactionId: sessionId || "pi_mock_123456789",
+//     //     postalCode: "12345",
+//     //     phone: "+15551234567",
+//     //     paymentMethod: "visa",
+//     //     last4: "4242",
+//     //     amount: "10.00",
+//     //     currency: "USD",
+//     //     created: new Date().toISOString(),
+//     //   });
+//     // }
+
+//     // Production mode - retrieve real Stripe data
+//     const session = await stripe.sessions.retrieve(paymentIntentId, {
+//       expand: ["payment_method"],
+//     });
+//     const formatAddress = (address) =>
+//       [
+//         address.line1,
+//         address.line2,
+//         `${address.city}, ${address.state} ${address.postal_code}`,
+//         address.country,
+//       ]
+//         .filter(Boolean)
+//         .join("\n");
+
+//     const customerData = {
+//       amount: total || (session.amount / 100).toFixed(2) || "0.00",
+//       fullName: shipping?.fullName || "Not provided",
+//       street: shipping?.address || "",
+//       email: formUser.user.email || firebaseUser?.email || "Not provided",
+//       country: shipping?.country || "N/A",
+//       city: shipping?.city || "",
+//       postalCode: shipping?.postalCode || "",
+//       items: cart,
+//       // fullName:
+//       //   session.payment_method?.billing_details?.name || "Not provided",
+
+//       // email:
+//       //   session.receipt_email ||
+//       //   session.payment_method?.billing_details?.email ||
+//       //   "Not provided",
+//       // country:
+//       //   session.payment_method?.billing_details?.address?.country ||
+//       //   "N/A",
+//       // state:
+//       //   session.payment_method?.billing_details?.address?.state || "",
+//       // address: session.billing_details?.address
+//       //   ? formatAddress(session.billing_details.address)
+//       //   : "No address provided",
+//       // city: session.payment_method?.billing_details?.address?.city || "",
+//       // street:
+//       //   session.payment_method?.billing_details?.address?.line1 || "",
+
+//       transactionId: session.id,
+//       postalCode:
+//         session.payment_method?.billing_details?.address?.postal_code || "",
+
+//       phone: session.payment_method?.billing_details?.phone || "",
+//       paymentMethod: session.payment_method?.card?.brand || "Unknown",
+//       last4: session.payment_method?.card?.last4 || "****",
+//       currency: session.currency.toUpperCase() || "USD",
+//       created:
+//         new Date(session.created * 1000).toISOString() ||
+//         new Date().toISOString(),
+//     };
+
+//     res.json(customerData);
+//   } catch (err) {
+//     res.status(500).json({
+//       error: "Failed to retrieve customer data",
+//       details: err.message,
+//     });
+//   }
+// });
 app.post("/retrieve-customer-data", async (req, res) => {
   try {
-    const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
+    const { paymentIntentId, cart, shipping, formUser, firebaseUser } =
       req.body;
 
-    // const isTestMode = process.env.NODE_ENV === "development";
+    console.log("📥 Received request with paymentIntentId:", paymentIntentId);
 
-    // // Test mode mock data
-    // if (isTestMode) {
-    //   return res.json({
-    //     fullName: "John Doe",
-    //     name: "John Doe",
-    //     email: "testcustomer@example.com",
-    //     country: "US",
-    //     state: "CA",
-    //     city: "Testville",
-    //     street: "123 Test Street",
-    //     transactionId: sessionId || "pi_mock_123456789",
-    //     postalCode: "12345",
-    //     phone: "+15551234567",
-    //     paymentMethod: "visa",
-    //     last4: "4242",
-    //     amount: "10.00",
-    //     currency: "USD",
-    //     created: new Date().toISOString(),
-    //   });
-    // }
+    if (!paymentIntentId) {
+      return res.status(400).json({
+        error: "Missing paymentIntentId",
+        details: "paymentIntentId is required",
+      });
+    }
 
-    // Production mode - retrieve real Stripe data
-    const session = await stripe.sessions.retrieve(paymentIntentId, {
-      expand: ["payment_method"],
-    });
-    const formatAddress = (address) =>
-      [
-        address.line1,
-        address.line2,
-        `${address.city}, ${address.state} ${address.postal_code}`,
-        address.country,
-      ]
-        .filter(Boolean)
-        .join("\n");
+    // ✅ CORRECT: Use paymentIntents.retrieve instead of sessions.retrieve
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      paymentIntentId,
+      {
+        expand: ["payment_method"],
+      }
+    );
 
-    const customerData = {
-      amount: total || (session.amount / 100).toFixed(2) || "0.00",
-      fullName: shipping?.fullName || "Not provided",
-      street: shipping?.address || "",
-      email: formUser.user.email || firebaseUser?.email || "Not provided",
-      country: shipping?.country || "N/A",
-      city: shipping?.city || "",
-      postalCode: shipping?.postalCode || "",
-      items: cart,
-      // fullName:
-      //   session.payment_method?.billing_details?.name || "Not provided",
+    console.log("✅ Retrieved payment intent:", paymentIntent.id);
 
-      // email:
-      //   session.receipt_email ||
-      //   session.payment_method?.billing_details?.email ||
-      //   "Not provided",
-      // country:
-      //   session.payment_method?.billing_details?.address?.country ||
-      //   "N/A",
-      // state:
-      //   session.payment_method?.billing_details?.address?.state || "",
-      // address: session.billing_details?.address
-      //   ? formatAddress(session.billing_details.address)
-      //   : "No address provided",
-      // city: session.payment_method?.billing_details?.address?.city || "",
-      // street:
-      //   session.payment_method?.billing_details?.address?.line1 || "",
+    // Get the session ID from payment intent metadata (if available)
+    const sessionId = paymentIntent.metadata?.checkout_session_id;
+    let session = null;
 
-      transactionId: session.id,
-      postalCode:
-        session.payment_method?.billing_details?.address?.postal_code || "",
+    if (sessionId) {
+      session = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ["customer_details", "line_items"],
+      });
+    }
 
-      phone: session.payment_method?.billing_details?.phone || "",
-      paymentMethod: session.payment_method?.card?.brand || "Unknown",
-      last4: session.payment_method?.card?.last4 || "****",
-      currency: session.currency.toUpperCase() || "USD",
-      created:
-        new Date(session.created * 1000).toISOString() ||
-        new Date().toISOString(),
+    // Use reliable data sources
+    const customerDetails = session?.customer_details || {};
+    const paymentMethod = paymentIntent.payment_method;
+
+    // Validate phone for database constraint
+    const validatePhone = (phone) => {
+      if (!phone || phone === "Not provided") return null;
+      const cleaned = phone.toString().replace(/[\s\-\(\)\.]/g, "");
+      const e164Regex = /^\+[1-9]\d{1,14}$/;
+      return e164Regex.test(cleaned) ? cleaned : null;
     };
 
+    const rawPhone = customerDetails.phone || shipping?.phone || "";
+    const validatedPhone = validatePhone(rawPhone);
+
+    const customerData = {
+      // Payment Information
+      transactionId: paymentIntent.id,
+      amount: (paymentIntent.amount / 100).toFixed(2),
+      currency: paymentIntent.currency.toUpperCase(),
+      created: new Date(paymentIntent.created * 1000).toISOString(),
+
+      // Customer Contact Info
+      email:
+        formUser?.user?.email ||
+        firebaseUser?.email ||
+        customerDetails.email ||
+        "no-email@example.com",
+      fullName: shipping?.fullName || customerDetails.name || "Valued Customer",
+      phone: validatedPhone,
+
+      // Address Information
+      street: shipping?.address || customerDetails.address?.line1 || "",
+      city: shipping?.city || customerDetails.address?.city || "",
+      country: shipping?.country || customerDetails.address?.country || "N/A",
+      postalCode:
+        shipping?.postalCode || customerDetails.address?.postal_code || "",
+      state: shipping?.state || customerDetails.address?.state || "",
+
+      // Payment Method Details
+      paymentMethod: paymentMethod?.card?.brand || "card",
+      last4: paymentMethod?.card?.last4 || "****",
+
+      // Your Cart Data
+      items: cart,
+    };
+
+    console.log("✅ Customer data prepared:", customerData);
     res.json(customerData);
   } catch (err) {
+    console.error("❌ Error in /retrieve-customer-data:", err);
     res.status(500).json({
       error: "Failed to retrieve customer data",
       details: err.message,
