@@ -74,7 +74,10 @@ const CheckoutForm = ({ onSuccess }) => {
 
           const fullCustomerData = await response.json();
           setCustomerData(fullCustomerData);
-          onSuccess(); // Pass to parent component
+          onSuccess({
+            paymentIntentId: paymentIntent.id,
+            sessionId: fullCustomerData.sessionId, // From your backend
+          });
           console.log(fullCustomerData);
         }
       } else {
