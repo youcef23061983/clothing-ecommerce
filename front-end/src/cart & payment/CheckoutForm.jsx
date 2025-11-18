@@ -384,7 +384,7 @@ const CheckoutForm = ({ onSuccess }) => {
                 <div>
                   <p className="text-gray-600 text-sm">Total</p>
                   <p className="text-xl font-bold text-purple-600">
-                    {totalAll} $
+                    {customerData.amount || totalAll} $
                   </p>
                 </div>
                 <div className="break-all">

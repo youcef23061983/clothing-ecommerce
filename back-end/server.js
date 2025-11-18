@@ -238,16 +238,8 @@ app.post("/retrieve-customer-data", async (req, res) => {
     const customerDetails = session?.customer_details || {};
     const paymentMethod = paymentIntent.payment_method;
 
-    // Validate phone for database constraint
-    const validatePhone = (phone) => {
-      if (!phone || phone === "Not provided") return null;
-      const cleaned = phone.toString().replace(/[\s\-\(\)\.]/g, "");
-      const e164Regex = /^\+[1-9]\d{1,14}$/;
-      return e164Regex.test(cleaned) ? cleaned : null;
-    };
-
-    const rawPhone = customerDetails.phone || shipping?.phone || "";
-    const validatedPhone = validatePhone(rawPhone);
+    const validatedPhone = customerDetails.phone || shipping?.phone || "";
+    // const validatedPhone = validatePhone(rawPhone);
 
     const customerData = {
       // Payment Information
