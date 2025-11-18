@@ -1,242 +1,3 @@
-// import { useContext, useEffect, useState } from "react";
-// import img from "/images/men/banner/payment.jpg";
-// import { useNavigate } from "react-router-dom";
-// import { AppContext } from "../data managment/AppProvider";
-// import Checkout from "./Checkout";
-// import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-// import { loadStripe } from "@stripe/stripe-js";
-// import { Elements } from "@stripe/react-stripe-js";
-// import { motion } from "framer-motion";
-// import CheckoutForm from "./CheckoutForm";
-// import { useCallback } from "react";
-// import { useMutation } from "@tanstack/react-query";
-
-// const Payment = () => {
-//   const { cartPayment, total, shipping, cart, formUser, firebaseUser, amount } =
-//     useContext(AppContext);
-
-//   const [payment, setPayment] = useState({});
-//   const navigate = useNavigate();
-//   const [paymentSucceeded, setPaymentSucceeded] = useState(false);
-//   const [stripePromise, setStripePromise] = useState(null);
-//   const [clientSecret, setClientSecret] = useState(null);
-//   const [isSubmitting, setIsSubmitting] = useState(false);
-//   const tax = parseFloat((total * 0.1).toFixed(2));
-//   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
-
-//   const totalAll = parseFloat((total + shippingPrice + tax).toFixed(2));
-
-//   const totalInCents = Math.round(totalAll * 100);
-
-//   console.log("total", total, typeof total);
-//   console.log("totalall", totalAll, typeof totalAll);
-//   console.log("totalincent", totalInCents, typeof totalInCents);
-
-//   const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
-
-//   useEffect(() => {
-//     document.title = "Payment";
-//     fetch(`${url}/config`) // Correct URL for the config
-//       .then(async (r) => {
-//         const { publishableKey } = await r.json();
-//         setStripePromise(
-//           loadStripe(publishableKey, {
-//             locale: "en", // Force English
-//           })
-//         ); // Use publishableKey
-//         console.log("Publishable Key:", publishableKey);
-//       })
-//       .catch((error) => console.error("Error fetching config:", error));
-//   }, []);
-
-//   useEffect(() => {
-//     fetch(`${url}/create-payment-intent`, {
-//       // Correct URL for create-payment-intent
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ totalInCents }),
-//     })
-//       .then(async (r) => {
-//         if (!r.ok) {
-//           throw new Error("Failed to fetch client secret");
-//         }
-//         const { clientSecret } = await r.json();
-//         console.log("Client Secret:", clientSecret);
-//         setClientSecret(clientSecret);
-//       })
-//       .catch((error) => console.error("Error fetching client secret:", error));
-//   }, []);
-
-//   useEffect(() => {
-//     document.title = "Payment";
-//   }, []);
-
-//   const handleChange = useCallback((e) => {
-//     const { name, value } = e.target;
-//     setPayment((prevPayment) => ({
-//       ...prevPayment,
-//       [name]: value,
-//     }));
-//   }, []);
-
-//   const paymentSubmit = useCallback(() => {
-//     setIsSubmitting(true);
-//     cartPayment(payment);
-//     navigate("/order");
-//   }, [payment, cartPayment, navigate]);
-
-//   const sellingProduct = cart.map((item) => ({
-//     id: item.id,
-//     product_name: item.product_name,
-//     amount: item.amount,
-//     unitPrice: item?.newPrice || item?.price,
-//     totalPrice: (item?.newPrice || item?.price) * item?.amount,
-//   }));
-//   console.log("my product", {
-//     ...shipping,
-//     sellingProduct,
-//     subtotal: total,
-//     tax,
-//     total: totalAll,
-//     payment: payment.payment,
-//     tbluser_id: formUser?.user?.id || firebaseUser?.id,
-//   });
-
-//   const sellingFun = async () => {
-//     const res = await fetch(`${url}/sell`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         ...shipping,
-//         sellingProduct,
-//         subtotal: total,
-//         tax,
-//         shipping: shippingPrice,
-//         amount,
-//         total: totalAll,
-//         payment: payment.payment,
-//         tbluser_id: formUser?.user?.id || firebaseUser?.id,
-//       }),
-//     });
-//   };
-
-//   const { data: addSelling, mutate: sellingMutate } = useMutation({
-//     mutationFn: sellingFun,
-//   });
-
-//   const handleSuccess = useCallback(async () => {
-//     setIsSubmitting(true);
-//     try {
-//       await sellingMutate(); // wait for mutation to complete
-//       cartPayment(payment);
-//       setPaymentSucceeded(true);
-//     } catch (err) {
-//       console.error("Failed to save order:", err);
-//     } finally {
-//       setIsSubmitting(false);
-//     }
-//   }, [sellingMutate, payment, cartPayment]);
-
-//   const paypalClienId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
-//   const initialOptions = {
-//     "client-id": paypalClienId,
-//     currency: "USD",
-//     intent: "capture",
-//     components: "buttons",
-//     locale: "en_US",
-//   };
-
-//   const containerVariants = {
-//     hidden: { x: "100vw", opacity: 0 },
-//     visible: {
-//       x: 0,
-//       opacity: 1,
-//       transition: {
-//         duration: 2,
-//         type: "spring",
-//         stiffness: 50,
-//         when: "beforeChildren",
-//         staggerChildren: 1,
-//       },
-//     },
-//     exit: {
-//       x: "-100vw",
-//       transition: { ease: "easeInOut" },
-//     },
-//   };
-//   const childVariants = {
-//     hidden: { opacity: 0 },
-//     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
-//   };
-//   return (
-//     <motion.div
-//       variants={containerVariants}
-//       initial="hidden"
-//       animate="visible"
-//       exit="exit"
-//     >
-//       <motion.div className="headerimages" variants={childVariants}>
-//         <img src={img} alt="payment" loading="lazy" className="detailImg" />
-//       </motion.div>
-//       <motion.div className="loginContainer" variants={containerVariants}>
-//         <h3>Payment Method</h3>
-//         <form className="login-form">
-//           <label>
-//             Paypal:
-//             <input
-//               type="radio"
-//               id="paypal"
-//               name="payment"
-//               value="paypal"
-//               onChange={handleChange}
-//               checked={payment.payment === "paypal"}
-//             />
-//           </label>{" "}
-//           <br />
-//           <label>
-//             Stripe:
-//             <input
-//               type="radio"
-//               id="stripe"
-//               name="payment"
-//               value="stripe"
-//               onChange={handleChange}
-//               checked={payment.payment === "stripe"}
-//             />
-//           </label>
-//           <br />
-//         </form>
-//         {payment.payment === "paypal" && (
-//           <PayPalScriptProvider options={initialOptions}>
-//             <Checkout onSuccess={handleSuccess} />
-//           </PayPalScriptProvider>
-//         )}
-//         {payment.payment === "stripe" && stripePromise && clientSecret && (
-//           <Elements stripe={stripePromise} options={{ clientSecret }}>
-//             <CheckoutForm onSuccess={handleSuccess} />
-//           </Elements>
-//         )}
-
-//         {paymentSucceeded && (
-//           <button
-//             onClick={paymentSubmit}
-//             className="addCart"
-//             disabled={isSubmitting}
-//           >
-//             {isSubmitting ? "Processing..." : "Continue"}
-//           </button>
-//         )}
-//       </motion.div>
-//     </motion.div>
-//   );
-// };
-
-// export default Payment;
-
 import { useContext, useEffect, useState } from "react";
 import img from "/images/men/banner/payment.jpg";
 import { useNavigate } from "react-router-dom";
@@ -260,50 +21,57 @@ const Payment = () => {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [stripeData, setStripeData] = useState(null); // ✅ NEW: Store stripe data
-
   const tax = parseFloat((total * 0.1).toFixed(2));
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
+
   const totalAll = parseFloat((total + shippingPrice + tax).toFixed(2));
+
   const totalInCents = Math.round(totalAll * 100);
+
+  console.log("total", total, typeof total);
+  console.log("totalall", totalAll, typeof totalAll);
+  console.log("totalincent", totalInCents, typeof totalInCents);
 
   const url = import.meta.env.VITE_PUBLIC_PRODUCTS_URL;
 
   useEffect(() => {
     document.title = "Payment";
-    fetch(`${url}/config`)
+    fetch(`${url}/config`) // Correct URL for the config
       .then(async (r) => {
         const { publishableKey } = await r.json();
         setStripePromise(
           loadStripe(publishableKey, {
-            locale: "en",
+            locale: "en", // Force English
           })
-        );
+        ); // Use publishableKey
+        console.log("Publishable Key:", publishableKey);
       })
       .catch((error) => console.error("Error fetching config:", error));
-  }, [url]);
+  }, []);
 
   useEffect(() => {
-    if (payment.payment === "stripe") {
-      fetch(`${url}/create-payment-intent`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ totalInCents }),
+    fetch(`${url}/create-payment-intent`, {
+      // Correct URL for create-payment-intent
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ totalInCents }),
+    })
+      .then(async (r) => {
+        if (!r.ok) {
+          throw new Error("Failed to fetch client secret");
+        }
+        const { clientSecret } = await r.json();
+        console.log("Client Secret:", clientSecret);
+        setClientSecret(clientSecret);
       })
-        .then(async (r) => {
-          if (!r.ok) {
-            throw new Error("Failed to fetch client secret");
-          }
-          const { clientSecret } = await r.json();
-          setClientSecret(clientSecret);
-        })
-        .catch((error) =>
-          console.error("Error fetching client secret:", error)
-        );
-    }
-  }, [payment.payment, totalInCents, url]); // ✅ Only fetch when stripe is selected
+      .catch((error) => console.error("Error fetching client secret:", error));
+  }, []);
+
+  useEffect(() => {
+    document.title = "Payment";
+  }, []);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -311,10 +79,6 @@ const Payment = () => {
       ...prevPayment,
       [name]: value,
     }));
-    // Reset client secret when switching payment methods
-    if (name === "payment" && value !== "stripe") {
-      setClientSecret(null);
-    }
   }, []);
 
   const paymentSubmit = useCallback(() => {
@@ -330,8 +94,36 @@ const Payment = () => {
     unitPrice: item?.newPrice || item?.price,
     totalPrice: (item?.newPrice || item?.price) * item?.amount,
   }));
+  console.log("my product", {
+    ...shipping,
+    sellingProduct,
+    subtotal: total,
+    tax,
+    total: totalAll,
+    payment: payment.payment,
+    tbluser_id: formUser?.user?.id || firebaseUser?.id,
+  });
 
-  // ✅ FIXED: sellingFun now accepts stripeData parameter
+  // const sellingFun = async () => {
+  //   const res = await fetch(`${url}/sell`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       ...shipping,
+  //       sellingProduct,
+  //       subtotal: total,
+  //       tax,
+  //       shipping: shippingPrice,
+  //       amount,
+  //       total: totalAll,
+  //       payment: payment.payment,
+  //       tbluser_id: formUser?.user?.id || firebaseUser?.id,
+  //     }),
+  //   });
+  // };
+
   const sellingFun = async (stripeData = {}) => {
     const res = await fetch(`${url}/sell`, {
       method: "POST",
@@ -348,10 +140,9 @@ const Payment = () => {
         total: totalAll,
         payment: payment.payment,
         tbluser_id: formUser?.user?.id || firebaseUser?.id,
-        // ✅ ADD STRIPE DATA (will be null for PayPal)
-        stripe_payment_intent_id: stripeData.paymentIntentId || null,
-        stripe_checkout_session_id: stripeData.sessionId || null,
-        fullPhone: shipping?.fullPhone, // Make sure this is E.164 formatted
+        // ✅ USE PAYMENT INTENT ID ONLY
+        stripe_payment_intent_id: stripeData.paymentIntentId,
+        stripe_checkout_session_id: null, // Will be null for Payment Element
       }),
     });
 
@@ -361,46 +152,43 @@ const Payment = () => {
 
     return res.json();
   };
-
-  const { mutate: sellingMutate } = useMutation({
+  const { data: addSelling, mutate: sellingMutate } = useMutation({
     mutationFn: sellingFun,
-    onSuccess: () => {
-      console.log("✅ Order saved successfully");
-    },
-    onError: (error) => {
-      console.error("❌ Failed to save order:", error);
-    },
   });
 
-  // ✅ FIXED: handleSuccess now accepts stripeData parameter
+  // const handleSuccess = useCallback(async () => {
+  //   setIsSubmitting(true);
+  //   try {
+  //     await sellingMutate(); // wait for mutation to complete
+  //     cartPayment(payment);
+  //     setPaymentSucceeded(true);
+  //   } catch (err) {
+  //     console.error("Failed to save order:", err);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // }, [sellingMutate, payment, cartPayment]);
   const handleSuccess = useCallback(
     async (stripeData = {}) => {
       setIsSubmitting(true);
       try {
-        // ✅ Pass stripeData to the mutation
-        await sellingMutate(stripeData);
+        await sellingMutate(stripeData); // Pass stripe data
         cartPayment(payment);
         setPaymentSucceeded(true);
-
-        // Auto-navigate after 2 seconds
-        // setTimeout(() => {
-        // navigate("/order");
-        // }, 2000);
       } catch (err) {
         console.error("Failed to save order:", err);
       } finally {
         setIsSubmitting(false);
       }
     },
-    [sellingMutate, payment, cartPayment, navigate]
+    [sellingMutate, payment, cartPayment]
   );
 
-  // ✅ Separate success handler for PayPal (no stripe data)
+  // ✅ SEPARATE HANDLERS
   const handlePayPalSuccess = useCallback(async () => {
     await handleSuccess(); // No stripe data for PayPal
   }, [handleSuccess]);
 
-  // ✅ Separate success handler for Stripe (with stripe data)
   const handleStripeSuccess = useCallback(
     async (stripeData) => {
       await handleSuccess(stripeData);
@@ -435,12 +223,10 @@ const Payment = () => {
       transition: { ease: "easeInOut" },
     },
   };
-
   const childVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
   };
-
   return (
     <motion.div
       variants={containerVariants}
@@ -451,11 +237,11 @@ const Payment = () => {
       <motion.div className="headerimages" variants={childVariants}>
         <img src={img} alt="payment" loading="lazy" className="detailImg" />
       </motion.div>
-
       <motion.div className="loginContainer" variants={containerVariants}>
         <h3>Payment Method</h3>
         <form className="login-form">
           <label>
+            Paypal:
             <input
               type="radio"
               id="paypal"
@@ -464,10 +250,10 @@ const Payment = () => {
               onChange={handleChange}
               checked={payment.payment === "paypal"}
             />
-            PayPal
-          </label>
+          </label>{" "}
           <br />
           <label>
+            Stripe:
             <input
               type="radio"
               id="stripe"
@@ -476,17 +262,14 @@ const Payment = () => {
               onChange={handleChange}
               checked={payment.payment === "stripe"}
             />
-            Stripe
           </label>
           <br />
         </form>
-
         {payment.payment === "paypal" && (
           <PayPalScriptProvider options={initialOptions}>
             <Checkout onSuccess={handlePayPalSuccess} />
           </PayPalScriptProvider>
         )}
-
         {payment.payment === "stripe" && stripePromise && clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <CheckoutForm onSuccess={handleStripeSuccess} />
@@ -494,16 +277,13 @@ const Payment = () => {
         )}
 
         {paymentSucceeded && (
-          <div className="success-message">
-            <p>✅ Payment successful! Redirecting to order page...</p>
-            <button
-              onClick={paymentSubmit}
-              className="addCart"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Processing..." : "Continue to Order"}
-            </button>
-          </div>
+          <button
+            onClick={paymentSubmit}
+            className="addCart"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing..." : "Continue"}
+          </button>
         )}
       </motion.div>
     </motion.div>
