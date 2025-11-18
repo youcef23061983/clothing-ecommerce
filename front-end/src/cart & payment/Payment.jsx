@@ -172,6 +172,8 @@ const Payment = () => {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
   };
+  console.log("shipping:", shipping);
+
   return (
     <motion.div
       variants={containerVariants}
