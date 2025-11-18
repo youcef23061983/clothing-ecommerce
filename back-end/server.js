@@ -223,6 +223,30 @@ app.post("/retrieve-customer-data", async (req, res) => {
     );
 
     console.log("✅ Retrieved payment intent:", paymentIntent.id);
+    // SIMPLIFIED Phone validation - just use what's already formatted
+    const validatePhone = (phone) => {
+      if (!phone || phone === "Not provided") return null;
+
+      // Your frontend already formats to E.164, so just validate
+      const e164Regex = /^\+[1-9]\d{1,14}$/;
+      return e164Regex.test(phone) ? phone : null;
+    };
+
+    // Use the phone that's already formatted by your frontend
+    const rawPhone = shipping?.phone || "";
+    const validatedPhone = validatePhone(rawPhone);
+
+    console.log("📞 Phone validation:", {
+      rawPhone,
+      validatedPhone,
+      isValid: !!validatedPhone,
+    });
+    // In your backend, before saving
+    console.log("📞 Phone Debug:", {
+      shippingPhone: shipping?.phone,
+      isValid: validatePhone(shipping?.phone),
+      matchesConstraint: /^\+[1-9]\d{1,14}$/.test(shipping?.phone || ""),
+    });
 
     // Get the session ID from payment intent metadata (if available)
     const sessionId = paymentIntent.metadata?.checkout_session_id;
@@ -238,7 +262,7 @@ app.post("/retrieve-customer-data", async (req, res) => {
     const customerDetails = session?.customer_details || {};
     const paymentMethod = paymentIntent.payment_method;
 
-    const validatedPhone = customerDetails.phone || shipping?.phone || "";
+    const finalPhone = validatedPhone || shipping?.phone || null;
     // const validatedPhone = validatePhone(rawPhone);
 
     const customerData = {
@@ -255,7 +279,7 @@ app.post("/retrieve-customer-data", async (req, res) => {
         customerDetails.email ||
         "no-email@example.com",
       fullName: shipping?.fullName || customerDetails.name || "Valued Customer",
-      phone: validatedPhone,
+      phone: finalPhone,
 
       // Address Information
       street: shipping?.address || customerDetails.address?.line1 || "",
