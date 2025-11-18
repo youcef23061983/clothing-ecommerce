@@ -422,17 +422,6 @@ const Shipping = () => {
             </select>
           </label>{" "}
           <br />
-          {/* <label>
-            Phone:
-            <input
-              type="number"
-              name="phone"
-              value={shipping.phone || ""}
-              onChange={handleChange}
-              className="input"
-            />
-          </label>{" "} */}
-          {/* <br /> */}
           <label>
             Phone:
             <input
