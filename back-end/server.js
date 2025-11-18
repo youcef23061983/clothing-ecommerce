@@ -246,6 +246,8 @@ app.post("/retrieve-customer-data", async (req, res) => {
     const customerData = {
       // Payment Information
       transactionId: paymentIntent.id,
+      sessionId: sessionId,
+
       amount: (paymentIntent.amount / 100).toFixed(2),
       currency: paymentIntent.currency.toUpperCase(),
       created: new Date(paymentIntent.created * 1000).toISOString(),
