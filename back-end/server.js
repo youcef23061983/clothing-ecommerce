@@ -81,34 +81,34 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.post("/create-payment-intent", async (req, res) => {
-  const { totalInCents } = req.body;
+// app.post("/create-payment-intent", async (req, res) => {
+//   const { totalInCents } = req.body;
 
-  if (!totalInCents || totalInCents <= 0) {
-    return res.status(400).json({ error: "Invalid amount" });
-  }
+//   if (!totalInCents || totalInCents <= 0) {
+//     return res.status(400).json({ error: "Invalid amount" });
+//   }
 
-  try {
-    const paymentIntents = await stripe.paymentIntents.create({
-      amount: totalInCents,
-      currency: "usd",
+//   try {
+//     const paymentIntents = await stripe.paymentIntents.create({
+//       amount: totalInCents,
+//       currency: "usd",
 
-      automatic_payment_methods: { enabled: true },
-    });
-    res.json({
-      clientSecret: paymentIntents.client_secret,
-      // paymentIntentId: paymentIntents.id,
-    }); // Send back clientSecret
-  } catch (error) {
-    res.status(400).json({ error: error.message }); // Handle any errors
-  }
-});
+//       automatic_payment_methods: { enabled: true },
+//     });
+//     res.json({
+//       clientSecret: paymentIntents.client_secret,
+//       // paymentIntentId: paymentIntents.id,
+//     }); // Send back clientSecret
+//   } catch (error) {
+//     res.status(400).json({ error: error.message }); // Handle any errors
+//   }
+// });
 
-app.get("/config", (req, res) => {
-  res.json({
-    publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
-  });
-});
+// app.get("/config", (req, res) => {
+//   res.json({
+//     publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
+//   });
+// });
 // app.post("/retrieve-customer-data", async (req, res) => {
 //   try {
 //     const { paymentIntentId, total, cart, shipping, formUser, firebaseUser } =
@@ -214,7 +214,7 @@ app.post("/retrieve-customer-data", async (req, res) => {
       });
     }
 
-    // ✅ CORRECT: Use paymentIntents.retrieve instead of sessions.retrieve
+    // ✅ CORRECT: Use paymentIntents.retrieve
     const paymentIntent = await stripe.paymentIntents.retrieve(
       paymentIntentId,
       {
@@ -224,29 +224,38 @@ app.post("/retrieve-customer-data", async (req, res) => {
 
     console.log("✅ Retrieved payment intent:", paymentIntent.id);
 
-    // In your backend, before saving
-    console.log("📞 Phone Debug:", {
-      shippingPhone: shipping?.fullPhone,
-    });
-
-    // Get the session ID from payment intent metadata (if available)
+    // ✅ FIX: Safe session access
     const sessionId = paymentIntent.metadata?.checkout_session_id;
     let session = null;
+    let customerDetails = {};
 
     if (sessionId) {
-      session = await stripe.checkout.sessions.retrieve(sessionId, {
-        expand: ["customer_details", "line_items"],
-      });
+      try {
+        session = await stripe.checkout.sessions.retrieve(sessionId, {
+          expand: ["customer_details", "line_items"],
+        });
+        customerDetails = session.customer_details || {};
+        console.log("✅ Found session with customer details");
+      } catch (sessionError) {
+        console.log("ℹ️ No session found or session retrieval failed");
+      }
     }
 
-    // Use reliable data sources
-    const customerDetails = session?.customer_details || {};
     const paymentMethod = paymentIntent.payment_method;
+
+    // ✅ FIX: Safe phone access - use optional chaining
+    const phone = customerDetails?.phone || shipping?.fullPhone || null;
+
+    console.log("📞 Phone Debug:", {
+      shippingPhone: shipping?.fullPhone,
+      sessionPhone: customerDetails?.phone,
+      finalPhone: phone,
+    });
 
     const customerData = {
       // Payment Information
       transactionId: paymentIntent.id,
-      sessionId: sessionId,
+      sessionId: sessionId, // Can be null
 
       amount: (paymentIntent.amount / 100).toFixed(2),
       currency: paymentIntent.currency.toUpperCase(),
@@ -256,18 +265,19 @@ app.post("/retrieve-customer-data", async (req, res) => {
       email:
         formUser?.user?.email ||
         firebaseUser?.email ||
-        customerDetails.email ||
+        customerDetails?.email || // ✅ FIX: optional chaining
         "no-email@example.com",
-      fullName: shipping?.fullName || customerDetails.name || "Valued Customer",
-      phone: session.customer_details?.phone || shipping?.fullPhone || null,
+      fullName:
+        shipping?.fullName || customerDetails?.name || "Valued Customer", // ✅ FIX
+      phone: phone, // ✅ FIX: Use the safely accessed phone
 
       // Address Information
-      street: shipping?.address || customerDetails.address?.line1 || "",
-      city: shipping?.city || customerDetails.address?.city || "",
-      country: shipping?.country || customerDetails.address?.country || "N/A",
+      street: shipping?.address || customerDetails?.address?.line1 || "", // ✅ FIX
+      city: shipping?.city || customerDetails?.address?.city || "", // ✅ FIX
+      country: shipping?.country || customerDetails?.address?.country || "N/A", // ✅ FIX
       postalCode:
-        shipping?.postalCode || customerDetails.address?.postal_code || "",
-      state: shipping?.state || customerDetails.address?.state || "",
+        shipping?.postalCode || customerDetails?.address?.postal_code || "", // ✅ FIX
+      state: shipping?.state || customerDetails?.address?.state || "", // ✅ FIX
 
       // Payment Method Details
       paymentMethod: paymentMethod?.card?.brand || "card",
@@ -277,7 +287,7 @@ app.post("/retrieve-customer-data", async (req, res) => {
       items: cart,
     };
 
-    console.log("✅ Customer data prepared:", customerData);
+    console.log("✅ Customer data prepared successfully");
     res.json(customerData);
   } catch (err) {
     console.error("❌ Error in /retrieve-customer-data:", err);
