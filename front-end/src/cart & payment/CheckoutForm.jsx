@@ -58,28 +58,61 @@ const CheckoutForm = ({ onSuccess }) => {
         setErrorMessage(error.message);
       } else if (paymentIntent?.status === "succeeded") {
         setMessage("Payment status: " + paymentIntent?.status + " 🎉");
-        if (paymentIntent?.status === "succeeded") {
-          // Fetch complete customer data
-          const response = await fetch(`${url}/retrieve-customer-data`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              paymentIntentId: paymentIntent.id,
-              cart,
-              shipping,
-              formUser,
-              firebaseUser,
-            }),
-          });
+        // if (paymentIntent?.status === "succeeded") {
+        //   // Fetch complete customer data
+        //   const response = await fetch(`${url}/retrieve-customer-data`, {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({
+        //       paymentIntentId: paymentIntent.id,
+        //       cart,
+        //       shipping,
+        //       formUser,
+        //       firebaseUser,
+        //     }),
+        //   });
 
-          const fullCustomerData = await response.json();
-          setCustomerData(fullCustomerData);
-          onSuccess({
-            paymentIntentId: paymentIntent.id,
-            sessionId: fullCustomerData.sessionId, // From your backend
-          });
-          console.log(fullCustomerData);
-        }
+        //   const fullCustomerData = await response.json();
+        //   setCustomerData(fullCustomerData);
+        //   onSuccess({
+        //     paymentIntentId: paymentIntent.id,
+        //     sessionId: fullCustomerData.sessionId, // From your backend
+        //   });
+        //   console.log(fullCustomerData);
+        // }
+        // ✅ GET CARD INFO DIRECTLY - no backend call needed!
+        const cardBrand = paymentIntent.payment_method?.card?.brand || "card";
+        const last4 = paymentIntent.payment_method?.card?.last4 || "****";
+
+        console.log("💳 Card details:", { cardBrand, last4 });
+
+        // ✅ CREATE CUSTOMER DATA USING YOUR FORM DATA + CARD INFO
+        const customerData = {
+          // From Stripe (payment info)
+          transactionId: paymentIntent.id,
+          amount: (paymentIntent.amount / 100).toFixed(2) || totalAll,
+          currency: paymentIntent.currency.toUpperCase(),
+          paymentMethod: cardBrand,
+          last4: last4,
+
+          // From your form (customer info)
+          email: formUser?.user?.email || firebaseUser?.email,
+          fullName: shipping?.fullName,
+          fullPhone: shipping?.fullPhone,
+          street: shipping?.address,
+          city: shipping?.city,
+          country: shipping?.country,
+          postalCode: shipping?.postalCode,
+          country: shipping?.country,
+
+          items: cart,
+        };
+
+        setCustomerData(customerData);
+        onSuccess({
+          paymentIntentId: paymentIntent.id,
+          sessionId: null, // No session ID since no backend call
+        });
       } else {
         setMessage("Unexpected payment status");
       }
@@ -276,7 +309,7 @@ const CheckoutForm = ({ onSuccess }) => {
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm">Phone</p>
-                  <p className="font-medium">{customerData.phone || "-"}</p>
+                  <p className="font-medium">{customerData.fullPhone || "-"}</p>
                 </div>
               </div>
             </div>
@@ -414,16 +447,12 @@ const CheckoutForm = ({ onSuccess }) => {
                 <div>
                   <p className="text-gray-600 text-sm">Street</p>
                   <p className="font-medium">{customerData.street || "-"}</p>
-                  {customerData.address?.line2 && (
-                    <p className="font-medium">{customerData.address.line2}</p>
-                  )}
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm">City/State/Zip</p>
                   <p className="font-medium">
                     {customerData.city || "-"}
-                    {customerData.state ? `, ${customerData.state}` : ""}{" "}
-                    {customerData.postalCode}
+                    {customerData.country || ""} {customerData.postalCode}
                   </p>
                 </div>
                 <div>
