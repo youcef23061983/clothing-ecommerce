@@ -136,25 +136,23 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "../data managment/AppProvider";
 import img from "/images/men/banner/order.jpg";
 import { motion } from "framer-motion";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import UseFetch from "../data managment/UseFetch";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
-  const navigate = useNavigate();
+  const location = useLocation();
+  const { paymentIntentId } = location.state || {};
+  console.log("paymentIntentId payment page:", paymentIntentId);
 
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
-  const url = `${import.meta.env.VITE_PUBLIC_PRODUCTS_URL}/sell`;
-  const key1 = "sell";
-  const { data, isPending, error } = UseFetch(url, key1);
 
   useEffect(() => {
-    // if (!payment.payment) {
-    //   navigate("/payment");
-    // }
+    if (paymentIntentId) {
+      console.log("Order completed:", paymentIntentId);
+    }
     document.title = "Order";
-  }, [payment]);
+  }, [paymentIntentId]);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
   const totalAll = parseFloat((total + tax + shippingPrice).toFixed(2));
@@ -181,12 +179,7 @@ const Order = () => {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 1, ease: "easeInOut" } },
   };
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -243,21 +236,13 @@ const Order = () => {
               <div className="orderDesc">
                 <h2 className="orderTitle">Order Confirmation</h2>
               </div>
+            </motion.div>
+          )}
+          <motion.div className="orderDesc" variants={childVariants}>
+            <h4 className="orderName"> Session Checkout ID:</h4>
+            <p>{paymentIntentId}</p>
+          </motion.div>
 
-              <div className="orderDesc">
-                <h4 className="orderName"> Session Checkout ID:</h4>
-                <p>{sessionId}</p>
-              </div>
-            </motion.div>
-          )}
-          {data && (
-            <motion.div className="orderItem" variants={childVariants}>
-              <div className="orderDesc">
-                <h4 className="orderName"> Stripe Payment Intent ID:</h4>
-                <p>{data?.stripe_payment_intent_id}</p>
-              </div>
-            </motion.div>
-          )}
           <div className="cartContainer">
             {cart.map((item) => {
               let itemsPrice = (item?.newPrice || item?.price) * item?.amount;

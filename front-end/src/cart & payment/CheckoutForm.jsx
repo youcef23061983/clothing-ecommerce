@@ -58,28 +58,7 @@ const CheckoutForm = ({ onSuccess }) => {
         setErrorMessage(error.message);
       } else if (paymentIntent?.status === "succeeded") {
         setMessage("Payment status: " + paymentIntent?.status + " 🎉");
-        // if (paymentIntent?.status === "succeeded") {
-        //   // Fetch complete customer data
-        //   const response = await fetch(`${url}/retrieve-customer-data`, {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({
-        //       paymentIntentId: paymentIntent.id,
-        //       cart,
-        //       shipping,
-        //       formUser,
-        //       firebaseUser,
-        //     }),
-        //   });
 
-        //   const fullCustomerData = await response.json();
-        //   setCustomerData(fullCustomerData);
-        //   onSuccess({
-        //     paymentIntentId: paymentIntent.id,
-        //     sessionId: fullCustomerData.sessionId, // From your backend
-        //   });
-        //   console.log(fullCustomerData);
-        // }
         // ✅ GET CARD INFO DIRECTLY - no backend call needed!
         const cardBrand = paymentIntent.payment_method?.card?.brand || "card";
         const last4 = paymentIntent.payment_method?.card?.last4 || "****";
@@ -103,16 +82,54 @@ const CheckoutForm = ({ onSuccess }) => {
           city: shipping?.city,
           country: shipping?.country,
           postalCode: shipping?.postalCode,
-          country: shipping?.country,
 
           items: cart,
         };
 
         setCustomerData(customerData);
+
+        // ✅ SEND EMAIL & SMS (NON-BLOCKING)
+        try {
+          console.log("🔔 Sending order notifications...");
+
+          // Send email
+          fetch(`${url}/send-order-email`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              to: customerData.email, // ✅ Use customerData.email, not orderData.email
+              subject: `🧾 Order Confirmation #${paymentIntent.id}`,
+              orderData: customerData, // ✅ Use customerData
+            }),
+          })
+            .then(() => console.log("📧 Email sent successfully"))
+            .catch((err) => console.error("❌ Email failed:", err));
+
+          // Send SMS if phone exists
+          if (customerData.fullPhone) {
+            fetch(`${url}/send-order-sms`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                orderData: customerData, // ✅ Use customerData
+              }),
+            })
+              .then(() => console.log("📱 SMS sent successfully"))
+              .catch((err) => console.error("❌ SMS failed:", err));
+          } else {
+            console.log("ℹ️ No phone number provided for SMS");
+          }
+        } catch (notificationError) {
+          console.error("❌ Notifications setup failed:", notificationError);
+        }
+
+        // ✅ CALL onSuccess TO SAVE ORDER
         onSuccess({
           paymentIntentId: paymentIntent.id,
-          sessionId: null, // No session ID since no backend call
+          sessionId: null,
         });
+
+        console.log("✅ Payment successful! Order data:", customerData);
       } else {
         setMessage("Unexpected payment status");
       }

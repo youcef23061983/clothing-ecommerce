@@ -21,6 +21,7 @@ const Payment = () => {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stripeData, setStripeData] = useState(null);
   const tax = parseFloat((total * 0.1).toFixed(2));
   const shippingPrice = parseFloat((total * 0.13).toFixed(2));
 
@@ -84,8 +85,10 @@ const Payment = () => {
   const paymentSubmit = useCallback(() => {
     setIsSubmitting(true);
     cartPayment(payment);
-    navigate("/order");
-  }, [payment, cartPayment, navigate]);
+    navigate("/order", {
+      state: { paymentIntentId: stripeData.paymentIntentId },
+    });
+  }, [payment, cartPayment, navigate, stripeData]);
 
   const sellingProduct = cart.map((item) => ({
     id: item.id,
@@ -143,6 +146,7 @@ const Payment = () => {
         await sellingMutate(stripeData); // Pass stripe data
         cartPayment(payment);
         setPaymentSucceeded(true);
+        setStripeData(stripeData);
       } catch (err) {
         console.error("Failed to save order:", err);
       } finally {

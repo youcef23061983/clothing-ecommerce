@@ -11,6 +11,8 @@ const authRoutes = require("./routes/authUser.js");
 const sellingsRoutes = require("./routes/sellings.js");
 const aj = require("./libs/arctjet.js");
 const helmet = require("helmet");
+const sendGridEmail = require("./utils/sendGridEmail.js");
+const { sendtwilioSMS } = require("./utils/sendtwilioSms&call.js");
 
 const stripe = require("stripe")(process.env.VITE_STRIPE_SECRET_KEY);
 
@@ -108,6 +110,45 @@ app.get("/config", (req, res) => {
   res.json({
     publishableKey: process.env.VITE_STRIPE_PUBLIC_KEY, // Send as JSON object
   });
+});
+// New endpoint specifically for sending emails
+app.post("/send-order-email", async (req, res) => {
+  try {
+    const { to, subject, orderData } = req.body;
+
+    console.log("📧 Sending order email to:", to);
+
+    // Use your existing sendGridEmail function
+    const emailSent = await sendGridEmail({ to, subject, orderData });
+
+    if (emailSent) {
+      res.json({ success: true, message: "Email sent successfully" });
+    } else {
+      res.status(500).json({ error: "Failed to send email" });
+    }
+  } catch (err) {
+    console.error("❌ Email endpoint error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+app.post("/send-order-sms", async (req, res) => {
+  try {
+    const { orderData } = req.body;
+
+    if (!orderData.phone) {
+      return res.json({ success: true, message: "No phone number provided" });
+    }
+
+    await sendtwilioSMS({
+      phone: orderData.phone,
+      message: `Hi ${orderData.fullName}, your order #${orderData.stripe_payment_intent_id} of ${orderData.total} ${orderData.currency} was received. Thank you!`,
+    });
+
+    res.json({ success: true, message: "SMS sent successfully" });
+  } catch (err) {
+    console.error("❌ SMS endpoint error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 // app.post("/retrieve-customer-data", async (req, res) => {
 //   try {
@@ -510,10 +551,10 @@ app.listen(PORT, () => {
 //             //   message: "hi i am youcef here, it works",
 //             //   pdfUrl,
 //             // });
-//             await sendtwilioSMS({
-//               phone: phone,
-//               message: `Hi ${fullName}, your order #${stripe_payment_intent_id} of ${total} ${currency} was received. Thank you!`,
-//             });
+// await sendtwilioSMS({
+//   phone: phone,
+//   message: `Hi ${fullName}, your order #${stripe_payment_intent_id} of ${total} ${currency} was received. Thank you!`,
+// });
 //             console.log("📱 twilio SMS notifications sent to", phone);
 //             console.log("🆔 SID:", process.env.TWILIO_SID);
 //             console.log("🔑 AUTH:", process.env.TWILIO_AUTH);
