@@ -66,13 +66,25 @@ const CheckoutForm = ({ onSuccess }) => {
         console.log("💳 Card details:", { cardBrand, last4 });
 
         // ✅ CREATE CUSTOMER DATA USING YOUR FORM DATA + CARD INFO
+        const sellingProduct = cart.map((item) => ({
+          id: item.id,
+          product_name: item.product_name,
+          amount: item.amount,
+          unitPrice: item?.newPrice || item?.price,
+          image: item?.images?.[0] || "/placeholder-product.jpg",
+          totalPrice: (item?.newPrice || item?.price) * item?.amount,
+        }));
         const customerData = {
           // From Stripe (payment info)
-          transactionId: paymentIntent.id,
+          stripe_payment_intent_id: paymentIntent.id,
           amount: (paymentIntent.amount / 100).toFixed(2) || totalAll,
           currency: paymentIntent.currency.toUpperCase(),
           paymentMethod: cardBrand,
           last4: last4,
+          tax,
+          shipping: shippingPrice,
+          total: totalAll,
+          created: paymentIntent.created * 1000, // to ms
 
           // From your form (customer info)
           email: formUser?.user?.email || firebaseUser?.email,
@@ -83,7 +95,7 @@ const CheckoutForm = ({ onSuccess }) => {
           country: shipping?.country,
           postalCode: shipping?.postalCode,
 
-          items: cart,
+          sellingProduct,
         };
 
         setCustomerData(customerData);
@@ -348,7 +360,7 @@ const CheckoutForm = ({ onSuccess }) => {
 
                 {/* Product Items */}
                 <div className="divide-y divide-gray-200">
-                  {customerData?.items?.map((item, index) => (
+                  {customerData?.sellingProduct?.map((item, index) => (
                     <div
                       key={index}
                       className="grid grid-cols-1 sm:grid-cols-12 p-4 hover:bg-gray-50 transition-colors"
@@ -357,9 +369,7 @@ const CheckoutForm = ({ onSuccess }) => {
                       <div className="col-span-6 flex items-center mb-2 sm:mb-0">
                         <div className="flex-shrink-0 h-12 w-12 bg-gray-100 rounded-md overflow-hidden mr-3">
                           <img
-                            src={
-                              item?.images?.[0] || "/placeholder-product.jpg"
-                            }
+                            src={item?.image || "/placeholder-product.jpg"}
                             alt={item?.product_name}
                             loading="lazy"
                             className="h-full w-full object-cover"
@@ -370,7 +380,7 @@ const CheckoutForm = ({ onSuccess }) => {
                             {item?.product_name}
                           </p>
                           <p className="text-xs text-gray-500 sm:hidden">
-                            ${item?.newPrice || item?.price} × {item?.amount}
+                            {item?.unitPrice} × {item?.amount} $
                           </p>
                         </div>
                       </div>
@@ -385,14 +395,14 @@ const CheckoutForm = ({ onSuccess }) => {
                       {/* Unit Price - Centered */}
                       <div className="col-span-2 flex items-center justify-center">
                         <span className="text-sm text-gray-700">
-                          ${item?.newPrice || item?.price}
+                          {item?.unitPrice} $
                         </span>
                       </div>
 
                       {/* Total Price - Centered */}
                       <div className="col-span-2 flex items-center justify-center">
                         <span className="text-sm font-medium">
-                          ${(item?.newPrice || item?.price) * item?.amount}
+                          {item?.totalPrice} $
                         </span>
                       </div>
                     </div>
@@ -443,7 +453,7 @@ const CheckoutForm = ({ onSuccess }) => {
                 <div className="break-all">
                   <p className="text-gray-600 text-sm">Transaction ID</p>
                   <p className="font-mono text-sm text-gray-500">
-                    {customerData.transactionId}
+                    {customerData.stripe_payment_intent_id}
                   </p>
                 </div>
                 <div>
