@@ -66,19 +66,19 @@ const CheckoutForm = ({ onSuccess }) => {
         console.log("💳 Card details:", { cardBrand, last4 });
 
         // ✅ CREATE CUSTOMER DATA USING YOUR FORM DATA + CARD INFO
-        const sellingProduct = cart.map((item) => ({
-          id: item.id,
-          product_name: item.product_name,
-          amount: item.amount,
+        const sellingProduct = cart?.map((item) => ({
+          id: item?.id,
+          product_name: item?.product_name,
+          amount: item?.amount,
           unitPrice: item?.newPrice || item?.price,
           image: item?.images?.[0] || "/placeholder-product.jpg",
           totalPrice: (item?.newPrice || item?.price) * item?.amount,
         }));
         const customerData = {
           // From Stripe (payment info)
-          stripe_payment_intent_id: paymentIntent.id,
-          amount: (paymentIntent.amount / 100).toFixed(2) || totalAll,
-          currency: paymentIntent.currency.toUpperCase(),
+          stripe_payment_intent_id: paymentIntent?.id,
+          amount: (paymentIntent?.amount / 100).toFixed(2) || totalAll,
+          currency: paymentIntent?.currency.toUpperCase(),
           paymentMethod: cardBrand,
           last4: last4,
           tax,

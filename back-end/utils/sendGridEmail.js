@@ -93,7 +93,7 @@ const sendGridEmail = async ({ to, subject, orderData }) => {
               </thead>
               <tbody>
                 ${orderData?.sellingProduct
-                  ?.map(
+                  .map(
                     (item) => `
                 <tr>
                   <td class="item-name">${item.product_name}</td>
