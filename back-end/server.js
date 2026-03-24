@@ -225,10 +225,10 @@ app.post("/send-order-email", async (req, res) => {
           <div class="shipping-info">
             <h4 style="color: #374151; margin-top: 0; margin-bottom: 15px;">📦 Shipping Address</h4>
             <p style="margin: 8px 0; line-height: 1.5;">
-              <strong>${orderData.address}</strong><br>
+              <strong>${orderData.street}</strong><br>
               ${orderData.city}, ${orderData.postalCode}<br>
               ${orderData.country}<br>
-              📞 ${orderData.phone}
+              📞 ${orderData.fullPhone}
             </p>
           </div>
 
