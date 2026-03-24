@@ -200,7 +200,7 @@ const CheckoutForm = ({ onSuccess }) => {
             },
             {
               handleActions: false,
-            }
+            },
           );
 
           if (error) {
@@ -478,8 +478,8 @@ const CheckoutForm = ({ onSuccess }) => {
                 <div>
                   <p className="text-gray-600 text-sm">City/State/Zip</p>
                   <p className="font-medium">
-                    {customerData.city || "-"}
-                    {customerData.country || ""} {customerData.postalCode}
+                    {customerData.city || "-"} {customerData.country || ""}{" "}
+                    {customerData.postalCode}
                   </p>
                 </div>
                 <div>

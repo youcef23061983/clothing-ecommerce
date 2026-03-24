@@ -15,7 +15,6 @@ const Shipping = () => {
 
   const shippingSubmit = (e) => {
     e.preventDefault();
-    // const fullPhone = formatPhone(shipping.phoneCode, shipping.phone);
     const fullPhone =
       shipping.phoneCode && shipping.phone
         ? formatPhone(shipping.phoneCode, shipping.phone)
@@ -32,12 +31,7 @@ const Shipping = () => {
       alert("Please enter your information");
       return;
     }
-    // if (!isValidPhone(fullPhone)) {
-    //   alert("Please enter a valid international phone number");
-    //   return;
-    // }
 
-    // Add null check for phone validation
     if (shipping.phoneCode && shipping.phone && !isValidPhone(fullPhone)) {
       alert("Please enter a valid international phone number");
       return;
@@ -54,7 +48,7 @@ const Shipping = () => {
     if (name === "phone" || name === "phoneCode") {
       updates.fullPhone = formatPhone(
         name === "phoneCode" ? value : shipping.phoneCode,
-        name === "phone" ? value : shipping.phone
+        name === "phone" ? value : shipping.phone,
       );
     }
 
@@ -438,7 +432,7 @@ const Shipping = () => {
             />
             {shipping.phone &&
               !isValidPhone(
-                formatPhone(shipping.phoneCode, shipping.phone)
+                formatPhone(shipping.phoneCode, shipping.phone),
               ) && (
                 <span className="error-message">
                   Please enter a valid phone number

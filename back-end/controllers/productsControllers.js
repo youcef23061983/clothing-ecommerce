@@ -43,7 +43,7 @@ const createProduct = async (req, res) => {
         best_seller,
         rating,
         preview,
-      ]
+      ],
     );
     res.json(newProduct.rows[0]);
   } catch (error) {
@@ -72,7 +72,7 @@ const updateProduct = async (req, res) => {
        SET description = $1, type = $2, price = $3, new_price = $4
        WHERE id = $5
        RETURNING *`,
-      [description, type, price, new_price, id]
+      [description, type, price, new_price, id],
     );
 
     if (result.rowCount === 0) {

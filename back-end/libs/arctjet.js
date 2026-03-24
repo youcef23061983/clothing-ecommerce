@@ -7,13 +7,7 @@ const aj = (async () => {
 
   return arcjet({
     key: process.env.ARCJET_KEY,
-    //  characteristics: [
-    //         "ip.src",
-    //         "http.method",
-    //         "http.path",
-    //         "http.headers.accept",
-    //         "http.headers.user-agent",
-    //       ],
+
     characteristics: ["ip.src", "header.user-agent", "header.accept-language"],
 
     rules: [

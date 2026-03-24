@@ -2,13 +2,7 @@ import { FaAlignJustify } from "react-icons/fa";
 import { LuShoppingCart, LuUserCircle2, LuSearch } from "react-icons/lu";
 import { AppContext } from "../data managment/AppProvider";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  useLayoutEffect,
-  useRef,
-  useState,
-  useContext,
-  useEffect,
-} from "react";
+import { useLayoutEffect, useRef, useState, useContext } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { motion } from "framer-motion";

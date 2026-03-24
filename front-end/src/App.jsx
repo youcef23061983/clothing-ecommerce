@@ -120,7 +120,7 @@ function App() {
             path="/login"
             element={
               !authState.isAuthenticated ? (
-                <Login setAuth={setAuth} />
+                <Login setAuth={setAuthState} />
               ) : authState.userRole === "admin" ? (
                 <Navigate to="/dashboard" replace />
               ) : (
