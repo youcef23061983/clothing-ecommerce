@@ -14,7 +14,14 @@ describe("group of testing Order component", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <HelmetProvider>
-          <MemoryRouter initialEntries={["/order"]}>
+          <MemoryRouter
+            initialEntries={[
+              {
+                pathname: "/order",
+                state: { paymentIntentId: 12345 },
+              },
+            ]}
+          >
             <AppContext.Provider>
               <Routes>
                 <Route path="/order" element={<Order />} />
@@ -24,7 +31,7 @@ describe("group of testing Order component", () => {
             </AppContext.Provider>
           </MemoryRouter>
         </HelmetProvider>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     await waitFor(() => {
       expect(screen.queryByText("LOADING...")).toBe(null);

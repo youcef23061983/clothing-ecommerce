@@ -13,11 +13,16 @@ const DetailUseFetch = (url, key, productID) => {
   const { data, error, isPending } = useQuery({
     queryKey: [key, productID],
     queryFn: productFun,
+
     initialData: () => {
-      return queryClient
-        .getQueryData([key])
-        ?.find((x) => x.id === parseInt(productID));
+      return queryClient.getQueryData([key]);
     },
+
+    // initialData: () => {
+    //   return queryClient
+    //     ?.getQueryData([key])
+    //     ?.find((x) => x.id === parseInt(productID));
+    // },
   });
   return { data, error, isPending };
 };

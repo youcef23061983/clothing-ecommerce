@@ -7,7 +7,7 @@ import { Link, useLocation, useSearchParams } from "react-router-dom";
 const Order = () => {
   const { payment, shipping, cart, total, amount } = useContext(AppContext);
   const location = useLocation();
-  const { paymentIntentId } = location.state || {};
+  const { paymentIntentId } = location?.state || {};
   console.log("paymentIntentId payment page:", paymentIntentId);
 
   const [searchParams] = useSearchParams();

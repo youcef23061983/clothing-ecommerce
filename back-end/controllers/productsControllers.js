@@ -1,16 +1,136 @@
 require("dotenv").config();
 const pool = require("../libs/db.js");
 
+// const getProducts = async (req, res) => {
+//   try {
+//     const products = await pool.query("select * from products");
+//     res.json(products.rows);
+//     console.log("products have been rendered");
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+// *****************************second appraoch with input back filter and front filter the bar
+// const getProducts = async (req, res) => {
+//   try {
+//     const { search } = req.query;
+
+//     let query = "SELECT * FROM products";
+//     const values = [];
+
+//     if (search) {
+//       query += `
+//   WHERE product_name::text ILIKE $1
+//      OR description::text  ILIKE $1
+//      OR type::text         ILIKE $1
+// `;
+//       values.push(`%${search}%`);
+//     }
+
+//     const products = await pool.query(query, values);
+//     res.json(products.rows);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ message: "Failed to fetch products." });
+//   }
+// };
+
+// *****************************third appraoch with input back filter and backend filter the bar
 const getProducts = async (req, res) => {
   try {
-    const products = await pool.query("select * from products");
-    res.json(products.rows);
-    console.log("products have been rendered");
-  } catch (error) {
-    console.log(error.message);
+    const {
+      search,
+      type,
+      price,
+      rating,
+      on_sale,
+      best_seller,
+      new_arrival,
+      sortOption,
+    } = req.query;
+
+    let query = "SELECT * FROM products";
+
+    const conditions = [];
+    const values = [];
+
+    // SEARCH
+    if (search) {
+      values.push(`%${search}%`);
+
+      conditions.push(`
+        (
+          product_name::text ILIKE $${values.length}
+          OR description::text ILIKE $${values.length}
+          OR type::text ILIKE $${values.length}
+        )
+      `);
+    }
+
+    // TYPE
+    if (type && type !== "all") {
+      values.push(type);
+      conditions.push(`type::text = $${values.length}`);
+    }
+
+    // PRICE
+    if (price && Number(price) > 0) {
+      values.push(Number(price));
+      conditions.push(`price >= $${values.length}`);
+    }
+
+    // RATING
+    if (rating && Number(rating) > 1) {
+      values.push(Number(rating));
+      conditions.push(`rating >= $${values.length}`);
+    }
+
+    if (on_sale === "true") {
+      conditions.push(`on_sale = true`);
+    }
+
+    if (best_seller === "true") {
+      conditions.push(`best_seller = true`);
+    }
+
+    if (new_arrival === "true") {
+      conditions.push(`new_arrival = true`);
+    }
+
+    if (conditions.length > 0) {
+      query += ` WHERE ${conditions.join(" AND ")}`;
+    }
+
+    if (sortOption === "priceLowToHigh") {
+      query += ` ORDER BY price ASC`;
+    } else if (sortOption === "priceHighToLow") {
+      query += ` ORDER BY price DESC`;
+    }
+
+    // Products
+    const productsResult = await pool.query(query, values);
+
+    // Global price range
+    const priceResult = await pool.query(`
+      SELECT
+        MIN(price) AS min_price,
+        MAX(price) AS max_price
+      FROM products
+    `);
+
+    res.json({
+      products: productsResult.rows,
+      priceRange: priceResult.rows[0],
+    });
+  } catch (err) {
+    console.error(err.message);
+
+    res.status(500).json({
+      message: "Failed to fetch products.",
+    });
   }
 };
-
 // create a products:
 const createProduct = async (req, res) => {
   try {

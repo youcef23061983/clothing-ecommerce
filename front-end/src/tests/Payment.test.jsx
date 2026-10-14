@@ -11,7 +11,7 @@ import AppProvider from "../data managment/AppProvider";
 vi.mock("../cart & payment/Checkout", () => ({
   default: ({ onSuccess }) => {
     // Simulate a successful payment
-    setTimeout(() => onSuccess(), 100); // Simulate async behavior
+    setTimeout(() => onSuccess(), 1000); // Simulate async behavior
     return <div>Mock Checkout Component</div>;
   },
 }));
@@ -30,7 +30,7 @@ describe("group of testing Payment component", () => {
             </Routes>
           </AppProvider>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     await waitFor(() => {
       expect(screen.queryByText("LOADING...")).toBe(null);
